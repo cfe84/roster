@@ -1,0 +1,37 @@
+# Docker
+# Build a Docker image 
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger:
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - src/frontend
+
+resources:
+- repo: self
+
+variables:
+  tag: '$(Build.BuildId)'
+
+stages:
+- stage: Build
+  displayName: Build image
+  jobs:  
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: Docker@2
+      displayName: Build an image
+      inputs:
+        command: buildAndPush
+        containerRegistry: ACR
+        dockerfile: 'src/frontend/Dockerfile'
+        buildContext: 'src/frontend'
+        repository: roster-frontend
+        tags: |
+          $(tag)
