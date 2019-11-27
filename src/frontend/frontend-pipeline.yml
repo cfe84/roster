@@ -39,6 +39,7 @@ stages:
           - task: HelmInstaller@1
             displayName: Install helm
           - task: HelmDeploy@0
+            displayName: Login to Kubernetes
             inputs:
               command: login
               connectionType: Kubernetes Service Connection
@@ -46,4 +47,5 @@ stages:
           - task: Bash@3
             displayName: Push to kubernetes using helm chart
             inputs:
+              targetType: inline
               script: /bin/bash -c "helm template chart --set frontendTag=$(tag) | kubectl apply -f"
