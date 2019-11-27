@@ -36,3 +36,12 @@ stages:
               repository: roster-frontend
               tags: |
                 $(tag)
+          - task: HelmInstaller@1
+            displayName: Install helm
+          - task: HelmDeploy@0
+            inputs:
+              command: login
+              kubernetesServiceConnection: k8s
+          - task: Bash@3
+            inputs:
+              script: helm template chart --set frontendTag=$(tag) | kubectl apply -f
