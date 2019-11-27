@@ -1,21 +1,22 @@
+{{ if .Values.frontendTag }}
+
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: roster
-  name: roster
+    app: roster-frontend
+  name: roster-frontend
   namespace: {{ .Values.namespace }}
 spec:
   selector:
     matchLabels:
-      app: roster
+      app: roster-frontend
   template:
     metadata:
       labels:
-        app: roster
+        app: roster-frontend
     spec:
       containers:
-
       - name: frontend
         image: {{ .Values.frontendImage }}:{{ .Values.frontendTag }}
         env:
@@ -23,3 +24,4 @@ spec:
         ports:
         - containerPort: 3500
           protocol: TCP
+{{ end }}

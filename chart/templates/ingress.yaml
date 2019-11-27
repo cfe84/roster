@@ -13,8 +13,12 @@ spec:
     http:
       paths:
       - backend:
+          serviceName: roster-backend-service
+          servicePort: 3501
+        path: /api
+      - backend:
           serviceName: roster-frontend-service
-          servicePort: 80
+          servicePort: 3500
         path: /
   tls:
   - hosts:

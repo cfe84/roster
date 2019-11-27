@@ -1,0 +1,28 @@
+{{ if .Values.backendTag }}
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: roster-backend
+  name: roster-backend
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: roster-backend
+  template:
+    metadata:
+      labels:
+        app: roster-backend
+    spec:
+      containers:
+      - name: backend
+        image: {{ .Values.backendImage }}:{{ .Values.backendTag }}
+        env:
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3501
+          protocol: TCP
+
+{{ end }}

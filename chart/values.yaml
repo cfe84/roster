@@ -1,5 +1,7 @@
 namespace: roster
 frontendImage: charles.azurecr.io/roster-frontend
-frontendTag: latest
+frontendTag:
+backendImage: charles.azurecr.io/roster-backend
+backendTag:
 dnsName: roster.feval.ca
 certEnvironment: prod
