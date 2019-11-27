@@ -4,7 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "npm run test"
+    "test": "echo 'no tests'",
+    "build": "cp -r static/ dist/"
   },
   "repository": {
     "type": "git",
