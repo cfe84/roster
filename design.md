@@ -1,11 +1,14 @@
 # Features
 
-## Commands
+## Use cases
 
+- Login
+- Lock with PIN-code.
 - Add **person** --> _person added_
 - Add **relationships** between **persons** --> _relationship added_
 - Add **note** to a **person** --> _note added_
 - Add **committment** to a **person** --> _committment added_
+- Logout
 
 # Design
 
