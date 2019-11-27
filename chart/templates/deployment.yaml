@@ -1,0 +1,25 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: roster
+  name: roster
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: roster
+  template:
+    metadata:
+      labels:
+        app: roster
+    spec:
+      containers:
+
+      - name: frontend
+        image: {{ .Values.frontendImage }}:{{ .Values.frontendTag }}
+        env:
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3500
+          protocol: TCP

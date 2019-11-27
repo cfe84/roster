@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: roster-frontend-service
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: roster
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 3500
+  type: ClusterIP

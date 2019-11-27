@@ -1,0 +1,22 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    certmanager.k8s.io/cluster-issuer: letsencrypt-{{ .Values.certEnvironment }}
+  name: roster-ingress
+  namespace: {{ .Values.namespace }}
+spec:
+  rules:
+  - host: {{ .Values.dnsName }}
+    http:
+      paths:
+      - backend:
+          serviceName: roster-frontend-service
+          servicePort: 80
+        path: /
+  tls:
+  - hosts:
+    - {{ .Values.dnsName }}
+    secretName: tls-secret
