@@ -46,4 +46,4 @@ stages:
           - task: Bash@3
             displayName: Push to kubernetes using helm chart
             inputs:
-              script: helm template chart --set frontendTag=$(tag) | kubectl apply -f
+              script: /bin/bash -c "helm template chart --set frontendTag=$(tag) | kubectl apply -f"
