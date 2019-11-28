@@ -4,21 +4,39 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <link rel="stylesheet" type="text/css" href="./style.css" />
+    <script src="./app.js"></script>
 </head>
 
 <body>
+    <header>
+        <div class="navbar navbar-light bg-light shadow-sm">
+            <div class="container d-flex justify-content-between">
+                <a href="#" class="navbar-brand d-flex align-items-center header__title">
+                    <img class="mr-3 img-fluid" src="./icon.png" width="32" height="32">
+                    Roster
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader"
+                    aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
 
-    <div class="frontpage">
-        <div class="container align-middle text-center">
-            <img class="mb-4" src="./icon.png" alt="" width="72" height="72">
-            <h1 class="mb-3 font-weight-normal">Roster</h1>
-            <p class="mb-5">Keep up with your team, help them deliver and grow.</p>
-            <button class="btn btn-lg btn-primary">Get Started</button>
         </div>
+    </header>
+    <div class="container" id="container-main">
+        <div class="frontpage text-center">
+            <form class="form-signin">
+                <p class="mb-5 form-signin__label-moto">Keep up with your team, help them deliver and grow.</p>
+                <p class="mb-5 form-signin__label-instructions">To begin, set a PIN code.</p>
+                <label for="pin" class="sr-only">Setup a pin code</label>
+                <input class="form-control mb-3 form-signin__input-pin" id="pin" placeholder="PIN code"
+                    type="password"></input>
+                <button class="btn btn-lg btn-primary">Get Started</button>
+            </form>
+        </div>
+
     </div>
 
-
-    <script src="./assets/script/beauter.js"></script>
 </body>
 
 </html>

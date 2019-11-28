@@ -15,6 +15,12 @@
         "static"
       ],
       "extensions": "html,js,css"
+    },
+    "tsc": {
+      "patterns": [
+        "src"
+      ],
+      "extensions": "ts,tsx"
     }
   },
   "scripts": {
@@ -22,6 +28,7 @@
     "test": "echo 'no tests'",
     "sass": "sass style/style.sass dist/style.css",
     "static": "mkdir -p dist && cp -r static/* dist/",
+    "tsc": "tsc",
     "build": "npm run static && npm run sass",
     "watch": "npm-watch"
   },
