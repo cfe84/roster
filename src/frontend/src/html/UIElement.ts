@@ -8,6 +8,7 @@ export class UIElement {
   }
 
   static create(type: string | UIElementConstructor, props: any, ...children: UIElement[]): UIElement {
+    props = props || {};
     const childrenElements = children.map(child => {
       if (typeof child === "object") {
         return child
@@ -21,7 +22,7 @@ export class UIElement {
     const isIntrinsic = typeof type === "string";
     if (isIntrinsic) {
       const typeName: string = type as string;
-      return new UIElement(typeName, props || {})
+      return new UIElement(typeName, props)
     } else {
       const componentConstructor = type as UIElementConstructor;
       return componentConstructor(props);
@@ -46,8 +47,18 @@ export class UIElement {
     const element = this.type === TEXT_TYPE ?
       document.createTextNode(this.props.text)
       : this.createHtmlElement();
-    const children = (this.props.children as UIElement[]) || [];
-    const childrenDomElements = children.map(child => child.createDomElement());
+    const children = (this.props.children as (UIElement | UIElement[])[]) || [];
+    const childrenDomElements = children
+      .reduce((res: UIElement[], child: UIElement | UIElement[]) => {
+        if (Array.isArray(child)) {
+          return res.concat(child as UIElement[]);
+        } else {
+          res.push(child as UIElement);
+          return res;
+        }
+      }
+        , [])
+      .map(child => child.createDomElement());
     childrenDomElements.forEach(child => element.appendChild(child));
     return element;
   }

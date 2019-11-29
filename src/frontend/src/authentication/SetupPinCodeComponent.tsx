@@ -1,6 +1,6 @@
-import { UIElement, IComponent } from "../html/index";
+import { UIElement } from "../html/index";
 
-export class SetupPinCodeComponent implements IComponent {
+export class SetupPinCodeComponent {
   renderElement(): UIElement {
     return <div class="frontpage text-center">
       <form class="form-signin">

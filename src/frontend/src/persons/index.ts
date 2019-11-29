@@ -1,7 +1,7 @@
 import { EditPersonComponent } from "./EditPersonComponent";
-import { ListPersonsComponent } from "./ListPersonsComponent";
+import { ListPeopleComponent } from "./ListPeopleComponent";
 
 export {
   EditPersonComponent,
-  ListPersonsComponent
+  ListPeopleComponent
 }

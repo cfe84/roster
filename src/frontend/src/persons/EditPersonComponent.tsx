@@ -1,4 +1,4 @@
-import { UIElement, IComponent } from "../html/index";
+import { UIElement } from "../html/index";
 
 export const EditPersonComponent = (props: { actionName?: string }) =>
   <div class="vertical-center">
