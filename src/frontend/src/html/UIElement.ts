@@ -2,8 +2,13 @@ const TEXT_TYPE = "TEXT";
 const CHILDREN_PROPS_MEMBER = "children";
 type UIElementConstructor = (a: any) => UIElement;
 
+export interface Document {
+  createElement(type: string): any;
+}
+
 export class UIElement {
-  constructor(public type: any,
+  constructor(
+    public type: any,
     public props: any) {
   }
 
@@ -16,9 +21,7 @@ export class UIElement {
         return this.createText(child);
       }
     });
-    if (childrenElements.length > 0) {
-      props[CHILDREN_PROPS_MEMBER] = childrenElements;
-    }
+    props[CHILDREN_PROPS_MEMBER] = childrenElements;
     const isIntrinsic = typeof type === "string";
     if (isIntrinsic) {
       const typeName: string = type as string;
@@ -29,11 +32,11 @@ export class UIElement {
     }
   }
 
-  static createText(text: string): UIElement {
+  private static createText(text: string): UIElement {
     return new UIElement(TEXT_TYPE, { text });
   }
 
-  createHtmlElement(): HTMLElement {
+  private createHtmlElement(): HTMLElement {
     const element = document.createElement(this.type);
     Object.keys(this.props)
       .filter(name => name !== CHILDREN_PROPS_MEMBER)

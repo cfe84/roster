@@ -4,6 +4,13 @@
   "description": "",
   "main": "server.js",
   "watch": {
+    "test": {
+      "patterns": [
+        "src",
+        "test"
+      ],
+      "extensions": "js,ts,tsx"
+    },
     "sass": {
       "patterns": [
         "style"
@@ -25,10 +32,9 @@
   },
   "scripts": {
     "clean": "rm -r dist/",
-    "test": "echo 'no tests'",
+    "test": "mocha --require ts-node/register ./test/**/*.ts",
     "sass": "sass style/style.sass dist/style.css",
     "static": "mkdir -p dist && cp -r static/* dist/",
-    "tsc": "tsc",
     "webpack": "npx webpack",
     "build": "npm run static && npm run sass && npm run webpack",
     "watch": "npm-watch"
@@ -44,11 +50,16 @@
   },
   "homepage": "https://github.com/cfe84/roster#readme",
   "devDependencies": {
+    "@types/mocha": "^5.2.7",
+    "@types/should": "^13.0.0",
     "bootstrap": "^4.4.0",
-    "mocha-typescript": "^1.1.17",
+    "mocha": "^6.2.2",
     "npm-watch": "^0.6.0",
     "sass": "^1.23.7",
+    "should": "^13.2.3",
+    "testdouble": "^3.12.4",
     "ts-loader": "^6.2.1",
+    "ts-node": "^8.5.4",
     "typescript": "^3.7.2",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10"
