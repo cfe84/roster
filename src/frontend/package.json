@@ -45,6 +45,7 @@
   "homepage": "https://github.com/cfe84/roster#readme",
   "devDependencies": {
     "bootstrap": "^4.4.0",
+    "mocha-typescript": "^1.1.17",
     "npm-watch": "^0.6.0",
     "sass": "^1.23.7",
     "ts-loader": "^6.2.1",

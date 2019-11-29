@@ -1,12 +1,13 @@
 const TEXT_TYPE = "TEXT";
+const CHILDREN_PROPS_MEMBER = "children";
+type UIElementConstructor = (a: any) => UIElement;
 
 export class UIElement {
-  constructor(public type: string,
-    public props: any,
-    public children: UIElement[]) {
+  constructor(public type: any,
+    public props: any) {
   }
 
-  static create(type: string, props: any, ...children: UIElement[]): UIElement {
+  static create(type: string | UIElementConstructor, props: any, ...children: UIElement[]): UIElement {
     const childrenElements = children.map(child => {
       if (typeof child === "object") {
         return child
@@ -14,16 +15,27 @@ export class UIElement {
         return this.createText(child);
       }
     });
-    return new UIElement(type, props || {}, childrenElements);
+    if (childrenElements.length > 0) {
+      props[CHILDREN_PROPS_MEMBER] = childrenElements;
+    }
+    const isIntrinsic = typeof type === "string";
+    if (isIntrinsic) {
+      const typeName: string = type as string;
+      return new UIElement(typeName, props || {})
+    } else {
+      const componentConstructor = type as UIElementConstructor;
+      return componentConstructor(props);
+    }
   }
 
   static createText(text: string): UIElement {
-    return new UIElement(TEXT_TYPE, { text }, []);
+    return new UIElement(TEXT_TYPE, { text });
   }
 
   createHtmlElement(): HTMLElement {
     const element = document.createElement(this.type);
     Object.keys(this.props)
+      .filter(name => name !== CHILDREN_PROPS_MEMBER)
       .forEach(name => {
         element.setAttribute(name, this.props[name]);
       })
@@ -34,7 +46,8 @@ export class UIElement {
     const element = this.type === TEXT_TYPE ?
       document.createTextNode(this.props.text)
       : this.createHtmlElement();
-    const childrenDomElements = this.children.map(child => child.createDomElement());
+    const children = (this.props.children as UIElement[]) || [];
+    const childrenDomElements = children.map(child => child.createDomElement());
     childrenDomElements.forEach(child => element.appendChild(child));
     return element;
   }
