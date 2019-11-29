@@ -16,7 +16,7 @@
       ],
       "extensions": "html,js,css"
     },
-    "tsc": {
+    "webpack": {
       "patterns": [
         "src"
       ],
@@ -29,7 +29,8 @@
     "sass": "sass style/style.sass dist/style.css",
     "static": "mkdir -p dist && cp -r static/* dist/",
     "tsc": "tsc",
-    "build": "npm run static && npm run sass",
+    "webpack": "npx webpack",
+    "build": "npm run static && npm run sass && npm run webpack",
     "watch": "npm-watch"
   },
   "repository": {
@@ -46,6 +47,9 @@
     "bootstrap": "^4.4.0",
     "npm-watch": "^0.6.0",
     "sass": "^1.23.7",
-    "typescript": "^3.7.2"
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.7.2",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10"
   }
 }

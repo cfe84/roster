@@ -14,7 +14,7 @@ export class UIElement {
         return this.createText(child);
       }
     });
-    return new UIElement(type, props, childrenElements);
+    return new UIElement(type, props || {}, childrenElements);
   }
 
   static createText(text: string): UIElement {
