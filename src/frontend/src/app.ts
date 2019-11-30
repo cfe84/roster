@@ -1,17 +1,18 @@
-import { PeopleController } from "./persons/PeopleController";
+import { PeopleController, PersonCreatedEvent, PersonUpdatedEvent, StorePeopleChangesReactor } from "./persons";
 import { EventBus, IEvent } from "./events";
-import { PersonCreatedEvent } from "./persons/PersonCreatedEvent";
+import { InMemoryPersonStore } from "./infrastructure/InMemoryPersonStore";
 
 class App {
   private eventBus: EventBus = new EventBus();
+  private peopleStore = new InMemoryPersonStore();
 
   constructor() {
-    this.eventBus.subscribe(PersonCreatedEvent.type,
-      async (evt: IEvent) => console.log(`Person created: ${JSON.stringify(evt)}`));
+    const peopleReactor = new StorePeopleChangesReactor(this.peopleStore);
+    peopleReactor.registerReactors(this.eventBus);
   }
 
   async loadAsync(): Promise<void> {
-    const controller = new PeopleController(this.eventBus);
+    const controller = new PeopleController(this.eventBus, this.peopleStore);
     await controller.loadPeopleListAsync();
   }
 }
