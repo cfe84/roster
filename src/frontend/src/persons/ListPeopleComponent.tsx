@@ -16,6 +16,7 @@ export const ListPeopleComponent = (props: ListPeopleProps): UIElement => {
       {rows}
     </ul>
     <br />
-    <button class="btn btn-primary" id="tamere" onclick={props.onAddPersonClicked}>Add person</button>
+    <button class="btn btn-primary"
+      onclick={props.onAddPersonClicked}>Add person</button>
   </div>;
 }

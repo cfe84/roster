@@ -1,12 +1,17 @@
-import { EditPersonComponent, ListPeopleComponent } from "./persons/index";
-import { SetupPinCodeComponent } from "./authentication/SetupPinCodeComponent";
-import { UI } from "./html/UI";
-import { ListItemPersonComponent } from "./persons/ListItemPersonComponent";
 import { PeopleController } from "./persons/PeopleController";
+import { EventBus, IEvent } from "./events";
+import { PersonCreatedEvent } from "./persons/PersonCreatedEvent";
 
 class App {
+  private eventBus: EventBus = new EventBus();
+
+  constructor() {
+    this.eventBus.subscribe(PersonCreatedEvent.type,
+      async (evt: IEvent) => console.log(`Person created: ${JSON.stringify(evt)}`));
+  }
+
   async loadAsync(): Promise<void> {
-    const controller = new PeopleController();
+    const controller = new PeopleController(this.eventBus);
     await controller.loadPeopleListAsync();
   }
 }
