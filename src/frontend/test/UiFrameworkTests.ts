@@ -98,6 +98,10 @@ describe("UI Framework", () => {
       it("should render array children", () => {
         throw Error("Not implemented");
       })
+
+      it("should render eventhandlers as functions", () => {
+        throw Error("Not implemented");
+      })
     })
   })
 })

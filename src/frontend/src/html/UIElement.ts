@@ -41,7 +41,12 @@ export class UIElement {
     Object.keys(this.props)
       .filter(name => name !== CHILDREN_PROPS_MEMBER)
       .forEach(name => {
-        element.setAttribute(name, this.props[name]);
+        if (typeof this.props[name] === "function") {
+          console.log(`${name} is a function`)
+          element[name] = this.props[name];
+        } else {
+          element.setAttribute(name, this.props[name]);
+        }
       })
     return element;
   }
