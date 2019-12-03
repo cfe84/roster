@@ -4,6 +4,14 @@
   "description": "",
   "main": "server.js",
   "watch": {
+    "build": {
+      "patterns": [
+        "src",
+        "static",
+        "style"
+      ],
+      "extensions": "html,sass,scss,js,ts,tsx"
+    },
     "test": {
       "patterns": [
         "src",
