@@ -5,15 +5,18 @@ import { PersonUpdatedEvent } from "./PersonUpdatedEvent";
 import { PeopleController } from "./PeopleController";
 import { IPersonStore } from "./IPersonStore";
 import { StorePeopleChangesReactor } from "./StorePeopleChangesReactor";
-import { Person } from "./Person";
+import { Person, PersonId } from "./Person";
+import { PersonOverviewComponent } from "./PersonOverviewComponent";
 
 export {
   PeopleController,
+  PersonOverviewComponent,
   EditPersonComponent,
   ListPeopleComponent,
   PersonCreatedEvent,
   PersonUpdatedEvent,
   IPersonStore,
   StorePeopleChangesReactor,
-  Person
+  Person,
+  PersonId
 }

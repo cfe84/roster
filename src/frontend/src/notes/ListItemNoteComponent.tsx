@@ -1,17 +1,17 @@
 import { UIElement } from "../html/index";
-import { Person } from ".";
+import { Note } from ".";
 
-interface ListItemPersonProps {
-  person: Person,
-  onPersonClicked: (() => void)
+interface ListItemNoteProps {
+  note: Note,
+  onNoteClicked: (() => void)
   onEditClicked: (() => void),
 }
 
-export const ListItemPersonComponent = (props: ListItemPersonProps): UIElement =>
+export const ListItemNoteComponent = (props: ListItemNoteProps): UIElement =>
   <li
     class="w-100 d-flex align-items-center list-group-item list-group-item-action btn"
-    onclick={props.onPersonClicked}>
-    <div class="">{props.person.name}</div>
+    onclick={props.onNoteClicked}>
+    <div class="">{props.note.title}</div>
     <div class="ml-auto">
       <button
         class="btn btn-primary align-right"

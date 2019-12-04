@@ -1,7 +1,7 @@
 import { UIElement } from "./UIElement";
-import { UI } from "./UI";
+import { UIContainer } from "./UIContainer";
 
 export {
-  UI,
+  UIContainer as UI,
   UIElement
 }

@@ -5,8 +5,8 @@
 - Login
 - Lock with PIN-code.
 - Add **person** --> _person added_
-- Add **relationships** between **persons** --> _relationship added_
 - Add **note** to a **person** --> _note added_
+- Add **relationships** between **persons** --> _relationship added_
 - Add **committment** to a **person** --> _committment added_
 - Logout
 
@@ -19,12 +19,10 @@
 
 - Back end
     - Rest API
-        - Launch commands
-        - Commands trigger events
+        - Limited to POST /events and GET /events?from=id
     - Techs:
-        - Dotnet core 2.2
-        - Entity framework
-        - Azure SQL PayGo
+        - Probably just node/ts to re-use front-end code
+        - Probably something like blob storage or table storage for event log. Most likely table, to do range queries. Unless we can do it with blob.
 
 - Hosting
     - K8s

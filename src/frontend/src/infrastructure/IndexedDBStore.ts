@@ -1,9 +1,12 @@
 import { IPersonStore, Person } from "../persons";
 import { resolve } from "dns";
+import { INotesStore } from "../notes/INotesStore";
+import { Note } from "../notes";
 
 const DB_NAME: string = "rosterdb";
-const DB_VERSION: number = 1;
+const DB_VERSION: number = 2;
 const OBJECTSTORE_PEOPLE: string = "people";
+const OBJECTSTORE_NOTES: string = "notes";
 
 const getTarget = <T>(evt: any): T => (evt.target as T)
 
@@ -80,18 +83,26 @@ class AsyncIndexedDB {
     });
 }
 
-export class IndexedDBStore implements IPersonStore {
-
-  private static createObjectStore(db: IDBDatabase) {
+export class IndexedDBStore implements IPersonStore, INotesStore {
+  private static createObjectStore(db: IDBDatabase, storeName: string, parameters: IDBObjectStoreParameters): IDBObjectStore | null {
+    const storeAlreadyExists = db.objectStoreNames.contains(storeName)
+    if (storeAlreadyExists) {
+      return null;
+    } else {
+      const store = db.createObjectStore(storeName, parameters);
+      return store;
+    }
+  }
+  private static updateDatabase(db: IDBDatabase) {
     console.log(`Creating db in version ${DB_VERSION}`);
-    const peopleObjectStore = db.createObjectStore(OBJECTSTORE_PEOPLE, {
-      keyPath: "id"
-    });
-    peopleObjectStore.createIndex("name", name, { unique: false });
+    const peopleObjectStore = IndexedDBStore.createObjectStore(db, OBJECTSTORE_PEOPLE, { keyPath: "id" });
+    if (peopleObjectStore !== null) peopleObjectStore.createIndex("name", "name", { unique: false });
+    const notesObjectStrong = IndexedDBStore.createObjectStore(db, OBJECTSTORE_NOTES, { keyPath: "id" });
+    if (notesObjectStrong !== null) notesObjectStrong.createIndex("personid", "personid", { unique: false });
   }
 
   static OpenDbAsync = async (): Promise<IndexedDBStore> => {
-    const db = await AsyncIndexedDB.OpenDbAsync(DB_NAME, DB_VERSION, IndexedDBStore.createObjectStore);
+    const db = await AsyncIndexedDB.OpenDbAsync(DB_NAME, DB_VERSION, IndexedDBStore.updateDatabase);
     return new IndexedDBStore(db);
   }
 
@@ -109,5 +120,18 @@ export class IndexedDBStore implements IPersonStore {
 
   public updatePersonAsync = async (person: Person): Promise<void> => {
     await this.db.putEntityAsync(OBJECTSTORE_PEOPLE, person);
+  }
+
+  public getNotesAsync = async (): Promise<Note[]> =>
+    (await this.db.getAllAsync<Note>(OBJECTSTORE_NOTES))
+      .sort((a, b) => (a.date.getTime() < b.date.getTime() ? 1 : -1));
+
+
+  public createNoteAsync = async (note: Note): Promise<void> => {
+    await this.db.createEntityAsync(OBJECTSTORE_NOTES, note);
+  }
+
+  public updateNoteAsync = async (note: Note): Promise<void> => {
+    await this.db.putEntityAsync(OBJECTSTORE_NOTES, note);
   }
 }

@@ -1,5 +1,6 @@
 import { UIElement } from "../html/index";
 import { Person } from "./Person";
+import { dom } from "../utils/dom";
 
 interface EditPersonProps {
   actionName?: string,
@@ -14,15 +15,13 @@ export const EditPersonComponent = (props: EditPersonProps) => {
 
   const updatePerson = (delegate: ((person: Person) => void)): (() => void) => {
     return () => {
-      const nameInput = document.getElementById("input-name") as HTMLInputElement;
-      if (nameInput) {
-        person.name = nameInput.value || ""
-        delegate(person);
-      }
+      person.name = dom.getInputValue("input-name");
+      delegate(person);
     }
   }
 
-  return <div class="vertical-center">
+  return <div>
+    <h2 class="text-center">{props.actionName || "Add a person"} {props.person.name}</h2>
     <form class="form-create-element">
       <p class="mb-1">Person's name</p>
       <input class="form-control mb-3" id="input-name" placeholder="Person name"

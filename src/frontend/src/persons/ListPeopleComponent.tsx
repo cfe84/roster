@@ -4,17 +4,17 @@ import { Person } from "./Person";
 
 interface ListPeopleProps {
   people: Person[],
+  onPersonClicked: ((p: Person) => void),
   onAddPersonClicked: (() => void),
   onEditPersonClicked: ((p: Person) => void)
-  onDeletePersonClicked: ((p: Person) => void)
 }
 
 export const ListPeopleComponent = (props: ListPeopleProps): UIElement => {
   const rows = props.people
     .map(person =>
-      <ListItemPersonComponent name={person.name}
+      <ListItemPersonComponent person={person}
+        onPersonClicked={() => props.onPersonClicked(person)}
         onEditClicked={() => props.onEditPersonClicked(person)}
-        onDeleteClicked={() => props.onDeletePersonClicked(person)}
       ></ListItemPersonComponent>);
 
   return <div class="d-flex flex-column w-50 mx-auto">

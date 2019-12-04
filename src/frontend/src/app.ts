@@ -2,6 +2,8 @@ import { PeopleController, PersonCreatedEvent, PersonUpdatedEvent, StorePeopleCh
 import { EventBus, IEvent } from "./events";
 import { InMemoryPersonStore } from "./infrastructure/InMemoryPersonStore";
 import { IndexedDBStore } from "./infrastructure/IndexedDBStore";
+import { NotesController } from "./notes";
+import { UIContainer } from "./html/UIContainer";
 
 class App {
   private eventBus: EventBus = new EventBus();
@@ -13,10 +15,12 @@ class App {
 
   async loadAsync(): Promise<void> {
     try {
+      const uiContainer = new UIContainer();
       const dbStore = await IndexedDBStore.OpenDbAsync();
       const peopleReactor = new StorePeopleChangesReactor(dbStore);
       peopleReactor.registerReactors(this.eventBus);
-      const controller = new PeopleController(this.eventBus, dbStore);
+      const notesController = new NotesController(uiContainer, dbStore);
+      const controller = new PeopleController(this.eventBus, uiContainer, dbStore, notesController);
       await controller.loadPeopleListAsync();
     }
     catch (error) {

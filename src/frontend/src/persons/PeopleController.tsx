@@ -1,31 +1,38 @@
-import { EditPersonComponent, ListPeopleComponent, IPersonStore } from "./index";
-import { UI } from "../html/UI";
+import { EditPersonComponent, ListPeopleComponent, IPersonStore, PersonOverviewComponent } from "./index";
+import { UIContainer } from "../html/UIContainer";
 import { UIElement } from "../html";
 import { EventBus } from "../events";
 import { PersonCreatedEvent } from "./PersonCreatedEvent";
 import { Person } from "./Person";
 import { PersonUpdatedEvent } from "./PersonUpdatedEvent";
 import { GUID } from "../utils/guid"
+import { Controllers } from "../Controllers";
+import { NotesController } from "../notes";
 
 export class PeopleController {
-  people = [{ name: "Paul", id: "1" },
-  { name: "Pierre", id: "2" },
-  { name: "Peter", id: "3" }
-  ];
-
-  constructor(private eventBus: EventBus, private peopleStore: IPersonStore) {
+  constructor(private eventBus: EventBus, private uiContainer: UIContainer, private peopleStore: IPersonStore, private notesController: NotesController) {
   }
 
   public loadPeopleListAsync = async (): Promise<void> => {
-    this.people = await this.peopleStore.getPeopleAsync();
+    const people = await this.peopleStore.getPeopleAsync();
     const component = <ListPeopleComponent
-      people={this.people}
+      people={people}
+      onPersonClicked={this.loadPersonOverview}
       onAddPersonClicked={this.loadCreatePerson}
       onEditPersonClicked={this.loadEditPerson}
-      onDeletePersonClicked={this.loadDeletePerson}
     ></ListPeopleComponent>
       ;
-    UI.render(component);
+    this.uiContainer.mount(component);
+  }
+
+  private loadPersonOverview = (person: Person): void => {
+    const component = <PersonOverviewComponent
+      person={person}
+      onNewNoteClicked={() => this.notesController.loadNewNote(person.id, () => this.loadPersonOverview(person))}
+      onEditPersonClicked={() => this.loadEditPerson(person)}
+      onExitClicked={this.loadPeopleList}
+    ></PersonOverviewComponent>;
+    this.uiContainer.mount(component);
   }
 
   private loadDeletePerson = (person: Person): void => {
@@ -39,13 +46,13 @@ export class PeopleController {
     }
     const component = <EditPersonComponent actionName="Update"
       person={person}
-      onCancel={this.cancelEditPerson}
+      onCancel={this.loadPeopleList}
       onValidate={commitEditPerson}
     ></EditPersonComponent>
-    UI.render(component);
+    this.uiContainer.mount(component);
   }
 
-  private cancelEditPerson = (): void => {
+  private loadPeopleList = (): void => {
     this.loadPeopleListAsync().then();
   };
 
@@ -56,11 +63,11 @@ export class PeopleController {
     }
     const person: Person = { name: "", id: GUID.newGuid() }
     const component = <EditPersonComponent actionName="Create"
-      onCancel={this.cancelEditPerson}
+      onCancel={this.loadPeopleList}
       onValidate={addPerson}
       person={person}
     >
     </EditPersonComponent>;
-    UI.render(component);
+    this.uiContainer.mount(component);
   }
 }
