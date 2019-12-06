@@ -1,4 +1,4 @@
-import { PeopleController, PersonCreatedEvent, PersonUpdatedEvent, StorePeopleChangesReactor } from "./persons";
+import { PersonController, PersonCreatedEvent, PersonUpdatedEvent, StorePeopleChangesReactor } from "./persons";
 import { EventBus, IEvent } from "./events";
 import { InMemoryPersonStore } from "./infrastructure/InMemoryPersonStore";
 import { IndexedDBStore } from "./infrastructure/IndexedDBStore";
@@ -20,7 +20,7 @@ class App {
       const peopleReactor = new StorePeopleChangesReactor(dbStore);
       peopleReactor.registerReactors(this.eventBus);
       const notesController = new NotesController(uiContainer, dbStore);
-      const controller = new PeopleController(this.eventBus, uiContainer, dbStore, notesController);
+      const controller = new PersonController(this.eventBus, uiContainer, dbStore, notesController);
       await controller.loadPeopleListAsync();
     }
     catch (error) {

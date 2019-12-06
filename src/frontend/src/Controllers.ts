@@ -1,7 +1,7 @@
-import { PeopleController } from "./persons";
+import { PersonController } from "./persons";
 import { NotesController } from "./notes";
 
 export interface Controllers {
-  people: PeopleController,
+  people: PersonController,
   notes: NotesController
 }

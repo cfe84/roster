@@ -1,5 +1,4 @@
 import { IPersonStore, Person } from "../persons";
-import { resolve } from "dns";
 import { INotesStore } from "../notes/INotesStore";
 import { Note } from "../notes";
 

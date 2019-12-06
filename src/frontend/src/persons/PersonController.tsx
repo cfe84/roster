@@ -1,4 +1,4 @@
-import { EditPersonComponent, ListPeopleComponent, IPersonStore, PersonOverviewComponent } from "./index";
+import { EditPersonComponent, PersonListComponent, IPersonStore, PersonOverviewComponent } from "./index";
 import { UIContainer } from "../html/UIContainer";
 import { UIElement } from "../html";
 import { EventBus } from "../events";
@@ -6,22 +6,22 @@ import { PersonCreatedEvent } from "./PersonCreatedEvent";
 import { Person } from "./Person";
 import { PersonUpdatedEvent } from "./PersonUpdatedEvent";
 import { GUID } from "../utils/guid"
-import { Controllers } from "../Controllers";
 import { NotesController } from "../notes";
 
-export class PeopleController {
+export class PersonController {
   constructor(private eventBus: EventBus, private uiContainer: UIContainer, private peopleStore: IPersonStore, private notesController: NotesController) {
   }
 
+
+
   public loadPeopleListAsync = async (): Promise<void> => {
     const people = await this.peopleStore.getPeopleAsync();
-    const component = <ListPeopleComponent
+    const component = <PersonListComponent
       people={people}
       onPersonClicked={this.loadPersonOverview}
       onAddPersonClicked={this.loadCreatePerson}
       onEditPersonClicked={this.loadEditPerson}
-    ></ListPeopleComponent>
-      ;
+    ></PersonListComponent>;
     this.uiContainer.mount(component);
   }
 

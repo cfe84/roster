@@ -1,5 +1,5 @@
 import { UIElement } from "../html/index";
-import { ListItemPersonComponent } from "./ListItemPersonComponent";
+import { PersonListItemComponent } from "./PersonListItemComponent";
 import { Person } from "./Person";
 
 interface ListPeopleProps {
@@ -9,13 +9,13 @@ interface ListPeopleProps {
   onEditPersonClicked: ((p: Person) => void)
 }
 
-export const ListPeopleComponent = (props: ListPeopleProps): UIElement => {
+export const PersonListComponent = (props: ListPeopleProps): UIElement => {
   const rows = props.people
     .map(person =>
-      <ListItemPersonComponent person={person}
+      <PersonListItemComponent person={person}
         onPersonClicked={() => props.onPersonClicked(person)}
         onEditClicked={() => props.onEditPersonClicked(person)}
-      ></ListItemPersonComponent>);
+      ></PersonListItemComponent>);
 
   return <div class="d-flex flex-column w-50 mx-auto">
     <h2 class="text-center">People</h2>

@@ -7,7 +7,7 @@ interface ListItemPersonProps {
   onEditClicked: (() => void),
 }
 
-export const ListItemPersonComponent = (props: ListItemPersonProps): UIElement =>
+export const PersonListItemComponent = (props: ListItemPersonProps): UIElement =>
   <li
     class="w-100 d-flex align-items-center list-group-item list-group-item-action btn"
     onclick={props.onPersonClicked}>
