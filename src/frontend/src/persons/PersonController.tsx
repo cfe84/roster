@@ -21,7 +21,6 @@ export class PersonController {
       onAddPersonClicked={this.loadCreatePerson}
       onEditPersonClicked={this.loadEditPerson}
     ></PersonList>;
-    // Todo : handle when component is already mounted
     this.uiContainer.mount(component);
 
     const reload = async () => {
@@ -30,10 +29,8 @@ export class PersonController {
       this.uiContainer.rerenderIfCurrent(component);
     }
 
-    this.eventBus.subscribe(PersonCreatedEvent.type, async (evt: PersonCreatedEvent) => { await reload(); })
-    this.eventBus.subscribe(PersonUpdatedEvent.type, async (evt: PersonUpdatedEvent) => {
-      await reload();
-    })
+    this.eventBus.subscribe(PersonCreatedEvent.type, async (evt: PersonCreatedEvent) => { await reload(); });
+    this.eventBus.subscribe(PersonUpdatedEvent.type, async (evt: PersonUpdatedEvent) => { await reload(); });
   }
 
   private loadPersonOverview = (person: Person): void => {
