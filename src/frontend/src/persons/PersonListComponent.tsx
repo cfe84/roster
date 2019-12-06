@@ -14,7 +14,6 @@ export class PersonListComponent extends Component {
 
   public render = (): UIElement => {
     const generateRows = () => {
-      console.log("Generating rows")
       return this.props.people
         .map(person =>
           <PersonListItemComponent person={person}

@@ -19,6 +19,12 @@ class Subscriptions {
 }
 
 export class EventBus {
+  private log(message: string) {
+    if (this.debug) {
+      console.info(message);
+    }
+  }
+
   constructor(private debug: boolean = false) {
   }
 
@@ -26,11 +32,11 @@ export class EventBus {
   private subscriptionRecords = new SubscriptionRecordList();
 
   async publishAsync(event: IEvent): Promise<void> {
-    console.info(`Eventbus - received event ${event.type}: ${JSON.stringify(event, null, 2)}`);
+    this.log(`Eventbus - publishing event ${event.type}: ${JSON.stringify(event, null, 2)}`);
     const handlers = this.subscriptions[event.type];
     if (handlers) {
       for (let id in handlers) {
-        console.info(`Eventbus - calling handler ${id}`);
+        this.log(`Eventbus - calling handler ${id}`);
         const handler = handlers[id];
         await Promise.resolve(handler(event));
       }
@@ -45,7 +51,7 @@ export class EventBus {
     const record = new SubscriptionRecord(eventType, handler);
     this.subscriptions[eventType][record.id] = handler as eventHandler<IEvent>;
     this.subscriptionRecords[record.id] = record as SubscriptionRecord<IEvent>;
-    console.info(`Eventbus - created subscription ${record.id} to event type ${eventType}`);
+    this.log(`Eventbus - created subscription ${record.id} to event type ${eventType}`);
     return record;
   }
 
@@ -53,7 +59,6 @@ export class EventBus {
     const subsForType = this.subscriptions[record.type];
     delete subsForType[record.id];
     delete this.subscriptionRecords[record.id];
-    console.info(`Eventbus - deleted subscription ${record.id} from event type ${record.type}`);
-
+    this.log(`Eventbus - deleted subscription ${record.id} from event type ${record.type}`);
   }
 }

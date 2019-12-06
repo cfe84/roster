@@ -9,7 +9,7 @@ interface EditPersonProps {
   onCancel: (() => void)
 }
 
-class EditPersonComponent extends Component {
+export class EditPersonComponent extends Component {
 
   constructor(private props: EditPersonProps) { super() }
   public render = (): UIElement => {

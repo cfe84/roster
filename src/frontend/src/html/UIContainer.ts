@@ -28,14 +28,13 @@ export class UIContainer {
   rerenderIfCurrent = (element: Component) => {
     if (this.currentElement === element) {
       this.render();
-    } else {
     }
   }
 
   render = () => {
     this.container.innerHTML = "";
     if (this.currentElement === null) {
-      throw Error("No current UI element");
+      throw Error("Can't render: no element is mounted");
     }
     const uiElement = (this.currentElement).render();
     const dom = uiElement.createDomElement();
@@ -51,6 +50,10 @@ export class UIContainer {
   }
 
   unmountCurrent = () => {
+    if (this.currentElement === null) {
+      throw Error("Can't unmount: no element is mounted.")
+    }
+    this.currentElement.ondispose();
     this.currentElement = this.stack.pop() || null;
     this.render();
   }

@@ -7,6 +7,8 @@ import { PersonUpdatedEvent } from "./PersonUpdatedEvent";
 import { GUID } from "../utils/guid"
 import { NotesController } from "../notes";
 import { PersonListComponent } from "./PersonListComponent";
+import { EditPersonComponent } from "./EditPersonComponent";
+import { PersonOverviewComponent } from "./PersonOverviewComponent";
 
 export class PersonController {
   constructor(private eventBus: EventBus, private uiContainer: UIContainer, private peopleStore: IPersonStore, private notesController: NotesController) {
@@ -29,17 +31,28 @@ export class PersonController {
       this.uiContainer.rerenderIfCurrent(component);
     }
 
-    this.eventBus.subscribe(PersonCreatedEvent.type, async (evt: PersonCreatedEvent) => { await reload(); });
-    this.eventBus.subscribe(PersonUpdatedEvent.type, async (evt: PersonUpdatedEvent) => { await reload(); });
+    const subscription1 = this.eventBus.subscribe(PersonCreatedEvent.type, async (evt: PersonCreatedEvent) => { await reload(); });
+    const subscription2 = this.eventBus.subscribe(PersonUpdatedEvent.type, async (evt: PersonUpdatedEvent) => { await reload(); });
+    component.ondispose = () => {
+      this.eventBus.unsubscribe(subscription1);
+      this.eventBus.unsubscribe(subscription2);
+    }
   }
 
   private loadPersonOverview = (person: Person): void => {
-    const component = <PersonOverview
+    const component: PersonOverviewComponent = <PersonOverview
       person={person}
       onNewNoteClicked={() => this.notesController.loadNewNote(person.id, () => this.loadPersonOverview(person))}
       onEditPersonClicked={() => this.loadEditPerson(person)}
       onExitClicked={this.uiContainer.unmountCurrent}
     ></PersonOverview>;
+    const subscription = this.eventBus.subscribe(PersonUpdatedEvent.type, (evt: PersonUpdatedEvent) => {
+      if (evt.person.id === person.id) {
+        component.props.person = evt.person;
+        this.uiContainer.rerenderIfCurrent(component);
+      }
+    })
+    component.ondispose = () => this.eventBus.unsubscribe(subscription);
     this.uiContainer.mount(component);
   }
 
@@ -48,17 +61,13 @@ export class PersonController {
       this.eventBus.publishAsync(new PersonUpdatedEvent(person))
         .then(() => this.uiContainer.unmountCurrent())
     }
-    const component = <EditPerson actionName="Update"
+    const component: EditPersonComponent = <EditPerson actionName="Update"
       person={person}
       onCancel={this.uiContainer.unmountCurrent}
       onValidate={commitEditPerson}
-    ></EditPerson>
+    ></EditPerson>;
     this.uiContainer.mount(component);
   }
-
-  private loadPeopleList = (): void => {
-    this.loadPeopleListAsync().then();
-  };
 
   public loadCreatePerson = (): void => {
     const addPerson = (person: Person) => {

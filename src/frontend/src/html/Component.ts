@@ -26,9 +26,11 @@ export abstract class Component {
     }
   }
 
-  private static createText(text: string): Component {
+  private static createText(text: string) {
     return new UIElement(TEXT_TYPE, { text });
   }
+
+  public ondispose() { }
 
   abstract render(): UIElement;
 }

@@ -8,9 +8,9 @@ interface PersonOverviewProps {
   onNewNoteClicked: (() => void)
 }
 
-class PersonOverviewComponent extends Component {
+export class PersonOverviewComponent extends Component {
 
-  constructor(private props: PersonOverviewProps) { super() }
+  constructor(public props: PersonOverviewProps) { super() }
 
   public render = (): UIElement => {
     const person = this.props.person;

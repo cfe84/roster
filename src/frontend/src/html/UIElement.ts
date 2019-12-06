@@ -49,4 +49,6 @@ export class UIElement {
     return element;
   }
 
+  ondispose() { }
+
 }
