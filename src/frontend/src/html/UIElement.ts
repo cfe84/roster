@@ -1,11 +1,8 @@
 import { Component } from ".";
+import { IDisplayAdapter, INode, IElement } from "./IDisplayAdapter";
 
 export const TEXT_TYPE = "TEXT";
 export const CHILDREN_PROPS_MEMBER = "children";
-
-export interface Document {
-  createElement(type: string): any;
-}
 
 export class UIElement {
   constructor(
@@ -15,13 +12,13 @@ export class UIElement {
 
   render() { return this }
 
-  private createHtmlElement(): HTMLElement {
-    const element = document.createElement(this.type);
+  private createElement(displayAdapter: IDisplayAdapter): IElement {
+    const element = displayAdapter.createElement(this.type);
     Object.keys(this.props)
       .filter(name => name !== CHILDREN_PROPS_MEMBER)
       .forEach(name => {
         if (typeof this.props[name] === "function") {
-          element[name] = this.props[name];
+          element.setProperty(name, this.props[name]);
         } else {
           element.setAttribute(name, this.props[name]);
         }
@@ -29,10 +26,10 @@ export class UIElement {
     return element;
   }
 
-  createDomElement(): HTMLElement | Text {
+  createNode(displayAdapter: IDisplayAdapter): INode {
     const element = this.type === TEXT_TYPE ?
-      document.createTextNode(this.props.text)
-      : this.createHtmlElement();
+      displayAdapter.createTextNode(this.props.text)
+      : this.createElement(displayAdapter);
     const children = (this.props.children as (Component | Component[])[]) || [];
     const childrenDomElements = children
       .reduce((res: Component[], child: Component | Component[]) => {
@@ -44,7 +41,7 @@ export class UIElement {
         }
       }
         , [])
-      .map(child => child.render().createDomElement());
+      .map(child => child.render().createNode(displayAdapter));
     childrenDomElements.forEach(child => element.appendChild(child));
     return element;
   }

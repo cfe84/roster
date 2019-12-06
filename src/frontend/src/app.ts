@@ -4,6 +4,7 @@ import { InMemoryPersonStore } from "./infrastructure/InMemoryPersonStore";
 import { IndexedDBStore } from "./infrastructure/IndexedDBStore";
 import { NotesController } from "./notes";
 import { UIContainer } from "./html/UIContainer";
+import { BrowserDisplayAdapter } from "./html/BrowserDisplayAdapter";
 
 class App {
   private eventBus: EventBus = new EventBus(true);
@@ -15,7 +16,12 @@ class App {
 
   async loadAsync(): Promise<void> {
     try {
-      const uiContainer = new UIContainer();
+      const displayAdapter = new BrowserDisplayAdapter();
+      const mainContainer = displayAdapter.getElementFromDom("container-main");
+      const uiContainer = new UIContainer({
+        displayAdapter,
+        container: mainContainer
+      });
       const dbStore = await IndexedDBStore.OpenDbAsync();
       const peopleReactor = new StorePeopleChangesReactor(dbStore);
       peopleReactor.registerReactors(this.eventBus);

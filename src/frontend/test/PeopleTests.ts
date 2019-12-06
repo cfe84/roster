@@ -1,4 +1,3 @@
-import { UIElement, Document } from "../src/html/UIElement";
 import should from "should";
 import * as td from "testdouble";
 import { EventBus } from "../src/events";

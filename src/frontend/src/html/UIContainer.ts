@@ -1,25 +1,14 @@
 import { UIElement } from "./UIElement";
 import { Component } from ".";
+import { IScopedDisplayAdapter, IElement, IDisplayAdapter } from "./IDisplayAdapter";
 
 export class UIContainer {
-  private container: HTMLElement;
+  private container: IElement;
+  private displayAdapter: IDisplayAdapter;
 
-  private getElement = (container: HTMLElement | string): HTMLElement => {
-    let containerElement: HTMLElement | null;
-    if (typeof container === "string") {
-      const foundContainerElement = document.getElementById(container as string);
-      containerElement = foundContainerElement;
-    } else {
-      containerElement = container as HTMLElement;
-    }
-    if (containerElement === null) {
-      throw Error("Container not found!");
-    }
-    return containerElement;
-  }
-
-  constructor(container: HTMLElement | string = "container-main") {
-    this.container = this.getElement(container);
+  constructor(adapter: IScopedDisplayAdapter) {
+    this.displayAdapter = adapter.displayAdapter;
+    this.container = adapter.container;
   }
 
   private stack: Component[] = [];
@@ -32,12 +21,12 @@ export class UIContainer {
   }
 
   render = () => {
-    this.container.innerHTML = "";
+    this.container.clear();
     if (this.currentElement === null) {
       throw Error("Can't render: no element is mounted");
     }
     const uiElement = (this.currentElement).render();
-    const dom = uiElement.createDomElement();
+    const dom = uiElement.createNode(this.displayAdapter);
     this.container.appendChild(dom);
   }
 

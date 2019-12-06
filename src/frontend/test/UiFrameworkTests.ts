@@ -1,7 +1,8 @@
-import { UIElement, Document } from "../src/html/UIElement";
+import { UIElement } from "../src/html/UIElement";
 import should from "should";
 import * as td from "testdouble";
 import { Component } from "../src/html";
+import { IDisplayAdapter } from "../src/html/IDisplayAdapter";
 
 class CustomComponent extends Component {
   constructor(private element: string, private props: any) { super() }
@@ -77,42 +78,83 @@ describe("UI Framework", () => {
         should(element.props.children).be.empty();
       })
     });
-    context.skip("Render DOM object", () => {
+    context("Render DOM object", () => {
       it("should render simple DOM objects", () => {
         // given
         const type = "div";
+        const child = new UIElement("TEXT", { "text": "test" });
         const props = {
           id: "id-1",
-          name: "name-1"
+          name: "name-1",
+          children: [child]
         };
-        const fakeDocument = td.object(["createElement"]) as Document;
-        const fakeElement = td.object(["setAttribute"]);
-        td.when(fakeDocument.createElement(type)).thenReturn(fakeElement);
+        const fakeDisplayAdapter = td.object(["createTextNode", "createElement"]) as IDisplayAdapter;
+        const fakeElement = td.object(["setAttribute", "appendChild"]);
+        const fakeTextNode = {};
+        td.when(fakeDisplayAdapter.createTextNode("test")).thenReturn(fakeTextNode);
+        td.when(fakeDisplayAdapter.createElement(type)).thenReturn(fakeElement);
         const element = new UIElement(type, props);
 
         // when
-        const dom = element.createDomElement();
+        const dom = element.createNode(fakeDisplayAdapter);
 
         // then
+        should(dom).equal(fakeElement);
         td.verify(fakeElement.setAttribute("id", "id-1"));
         td.verify(fakeElement.setAttribute("name", "name-1"));
+        td.verify(fakeElement.appendChild(fakeTextNode));
       });
-
-      it("should render text", () => {
-        // given
-        throw Error("Not implemented");
-      });
-
-      it("should render children", () => {
-        throw Error("Not implemented");
-      })
 
       it("should render array children", () => {
-        throw Error("Not implemented");
+        // given
+        const type = "div";
+        const child1 = new UIElement("TEXT", { "text": "test1" });
+        const child2 = new UIElement("TEXT", { "text": "test2" });
+        const props = {
+          id: "id-1",
+          children: [[child1, child2]]
+        };
+        const fakeDisplayAdapter = td.object(["createTextNode", "createElement"]) as IDisplayAdapter;
+        const fakeElement = td.object(["setAttribute", "appendChild"]);
+        const fakeTextNode1 = {};
+        const fakeTextNode2 = {};
+        td.when(fakeDisplayAdapter.createTextNode("test1")).thenReturn(fakeTextNode1);
+        td.when(fakeDisplayAdapter.createTextNode("test2")).thenReturn(fakeTextNode2);
+        td.when(fakeDisplayAdapter.createElement(type)).thenReturn(fakeElement);
+        const element = new UIElement(type, props);
+
+        // when
+        const dom = element.createNode(fakeDisplayAdapter);
+
+        // then
+        should(dom).equal(fakeElement);
+        td.verify(fakeElement.setAttribute("id", "id-1"));
+        td.verify(fakeElement.appendChild(fakeTextNode1));
+        td.verify(fakeElement.appendChild(fakeTextNode2));
       })
 
       it("should render eventhandlers as functions", () => {
-        throw Error("Not implemented");
+        // given
+        const type = "div";
+        const handler = () => { };
+        const props = {
+          id: "id-1",
+          onstuff: handler,
+          children: []
+        };
+        const fakeDisplayAdapter = td.object(["createTextNode", "createElement"]) as IDisplayAdapter;
+        const fakeElement = td.object(["setAttribute", "setProperty"]);
+        const fakeTextNode = {};
+        td.when(fakeDisplayAdapter.createElement(type)).thenReturn(fakeElement);
+        const element = new UIElement(type, props);
+
+        // when
+        const dom = element.createNode(fakeDisplayAdapter);
+
+        // then
+        should(dom).equal(fakeElement);
+        td.verify(fakeElement.setAttribute("id", "id-1"));
+        td.verify(fakeElement.setProperty("onstuff", handler));
       })
     })
   })

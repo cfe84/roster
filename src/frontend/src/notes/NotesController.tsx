@@ -8,10 +8,6 @@ import { ListNotes } from "./ListNotesComponent";
 export class NotesController {
   constructor(private uiContainer: UIContainer, private db: INotesStore) { }
   loadNewNote(personId: PersonId, callback: () => void): void {
-    // const addPerson = (person: Person) => {
-    //   this.eventBus.publishAsync(new PersonCreatedEvent(person))
-    //     .then(() => this.loadPeopleListAsync());
-    // }
     const addNote = (note: Note) => {
       callback();
     }
