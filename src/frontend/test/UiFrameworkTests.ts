@@ -30,7 +30,7 @@ describe("UI Framework", () => {
 
         // when
         const component: Component = Component.create(elementType, properties);
-        const element = component.render();
+        const element = (component.render as () => UIElement)();
 
         // then
         should(element.type).equal(elementType);
@@ -51,7 +51,7 @@ describe("UI Framework", () => {
 
         // when
         const component = Component.create(inputType, inputProps, children[0], children[1]);
-        const element = component.render()
+        const element = (component.render as () => UIElement)();
 
         // then
         should(element.type).equal(inputType);
@@ -70,16 +70,40 @@ describe("UI Framework", () => {
 
         // when
         const component = Component.create(elementType, properties);
-        const element = component.render();
+        const element = (component.render as () => UIElement)();
 
         // then
         should(element.type).equal(customElementType);
         should(element.props).deepEqual(properties);
         should(element.props.children).be.empty();
+      });
+
+      it("should render asynchronous elements", async () => {
+        // given
+        class asyncComponent extends Component {
+          render = async (): Promise<UIElement> => {
+            return new UIElement("async-element", { prop1: "prop1" });
+          }
+        }
+
+        // when
+        const element = new UIElement("main", {
+          children: [new asyncComponent()],
+          name: "name-1"
+        });
+        const rendered = await Promise.resolve(element.render());
+
+        // then
+        should(rendered.type).equal("main");
+        should(rendered.props.name).equal("name-1");
+        should(rendered.props.children[0]).match((child: UIElement) => {
+          child.type === "async-element" && child.props["prop1"] === "prop1"
+        });
       })
     });
+
     context("Render DOM object", () => {
-      it("should render DOM objects", () => {
+      it("should render DOM objects", async () => {
         // given
         const type = "div";
         const child1 = new UIElement("TEXT", { "text": "test1" });
@@ -99,7 +123,7 @@ describe("UI Framework", () => {
         const element = new UIElement(type, props);
 
         // when
-        const dom = element.createNode(fakeDisplayAdapter);
+        const dom = await element.createNodeAsync(fakeDisplayAdapter);
 
         // then
         should(dom).equal(fakeElement);
@@ -110,7 +134,7 @@ describe("UI Framework", () => {
         td.verify(fakeP.setAttribute("id", "id-2"));
       });
 
-      it("should render array children", () => {
+      it("should render array children", async () => {
         // given
         const type = "div";
         const child1 = new UIElement("TEXT", { "text": "test1" });
@@ -129,7 +153,7 @@ describe("UI Framework", () => {
         const element = new UIElement(type, props);
 
         // when
-        const dom = element.createNode(fakeDisplayAdapter);
+        const dom = await element.createNodeAsync(fakeDisplayAdapter);
 
         // then
         should(dom).equal(fakeElement);
@@ -138,7 +162,7 @@ describe("UI Framework", () => {
         td.verify(fakeElement.appendChild(fakeTextNode2));
       })
 
-      it("should render eventhandlers as functions", () => {
+      it("should render eventhandlers as functions", async () => {
         // given
         const type = "div";
         const handler = () => { };
@@ -149,12 +173,11 @@ describe("UI Framework", () => {
         };
         const fakeDisplayAdapter = td.object(["createTextNode", "createElement"]) as IDisplayAdapter;
         const fakeElement = td.object(["setAttribute", "setProperty"]);
-        const fakeTextNode = {};
         td.when(fakeDisplayAdapter.createElement(type)).thenReturn(fakeElement);
         const element = new UIElement(type, props);
 
         // when
-        const dom = element.createNode(fakeDisplayAdapter);
+        const dom = await element.createNodeAsync(fakeDisplayAdapter);
 
         // then
         should(dom).equal(fakeElement);

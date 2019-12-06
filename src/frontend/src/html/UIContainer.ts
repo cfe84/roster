@@ -1,12 +1,12 @@
 import { UIElement } from "./UIElement";
 import { Component } from ".";
-import { IScopedDisplayAdapter, IElement, IDisplayAdapter } from "./IDisplayAdapter";
+import { IDisplay, IElement, IDisplayAdapter } from "./IDisplayAdapter";
 
 export class UIContainer {
   private container: IElement;
-  private displayAdapter: IDisplayAdapter;
+  public displayAdapter: IDisplayAdapter;
 
-  constructor(adapter: IScopedDisplayAdapter) {
+  constructor(adapter: IDisplay) {
     this.displayAdapter = adapter.displayAdapter;
     this.container = adapter.container;
   }
@@ -16,17 +16,17 @@ export class UIContainer {
 
   rerenderIfCurrent = (element: Component) => {
     if (this.currentElement === element) {
-      this.render();
+      this.renderAsync();
     }
   }
 
-  render = () => {
+  renderAsync = async (): Promise<void> => {
     this.container.clear();
     if (this.currentElement === null) {
       throw Error("Can't render: no element is mounted");
     }
-    const uiElement = (this.currentElement).render();
-    const dom = uiElement.createNode(this.displayAdapter);
+    const uiElement = await Promise.resolve((this.currentElement).render());
+    const dom = await uiElement.createNodeAsync(this.displayAdapter);
     this.container.appendChild(dom);
   }
 
@@ -35,7 +35,8 @@ export class UIContainer {
       this.stack.push(this.currentElement);
     }
     this.currentElement = element;
-    this.render();
+    Promise.resolve(this.renderAsync())
+      .then(this.currentElement.onmounted);
   }
 
   unmountCurrent = () => {
@@ -44,6 +45,6 @@ export class UIContainer {
     }
     this.currentElement.ondispose();
     this.currentElement = this.stack.pop() || null;
-    this.render();
+    this.renderAsync().then(() => { });
   }
 }

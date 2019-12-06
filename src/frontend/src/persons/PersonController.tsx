@@ -14,8 +14,7 @@ export class PersonController {
   constructor(private eventBus: EventBus, private uiContainer: UIContainer, private peopleStore: IPersonStore, private notesController: NotesController) {
   }
 
-  public loadPeopleListAsync = async (): Promise<void> => {
-
+  public loadPeopleListAsync = async (): Promise<PersonListComponent> => {
     const people = await this.peopleStore.getPeopleAsync();
     const component: PersonListComponent = <PersonList
       people={people}
@@ -23,7 +22,6 @@ export class PersonController {
       onAddPersonClicked={this.loadCreatePerson}
       onEditPersonClicked={this.loadEditPerson}
     ></PersonList>;
-    this.uiContainer.mount(component);
 
     const reload = async () => {
       const people = await this.peopleStore.getPeopleAsync();
@@ -37,6 +35,11 @@ export class PersonController {
       this.eventBus.unsubscribe(subscription1);
       this.eventBus.unsubscribe(subscription2);
     }
+    return component;
+  }
+
+  private mountPeopleListAsync = async () => {
+    this.uiContainer.mount(await this.loadPeopleListAsync());
   }
 
   private loadPersonOverview = (person: Person): void => {

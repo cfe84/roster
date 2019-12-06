@@ -26,12 +26,12 @@ export class UIElement {
     return element;
   }
 
-  createNode(displayAdapter: IDisplayAdapter): INode {
+  async createNodeAsync(displayAdapter: IDisplayAdapter): Promise<INode> {
     const element = this.type === TEXT_TYPE ?
       displayAdapter.createTextNode(this.props.text)
       : this.createElement(displayAdapter);
     const children = (this.props.children as (Component | Component[])[]) || [];
-    const childrenDomElements = children
+    const childrenComponents = children
       .reduce((res: Component[], child: Component | Component[]) => {
         if (Array.isArray(child)) {
           return res.concat(child as Component[]);
@@ -40,12 +40,15 @@ export class UIElement {
           return res;
         }
       }
-        , [])
-      .map(child => child.render().createNode(displayAdapter));
-    childrenDomElements.forEach(child => element.appendChild(child));
+        , []);
+    for (const child of childrenComponents) {
+      const childElement = await child.render();
+      const childNode = await childElement.createNodeAsync(displayAdapter);
+      element.appendChild(childNode);
+    }
     return element;
   }
 
   ondispose() { }
-
+  onmounted() { }
 }

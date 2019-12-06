@@ -14,9 +14,10 @@ export interface ITextNode extends INode { }
 export interface IDisplayAdapter {
   createTextNode(text: string): ITextNode;
   createElement(type: string): IElement;
+  getElementById(id: string): IElement;
 }
 
-export interface IScopedDisplayAdapter {
+export interface IDisplay {
   displayAdapter: IDisplayAdapter;
   container: IElement;
 }

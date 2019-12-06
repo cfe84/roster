@@ -32,5 +32,7 @@ export abstract class Component {
 
   public ondispose() { }
 
-  abstract render(): UIElement;
+  public onmounted() { }
+
+  abstract render(): UIElement | Promise<UIElement>;
 }

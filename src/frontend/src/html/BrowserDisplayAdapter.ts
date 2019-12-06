@@ -1,4 +1,4 @@
-import { IElement, IDisplayAdapter, ITextNode, INode, IScopedDisplayAdapter } from "./IDisplayAdapter";
+import { IElement, IDisplayAdapter, ITextNode, INode, IDisplay } from "./IDisplayAdapter";
 
 interface IBrowserNode extends INode {
   getNode(): Node;
@@ -7,13 +7,13 @@ interface IBrowserNode extends INode {
 class BrowserHtmlElement implements IElement, IBrowserNode {
   private element: HTMLElement;
 
-  public static getElement = (container: HTMLElement | string = "container-main"): BrowserHtmlElement => {
+  public static getElement = (idOrElement: HTMLElement | string): BrowserHtmlElement => {
     let containerElement: HTMLElement | null;
-    if (typeof container === "string") {
-      const foundContainerElement = document.getElementById(container as string);
+    if (typeof idOrElement === "string") {
+      const foundContainerElement = document.getElementById(idOrElement as string);
       containerElement = foundContainerElement;
     } else {
-      containerElement = container as HTMLElement;
+      containerElement = idOrElement as HTMLElement;
     }
     if (containerElement === null) {
       throw Error("Container not found!");
@@ -67,6 +67,9 @@ export class BrowserDisplayAdapter implements IDisplayAdapter {
   }
   public createElement(type: string): IElement {
     return BrowserHtmlElement.createElement(type);
+  }
+  public getElementById(id: string): IElement {
+    return BrowserHtmlElement.getElement(id);
   }
   public getElementFromDom = BrowserHtmlElement.getElement;
 }

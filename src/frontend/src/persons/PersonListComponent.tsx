@@ -22,7 +22,7 @@ export class PersonListComponent extends Component {
           ></PersonListItemComponent>);
     }
 
-    return <div class="d-flex flex-column w-50 mx-auto">
+    return <div class="d-flex flex-column ml-2 mr-2">
       <h2 class="text-center">People</h2>
       <ul class="list-group flex-column" id="elements">
         {generateRows()}
