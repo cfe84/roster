@@ -79,19 +79,22 @@ describe("UI Framework", () => {
       })
     });
     context("Render DOM object", () => {
-      it("should render simple DOM objects", () => {
+      it("should render DOM objects", () => {
         // given
         const type = "div";
-        const child = new UIElement("TEXT", { "text": "test" });
+        const child1 = new UIElement("TEXT", { "text": "test1" });
+        const child2 = new UIElement("p", { "id": "id-2" });
         const props = {
           id: "id-1",
           name: "name-1",
-          children: [child]
+          children: [child1, child2]
         };
         const fakeDisplayAdapter = td.object(["createTextNode", "createElement"]) as IDisplayAdapter;
         const fakeElement = td.object(["setAttribute", "appendChild"]);
+        const fakeP = td.object(["setAttribute"]);
         const fakeTextNode = {};
-        td.when(fakeDisplayAdapter.createTextNode("test")).thenReturn(fakeTextNode);
+        td.when(fakeDisplayAdapter.createTextNode("test1")).thenReturn(fakeTextNode);
+        td.when(fakeDisplayAdapter.createElement("p")).thenReturn(fakeP);
         td.when(fakeDisplayAdapter.createElement(type)).thenReturn(fakeElement);
         const element = new UIElement(type, props);
 
@@ -103,6 +106,8 @@ describe("UI Framework", () => {
         td.verify(fakeElement.setAttribute("id", "id-1"));
         td.verify(fakeElement.setAttribute("name", "name-1"));
         td.verify(fakeElement.appendChild(fakeTextNode));
+        td.verify(fakeElement.appendChild(fakeP));
+        td.verify(fakeP.setAttribute("id", "id-2"));
       });
 
       it("should render array children", () => {
