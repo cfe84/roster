@@ -1,18 +1,18 @@
-import { EditPersonComponent } from "./EditPersonComponent";
-import { PersonListComponent } from "./PersonListComponent";
+import { EditPerson } from "./EditPersonComponent";
+import { PersonList } from "./PersonListComponent";
 import { PersonCreatedEvent } from "./PersonCreatedEvent";
 import { PersonUpdatedEvent } from "./PersonUpdatedEvent";
 import { PersonController } from "./PersonController";
 import { IPersonStore } from "./IPersonStore";
 import { StorePeopleChangesReactor } from "./StorePeopleChangesReactor";
 import { Person, PersonId } from "./Person";
-import { PersonOverviewComponent } from "./PersonOverviewComponent";
+import { PersonOverview } from "./PersonOverviewComponent";
 
 export {
   PersonController,
-  PersonOverviewComponent,
-  EditPersonComponent,
-  PersonListComponent,
+  PersonOverview,
+  EditPerson,
+  PersonList,
   PersonCreatedEvent,
   PersonUpdatedEvent,
   IPersonStore,

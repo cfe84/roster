@@ -1,6 +1,7 @@
-const TEXT_TYPE = "TEXT";
-const CHILDREN_PROPS_MEMBER = "children";
-type UIElementConstructor = (a: any) => UIElement;
+import { Component } from ".";
+
+export const TEXT_TYPE = "TEXT";
+export const CHILDREN_PROPS_MEMBER = "children";
 
 export interface Document {
   createElement(type: string): any;
@@ -12,29 +13,7 @@ export class UIElement {
     public props: any) {
   }
 
-  static create(type: string | UIElementConstructor, props: any, ...children: UIElement[]): UIElement {
-    props = props || {};
-    const childrenElements = children.map(child => {
-      if (typeof child === "object") {
-        return child
-      } else {
-        return this.createText(child);
-      }
-    });
-    props[CHILDREN_PROPS_MEMBER] = childrenElements;
-    const isIntrinsic = typeof type === "string";
-    if (isIntrinsic) {
-      const typeName: string = type as string;
-      return new UIElement(typeName, props)
-    } else {
-      const componentConstructor = type as UIElementConstructor;
-      return componentConstructor(props);
-    }
-  }
-
-  private static createText(text: string): UIElement {
-    return new UIElement(TEXT_TYPE, { text });
-  }
+  render() { return this }
 
   private createHtmlElement(): HTMLElement {
     const element = document.createElement(this.type);
@@ -54,18 +33,18 @@ export class UIElement {
     const element = this.type === TEXT_TYPE ?
       document.createTextNode(this.props.text)
       : this.createHtmlElement();
-    const children = (this.props.children as (UIElement | UIElement[])[]) || [];
+    const children = (this.props.children as (Component | Component[])[]) || [];
     const childrenDomElements = children
-      .reduce((res: UIElement[], child: UIElement | UIElement[]) => {
+      .reduce((res: Component[], child: Component | Component[]) => {
         if (Array.isArray(child)) {
-          return res.concat(child as UIElement[]);
+          return res.concat(child as Component[]);
         } else {
-          res.push(child as UIElement);
+          res.push(child as Component);
           return res;
         }
       }
         , [])
-      .map(child => child.createDomElement());
+      .map(child => child.render().createDomElement());
     childrenDomElements.forEach(child => element.appendChild(child));
     return element;
   }

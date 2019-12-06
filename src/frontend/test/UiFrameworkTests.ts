@@ -1,10 +1,19 @@
 import { UIElement, Document } from "../src/html/UIElement";
 import should from "should";
 import * as td from "testdouble";
+import { Component } from "../src/html";
+
+class CustomComponent extends Component {
+  constructor(private element: string, private props: any) { super() }
+  render(): UIElement {
+    return new UIElement(this.element, this.props);
+  }
+
+}
 
 const CreateCustomComponent = (typeName: string) =>
   (props: any) => {
-    return new UIElement(typeName, props);
+    return new CustomComponent(typeName, props);
   }
 
 describe("UI Framework", () => {
@@ -19,7 +28,8 @@ describe("UI Framework", () => {
         };
 
         // when
-        const element: UIElement = UIElement.create(elementType, properties);
+        const component: Component = Component.create(elementType, properties);
+        const element = component.render();
 
         // then
         should(element.type).equal(elementType);
@@ -34,12 +44,13 @@ describe("UI Framework", () => {
           "prop1": "val1",
           "prop2": "val2"
         };
-        const children: UIElement[] = [
+        const children: Component[] = [
           new UIElement("child1", { child1prop1: "val1.1", child1prop2: "val1.2" }),
           new UIElement("child2", { child2prop1: "val2.1", child2prop2: "val2.2" })];
 
         // when
-        const element = UIElement.create(inputType, inputProps, children[0], children[1]);
+        const component = Component.create(inputType, inputProps, children[0], children[1]);
+        const element = component.render()
 
         // then
         should(element.type).equal(inputType);
@@ -57,7 +68,8 @@ describe("UI Framework", () => {
         };
 
         // when
-        const element: UIElement = UIElement.create(elementType, properties);
+        const component = Component.create(elementType, properties);
+        const element = component.render();
 
         // then
         should(element.type).equal(customElementType);

@@ -1,10 +1,9 @@
 import { Note, EditNoteComponent } from ".";
 import { GUID } from "../utils/guid";
 import { PersonId } from "../persons";
-import { UIElement, UI } from "../html";
+import { UIElement, UIContainer, Component } from "../html";
 import { INotesStore } from "./INotesStore";
-import { ListNotesComponent } from "./ListNotesComponent";
-import { UIContainer } from "../html/UIContainer";
+import { ListNotes } from "./ListNotesComponent";
 
 export class NotesController {
   constructor(private uiContainer: UIContainer, private db: INotesStore) { }
@@ -38,12 +37,12 @@ export class NotesController {
 
   getNotesListAsync = async (personId: PersonId): Promise<UIElement> => {
     const notes = await this.db.getNotesAsync();
-    const component = <ListNotesComponent
+    const component = <ListNotes
       notes={notes}
       onAddNoteClicked={() => this.loadNewNote(personId, () => { })}
       onEditNoteClicked={() => { }}
       onNoteClicked={() => { }}
-    ></ListNotesComponent>
+    ></ListNotes>
       ;
     return component;
   }

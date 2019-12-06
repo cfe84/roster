@@ -1,4 +1,4 @@
-import { UIElement } from "../html/index";
+import { UIElement, Component } from "../html/index";
 import { Person } from "./Person";
 
 interface PersonOverviewProps {
@@ -8,18 +8,25 @@ interface PersonOverviewProps {
   onNewNoteClicked: (() => void)
 }
 
-export const PersonOverviewComponent = (props: PersonOverviewProps): UIElement => {
-  const person = props.person;
+class PersonOverviewComponent extends Component {
 
-  return <div class="d-flex flex-column w-50 mx-auto">
-    <h2 class="text-center">{person.name}</h2>
+  constructor(private props: PersonOverviewProps) { super() }
 
-    <br />
+  public render = (): UIElement => {
+    const person = this.props.person;
 
-    <h3>Notes</h3>
-    <button class="btn btn-primary"
-      onclick={props.onNewNoteClicked}>New note</button>
-    <button class="btn btn-primary"
-      onclick={props.onExitClicked}>Back</button>
-  </div>;
+    return <div class="d-flex flex-column w-50 mx-auto">
+      <h2 class="text-center">{person.name}</h2>
+
+      <br />
+
+      <h3>Notes</h3>
+      <button class="btn btn-primary"
+        onclick={this.props.onNewNoteClicked}>New note</button>
+      <button class="btn btn-primary"
+        onclick={this.props.onExitClicked}>Back</button>
+    </div>;
+  }
 }
+
+export const PersonOverview = (props: PersonOverviewProps) => new PersonOverviewComponent(props);

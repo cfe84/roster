@@ -6,7 +6,7 @@ import { NotesController } from "./notes";
 import { UIContainer } from "./html/UIContainer";
 
 class App {
-  private eventBus: EventBus = new EventBus();
+  private eventBus: EventBus = new EventBus(true);
   // private peopleStore = new InMemoryPersonStore();
 
   constructor() {
