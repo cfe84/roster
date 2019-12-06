@@ -2,16 +2,16 @@ import { UIElement, Component } from "../html/index";
 import { Note } from "./Note";
 import { dom } from "../utils/dom";
 
-interface EditNoteProps {
+interface NoteEditorProps {
   actionName?: string,
   note: Note,
   onValidate: ((note: Note) => void),
   onCancel: (() => void)
 }
 
-export class EditNoteComponent extends Component {
+export class NoteEditorComponent extends Component {
 
-  constructor(private props: EditNoteProps) { super() }
+  constructor(private props: NoteEditorProps) { super() }
 
   public render = (): UIElement => {
 
@@ -50,4 +50,4 @@ export class EditNoteComponent extends Component {
 
 }
 
-export const EditNote = (props: EditNoteProps) => new EditNoteComponent(props);
+export const NoteEditor = (props: NoteEditorProps) => new NoteEditorComponent(props);

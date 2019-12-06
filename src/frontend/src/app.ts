@@ -1,15 +1,14 @@
-import { PersonController, PersonCreatedEvent, PersonUpdatedEvent, StorePeopleChangesReactor } from "./persons";
-import { EventBus, IEvent } from "./events";
-import { InMemoryPersonStore } from "./infrastructure/InMemoryPersonStore";
+import { StorePeopleChangesReactor, PersonController } from "./persons";
+import { EventBus } from "./events";
 import { IndexedDBStore } from "./infrastructure/IndexedDBStore";
 import { NotesController } from "./notes";
 import { UIContainer } from "./html/UIContainer";
 import { BrowserDisplayAdapter } from "./html/BrowserDisplayAdapter";
 import { DashboardController } from "./dashboard/DashboardController";
+import { FontAwesomeLoader } from "./utils/FontAwesomeLoader";
 
 class App {
   private eventBus: EventBus = new EventBus(true);
-  // private peopleStore = new InMemoryPersonStore();
 
   constructor() {
 
@@ -26,7 +25,7 @@ class App {
       const dbStore = await IndexedDBStore.OpenDbAsync();
       const peopleReactor = new StorePeopleChangesReactor(dbStore);
       peopleReactor.registerReactors(this.eventBus);
-      const notesController = new NotesController(uiContainer, dbStore);
+      const notesController = new NotesController({ uiContainer, db: dbStore, eventBus: this.eventBus });
       const peopleController = new PersonController(this.eventBus, uiContainer, dbStore, notesController);
       const dashboardController = new DashboardController({
         container: uiContainer,
@@ -42,5 +41,6 @@ class App {
 
 window.onload = () => {
   const app = new App();
+  FontAwesomeLoader.loadFontAwesome();
   app.loadAsync().then(() => { });
 }

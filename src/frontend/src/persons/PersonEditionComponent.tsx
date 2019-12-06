@@ -2,16 +2,16 @@ import { UIElement, Component } from "../html/index";
 import { Person } from "./Person";
 import { dom } from "../utils/dom";
 
-interface EditPersonProps {
+interface PersonEditorProps {
   actionName?: string,
   person: Person,
   onValidate: ((person: Person) => void),
   onCancel: (() => void)
 }
 
-export class EditPersonComponent extends Component {
+export class PersonEditorComponent extends Component {
 
-  constructor(private props: EditPersonProps) { super() }
+  constructor(private props: PersonEditorProps) { super() }
   public render = (): UIElement => {
 
     const person = this.props.person;
@@ -36,4 +36,4 @@ export class EditPersonComponent extends Component {
   }
 }
 
-export const EditPerson = (props: EditPersonProps) => new EditPersonComponent(props);
+export const PersonEditor = (props: PersonEditorProps) => new PersonEditorComponent(props);

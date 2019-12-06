@@ -1,9 +1,9 @@
 import { Note } from "./Note";
-import { EditNoteComponent } from "./EditNoteComponent";
+import { NoteEditorComponent } from "./NoteEditorComponent";
 import { NotesController } from "./NotesController";
 
 export {
   Note,
   NotesController,
-  EditNoteComponent
+  NoteEditorComponent
 }

@@ -58,6 +58,10 @@
   },
   "homepage": "https://github.com/cfe84/roster#readme",
   "devDependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.25",
+    "@fortawesome/free-brands-svg-icons": "^5.11.2",
+    "@fortawesome/free-regular-svg-icons": "^5.11.2",
+    "@fortawesome/free-solid-svg-icons": "^5.11.2",
     "@types/mocha": "^5.2.7",
     "@types/should": "^13.0.0",
     "bootstrap": "^4.4.0",
@@ -71,6 +75,5 @@
     "typescript": "^3.7.2",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10"
-  },
-  "dependencies": {}
+  }
 }

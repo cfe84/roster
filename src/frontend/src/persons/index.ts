@@ -1,4 +1,4 @@
-import { EditPerson } from "./EditPersonComponent";
+import { PersonEditor } from "./PersonEditionComponent";
 import { PersonList } from "./PersonListComponent";
 import { PersonCreatedEvent } from "./PersonCreatedEvent";
 import { PersonUpdatedEvent } from "./PersonUpdatedEvent";
@@ -11,7 +11,7 @@ import { PersonOverview } from "./PersonOverviewComponent";
 export {
   PersonController,
   PersonOverview,
-  EditPerson,
+  PersonEditor,
   PersonList,
   PersonCreatedEvent,
   PersonUpdatedEvent,

@@ -19,8 +19,8 @@ class PersonListItem extends Component {
         <button
           class="btn btn-primary align-right"
           onclick={(event: MouseEvent) => { this.props.onEditClicked(); event.stopPropagation() }}>
-          Edit
-      </button>
+          <i class="fa fa-pen" />
+        </button>
       </div>
     </li>
 }

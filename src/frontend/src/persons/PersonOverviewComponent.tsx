@@ -1,29 +1,32 @@
 import { UIElement, Component } from "../html/index";
 import { Person } from "./Person";
+import { NotesController } from "../notes";
 
 interface PersonOverviewProps {
   person: Person,
-  onEditPersonClicked: ((p: Person) => void),
-  onExitClicked: (() => void),
-  onNewNoteClicked: (() => void)
+  notesController: NotesController
+  onExitClicked: (() => void)
 }
 
 export class PersonOverviewComponent extends Component {
 
   constructor(public props: PersonOverviewProps) { super() }
 
-  public render = (): UIElement => {
+  public render = async (): Promise<UIElement> => {
     const person = this.props.person;
-
-    return <div class="d-flex flex-column w-50 mx-auto">
-      <h2 class="text-center">{person.name}</h2>
-
+    const notesList = await this.props.notesController.getNotesListAsync(this.props.person.id);
+    return <div>
+      <h3 class="text-center"><i class="fa fa-user"></i> {person.name}</h3>
+      <div class="row">
+        <div class="col-sm">
+          <h3>Details</h3>
+        </div>
+        <div class="col-sm">
+          {notesList}
+        </div>
+      </div>
       <br />
-
-      <h3>Notes</h3>
-      <button class="btn btn-primary"
-        onclick={this.props.onNewNoteClicked}>New note</button>
-      <button class="btn btn-primary"
+      <button class="btn btn-primary w-5"
         onclick={this.props.onExitClicked}>Back</button>
     </div>;
   }

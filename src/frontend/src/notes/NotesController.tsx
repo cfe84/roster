@@ -1,15 +1,24 @@
-import { Note, EditNoteComponent } from ".";
+import { Note, NoteEditorComponent } from ".";
 import { GUID } from "../utils/guid";
 import { PersonId } from "../persons";
 import { UIElement, UIContainer, Component } from "../html";
 import { INotesStore } from "./INotesStore";
-import { ListNotes } from "./ListNotesComponent";
+import { NotesList, NotesListComponent } from "./NotesListComponent";
+import { NoteEditor } from "./NoteEditorComponent";
+import { EventBus } from "../events";
+
+export interface NotesControllerDependencies {
+  uiContainer: UIContainer,
+  db: INotesStore,
+  eventBus: EventBus
+}
 
 export class NotesController {
-  constructor(private uiContainer: UIContainer, private db: INotesStore) { }
-  loadNewNote(personId: PersonId, callback: () => void): void {
+  constructor(private deps: NotesControllerDependencies) { }
+  loadNewNote(personId: PersonId): void {
     const addNote = (note: Note) => {
-      callback();
+
+      this.deps.uiContainer.unmountCurrent();
     }
     const now = new Date(Date.now());
     const note: Note = {
@@ -21,24 +30,24 @@ export class NotesController {
       lastEditDate: now,
       personId: personId
     }
-    const component = <EditNoteComponent
+    const component = <NoteEditor
       actionName="Create"
       note={note}
-      onCancel={callback}
+      onCancel={this.deps.uiContainer.unmountCurrent}
       onValidate={addNote}
     >
-    </EditNoteComponent>;
-    this.uiContainer.mount(component);
+    </NoteEditor>;
+    this.deps.uiContainer.mount(component);
   }
 
-  getNotesListAsync = async (personId: PersonId): Promise<UIElement> => {
-    const notes = await this.db.getNotesAsync();
-    const component = <ListNotes
+  getNotesListAsync = async (personId: PersonId): Promise<NotesListComponent> => {
+    const notes = await this.deps.db.getNotesAsync();
+    const component = <NotesList
       notes={notes}
-      onAddNoteClicked={() => this.loadNewNote(personId, () => { })}
+      onAddNoteClicked={() => this.loadNewNote(personId)}
       onEditNoteClicked={() => { }}
       onNoteClicked={() => { }}
-    ></ListNotes>
+    ></NotesList>
       ;
     return component;
   }

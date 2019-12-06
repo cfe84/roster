@@ -1,4 +1,4 @@
-import { EditPerson, PersonList, IPersonStore, PersonOverview } from "./index";
+import { PersonEditor, PersonList, IPersonStore, PersonOverview } from "./index";
 import { UIContainer, Component, UIElement } from "../html";
 import { EventBus } from "../events";
 import { PersonCreatedEvent } from "./PersonCreatedEvent";
@@ -7,7 +7,7 @@ import { PersonUpdatedEvent } from "./PersonUpdatedEvent";
 import { GUID } from "../utils/guid"
 import { NotesController } from "../notes";
 import { PersonListComponent } from "./PersonListComponent";
-import { EditPersonComponent } from "./EditPersonComponent";
+import { PersonEditorComponent } from "./PersonEditionComponent";
 import { PersonOverviewComponent } from "./PersonOverviewComponent";
 
 export class PersonController {
@@ -18,9 +18,9 @@ export class PersonController {
     const people = await this.peopleStore.getPeopleAsync();
     const component: PersonListComponent = <PersonList
       people={people}
-      onPersonClicked={this.loadPersonOverview}
-      onAddPersonClicked={this.loadCreatePerson}
-      onEditPersonClicked={this.loadEditPerson}
+      onPersonClicked={this.displayPersonOverview}
+      onAddPersonClicked={this.displayCreatePerson}
+      onEditPersonClicked={this.displayEditPerson}
     ></PersonList>;
 
     const reload = async () => {
@@ -38,15 +38,10 @@ export class PersonController {
     return component;
   }
 
-  private mountPeopleListAsync = async () => {
-    this.uiContainer.mount(await this.loadPeopleListAsync());
-  }
-
-  private loadPersonOverview = (person: Person): void => {
+  private displayPersonOverview = (person: Person): void => {
     const component: PersonOverviewComponent = <PersonOverview
       person={person}
-      onNewNoteClicked={() => this.notesController.loadNewNote(person.id, () => this.loadPersonOverview(person))}
-      onEditPersonClicked={() => this.loadEditPerson(person)}
+      notesController={this.notesController}
       onExitClicked={this.uiContainer.unmountCurrent}
     ></PersonOverview>;
     const subscription = this.eventBus.subscribe(PersonUpdatedEvent.type, (evt: PersonUpdatedEvent) => {
@@ -59,31 +54,30 @@ export class PersonController {
     this.uiContainer.mount(component);
   }
 
-  private loadEditPerson = (person: Person): void => {
+  private displayEditPerson = (person: Person): void => {
     const commitEditPerson = (person: Person) => {
       this.eventBus.publishAsync(new PersonUpdatedEvent(person))
         .then(() => this.uiContainer.unmountCurrent())
     }
-    const component: EditPersonComponent = <EditPerson actionName="Update"
+    const component: PersonEditorComponent = <PersonEditor actionName="Update"
       person={person}
       onCancel={this.uiContainer.unmountCurrent}
       onValidate={commitEditPerson}
-    ></EditPerson>;
+    ></PersonEditor>;
     this.uiContainer.mount(component);
   }
 
-  public loadCreatePerson = (): void => {
+  public displayCreatePerson = (): void => {
     const addPerson = (person: Person) => {
       this.eventBus.publishAsync(new PersonCreatedEvent(person))
         .then(() => this.uiContainer.unmountCurrent());
     }
     const person: Person = { name: "", id: GUID.newGuid() }
-    const component = <EditPerson actionName="Create"
+    const component = <PersonEditor actionName="Create"
       onCancel={this.uiContainer.unmountCurrent}
       onValidate={addPerson}
       person={person}
-    >
-    </EditPerson>;
+    > </PersonEditor>;
     this.uiContainer.mount(component);
   }
 }

@@ -13,6 +13,7 @@ declare namespace JSX {
     h1: any,
     h2: any,
     h3: any,
-    b: any
+    b: any,
+    i: any
   }
 }
