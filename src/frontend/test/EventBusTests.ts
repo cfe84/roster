@@ -58,5 +58,26 @@ describe("Event bus", () => {
     // then
     should(called1).be.true();
     should(called2).be.true();
+  });
+
+  it("should callback catch-alls for all events", async () => {
+    // given
+    const eventBus = new EventBus();
+    const event1: IEvent = { type: "type-1" };
+    const event2: IEvent = { type: "type-2" };
+    const handler1: any = td.object("onEventAsync");
+    const handler2: any = td.object("onEventAsync");
+    td.when(handler1.onEventAsync(event2)).thenThrow(Error("Should not happen"));
+
+    // when
+    eventBus.subscribeToAll(handler2.onEventAsync);
+    eventBus.subscribe("type-1", handler1.onEventAsync);
+    await eventBus.publishAsync(event1);
+    await eventBus.publishAsync(event2);
+
+    // then
+    td.verify(handler1.onEventAsync(event1));
+    td.verify(handler2.onEventAsync(event1));
+    td.verify(handler2.onEventAsync(event2));
   })
 })
