@@ -78,7 +78,6 @@
     "webpack-cli": "^3.3.10"
   },
   "dependencies": {
-    "markdown-it": "^10.0.0",
     "marked": "^0.7.0"
   }
 }
