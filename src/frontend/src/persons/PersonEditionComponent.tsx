@@ -29,8 +29,8 @@ export class PersonEditorComponent extends Component {
         <p class="mb-1">Person's name</p>
         <input class="form-control mb-3" id="input-name" placeholder="Person name"
           type="text" value={person.name}></input>
-        <button class="btn btn-primary" onclick={updatePerson(this.props.onValidate)}>{this.props.actionName || "Create"} person</button>
-        &nbsp;<button class="btn btn-secondary" onclick={this.props.onCancel}>Cancel</button>
+        <button class="btn btn-primary" onclick={updatePerson(this.props.onValidate)}><i class="fa fa-save"></i> {this.props.actionName || "Create"} person</button>
+        &nbsp;<button class="btn btn-secondary" onclick={this.props.onCancel}><i class="fa fa-times"></i> Cancel</button>
       </form>
     </div>;
   }

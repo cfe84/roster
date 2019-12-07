@@ -48,7 +48,7 @@ export class EventBus {
     if (!this.subscriptions[eventType]) {
       this.subscriptions[eventType] = new SubscriptionList();
     }
-    const record = new SubscriptionRecord(eventType, handler);
+    const record = new SubscriptionRecord(eventType, handler, this);
     this.subscriptions[eventType][record.id] = handler as eventHandler<IEvent>;
     this.subscriptionRecords[record.id] = record as SubscriptionRecord<IEvent>;
     this.log(`Eventbus - created subscription ${record.id} to event type ${eventType}`);

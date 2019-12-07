@@ -22,14 +22,13 @@ export class PersonListComponent extends Component {
           ></PersonListItemComponent>);
     }
 
-    return <div class="d-flex flex-column ml-2 mr-2">
+    return <div>
       <h2 class="text-center"><i class="fa fa-user" /> People</h2>
-      <ul class="list-group flex-column" id="elements">
+      <ul class="list-group flex-column mb-2" id="elements">
         {generateRows()}
       </ul>
-      <br />
       <button class="btn btn-primary"
-        onclick={this.props.onAddPersonClicked}>Add person</button>
+        onclick={this.props.onAddPersonClicked}><i class="fa fa-plus"></i> Add person</button>
     </div>;
   }
 }

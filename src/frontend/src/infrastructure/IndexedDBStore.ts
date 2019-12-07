@@ -3,7 +3,7 @@ import { INotesStore } from "../notes/INotesStore";
 import { Note } from "../notes";
 
 const DB_NAME: string = "rosterdb";
-const DB_VERSION: number = 2;
+const DB_VERSION: number = 3;
 const OBJECTSTORE_PEOPLE: string = "people";
 const OBJECTSTORE_NOTES: string = "notes";
 
@@ -96,8 +96,8 @@ export class IndexedDBStore implements IPersonStore, INotesStore {
     console.log(`Creating db in version ${DB_VERSION}`);
     const peopleObjectStore = IndexedDBStore.createObjectStore(db, OBJECTSTORE_PEOPLE, { keyPath: "id" });
     if (peopleObjectStore !== null) peopleObjectStore.createIndex("name", "name", { unique: false });
-    const notesObjectStrong = IndexedDBStore.createObjectStore(db, OBJECTSTORE_NOTES, { keyPath: "id" });
-    if (notesObjectStrong !== null) notesObjectStrong.createIndex("personid", "personid", { unique: false });
+    const notesObjectStore = IndexedDBStore.createObjectStore(db, OBJECTSTORE_NOTES, { keyPath: "id" });
+    if (notesObjectStore !== null) notesObjectStore.createIndex("personid", "personid", { unique: false });
   }
 
   static OpenDbAsync = async (): Promise<IndexedDBStore> => {

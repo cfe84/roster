@@ -26,12 +26,16 @@ describe("Event bus", () => {
     const event1: IEvent = { type: "type-1" };
     const handler1: any = td.object("onEventAsync");
     const handler2: any = td.object("onEventAsync");
-    const record = eventBus.subscribe("type-1", handler1.onEventAsync);
+    const handler3: any = td.object("onEventAsync");
+    const record1 = eventBus.subscribe("type-1", handler1.onEventAsync);
+    const record3 = eventBus.subscribe("type-1", handler3.onEventAsync);
     eventBus.subscribe("type-1", handler2.onEventAsync);
     td.when(handler1.onEventAsync(event1)).thenThrow(Error("Should not happen"));
+    td.when(handler3.onEventAsync(event1)).thenThrow(Error("Should not happen"));
 
     // when
-    eventBus.unsubscribe(record);
+    eventBus.unsubscribe(record1);
+    record3.unsubscribe();
     await eventBus.publishAsync(event1);
 
     // then

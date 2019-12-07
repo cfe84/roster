@@ -1,6 +1,7 @@
 import { UIElement, Component } from "../html/index";
 import { Note } from "./Note";
 import { dom } from "../utils/dom";
+import { dateUtils } from "../utils/dateUtils";
 
 interface NoteEditorProps {
   actionName?: string,
@@ -39,11 +40,11 @@ export class NoteEditorComponent extends Component {
         <p class="mb-1">Title</p>
         <input class="form-control mb-3" id="input-title" placeholder="Title" type="text" value={note.title}></input>
         <p class="mb-1">Content</p>
-        <input class="form-control mb-3" id="input-content" placeholder="Content" type="text" value={note.content}></input>
+        <textarea class="form-control mb-3" style="height: 300px" id="input-content" placeholder="Content" >{note.content}</textarea>
         <p class="mb-1">Date</p>
-        <input class="form-control mb-3" id="input-content" placeholder="Content" type="text" value={note.date}></input>
-        <button class="btn btn-primary" onclick={updateNote(this.props.onValidate)}>{this.props.actionName || "Create"} note</button>
-        &nbsp;<button class="btn btn-secondary" onclick={this.props.onCancel}>Cancel</button>
+        <input class="form-control mb-3" id="input-date" placeholder="Date" type="text" value={dateUtils.format(note.date)}></input>
+        <button class="btn btn-primary" onclick={updateNote(this.props.onValidate)}><i class="fa fa-save"></i> {this.props.actionName || "Create"} note</button>
+        &nbsp;<button class="btn btn-secondary" onclick={this.props.onCancel}><i class="fa fa-times"></i> Cancel</button>
       </form>
     </div>;
   }

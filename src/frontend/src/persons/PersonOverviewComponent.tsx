@@ -27,7 +27,7 @@ export class PersonOverviewComponent extends Component {
       </div>
       <br />
       <button class="btn btn-primary w-5"
-        onclick={this.props.onExitClicked}>Back</button>
+        onclick={this.props.onExitClicked}><i class="fa fa-arrow-left"></i> Back</button>
     </div>;
   }
 }

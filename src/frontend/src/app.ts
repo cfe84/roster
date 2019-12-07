@@ -1,7 +1,7 @@
 import { StorePeopleChangesReactor, PersonController } from "./persons";
 import { EventBus } from "./events";
 import { IndexedDBStore } from "./infrastructure/IndexedDBStore";
-import { NotesController } from "./notes";
+import { NotesController, StoreNotesChangesReactor } from "./notes";
 import { UIContainer } from "./html/UIContainer";
 import { BrowserDisplayAdapter } from "./html/BrowserDisplayAdapter";
 import { DashboardController } from "./dashboard/DashboardController";
@@ -25,6 +25,8 @@ class App {
       const dbStore = await IndexedDBStore.OpenDbAsync();
       const peopleReactor = new StorePeopleChangesReactor(dbStore);
       peopleReactor.registerReactors(this.eventBus);
+      const notesReactor = new StoreNotesChangesReactor(dbStore);
+      notesReactor.registerReactors(this.eventBus);
       const notesController = new NotesController({ uiContainer, db: dbStore, eventBus: this.eventBus });
       const peopleController = new PersonController(this.eventBus, uiContainer, dbStore, notesController);
       const dashboardController = new DashboardController({

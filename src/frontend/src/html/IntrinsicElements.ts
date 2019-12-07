@@ -6,6 +6,7 @@ declare namespace JSX {
     form: any,
     label: any,
     input: any,
+    textarea: any,
     button: any,
     br: any,
     ul: any,
@@ -14,6 +15,9 @@ declare namespace JSX {
     h2: any,
     h3: any,
     b: any,
-    i: any
+    i: any,
+    small: any,
+    script: any,
+    style: any
   }
 }
