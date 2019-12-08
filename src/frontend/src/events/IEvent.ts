@@ -1,3 +1,5 @@
+import { EventInfo } from "./EventInfo";
+
 export interface IEvent {
-  type: string
+  info: EventInfo;
 }

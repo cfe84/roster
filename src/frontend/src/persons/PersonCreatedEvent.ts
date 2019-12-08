@@ -1,10 +1,10 @@
 import { IEvent } from "../events";
 import { Person } from "./Person";
+import { EventInfo } from "../events/EventInfo";
 
 export class PersonCreatedEvent implements IEvent {
   static type: string = "personCreatedEvent";
-  type: string = PersonCreatedEvent.type;
-
+  info = new EventInfo(PersonCreatedEvent.type);
   constructor(public person: Person) { }
 
 }

@@ -33,8 +33,8 @@ export class EventBus {
   private subscriptionRecords = new SubscriptionRecordList();
 
   async publishAsync(event: IEvent): Promise<void> {
-    this.log(`Eventbus - publishing event ${event.type}: ${JSON.stringify(event, null, 2)}`);
-    await this.callHandlersForType(event.type, event);
+    this.log(`Eventbus - publishing event ${event.info.type}: ${JSON.stringify(event, null, 2)}`);
+    await this.callHandlersForType(event.info.type, event);
     await this.callHandlersForType(CATCH_ALL, event);
   }
 
