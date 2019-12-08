@@ -22,8 +22,6 @@ describe("Replication", () => {
       td.verify(fakeAdapter.replicateEventAsync(event1));
       td.verify(fakeAdapter.replicateEventAsync(event2));
     });
-    it("should retry later if replication failed", () => {
-      throw (Error("Not implemented"));
-    })
+    it("should retry later if replication failed")
   });
 });

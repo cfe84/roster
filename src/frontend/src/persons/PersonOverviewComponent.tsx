@@ -1,6 +1,7 @@
 import { UIElement, Component } from "../html/index";
 import { Person } from "./Person";
 import { NotesController } from "../notes";
+import { dateUtils } from "../utils/dateUtils";
 
 interface PersonOverviewProps {
   person: Person,
@@ -20,6 +21,20 @@ export class PersonOverviewComponent extends Component {
       <div class="row">
         <div class="col-sm">
           <h3>Details</h3>
+          <p class="mb-1">In company since {dateUtils.format(person.inCompanySince)}</p>
+          <div class="row">
+            <div class="col-4">
+              <p class="mb-1">Position / rank: {person.position}</p>
+            </div>
+            <div class="col">
+              <p class="mb-1">In position since {dateUtils.format(person.inPositionSince)}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-4">
+              <p class="mb-1">Role in team: {person.role}. Joined team on {dateUtils.format(person.inTeamSince)}</p>
+            </div>
+          </div>
         </div>
         <div class="col-sm">
           {notesList}

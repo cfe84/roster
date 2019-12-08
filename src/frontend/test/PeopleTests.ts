@@ -5,6 +5,7 @@ import { StorePeopleChangesReactor } from "../src/persons/StorePeopleChangesReac
 import { PersonCreatedEvent } from "../src/persons/PersonCreatedEvent";
 import { IPersonStore } from "../src/persons/IPersonStore";
 import { PersonUpdatedEvent } from "../src/persons/PersonUpdatedEvent";
+import { Person } from "../src/persons";
 
 describe("People", () => {
   it("should save people on people created", async () => {
@@ -12,7 +13,7 @@ describe("People", () => {
     const store = td.object(["createPersonAsync"]);
     const reactor = new StorePeopleChangesReactor(store as IPersonStore)
     const bus = new EventBus();
-    const person = { "id": "123", "name": "dsfs" };
+    const person: Person = { "id": "123", "name": "dsfs", inCompanySince: null, inPositionSince: null, inTeamSince: null, position: "sdfs", role: "dfsdf" };
     const evt = new PersonCreatedEvent(person);
 
     // when
@@ -28,7 +29,7 @@ describe("People", () => {
     const store = td.object(["updatePersonAsync"]);
     const reactor = new StorePeopleChangesReactor(store as IPersonStore)
     const bus = new EventBus();
-    const person = { "id": "123", "name": "dsfs" };
+    const person: Person = { "id": "123", "name": "dsfs", inCompanySince: null, inPositionSince: null, inTeamSince: null, position: "sdfs", role: "dfsdf" };
     const evt = new PersonUpdatedEvent(person);
 
     // when

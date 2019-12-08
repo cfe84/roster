@@ -7,7 +7,7 @@ import { PersonUpdatedEvent } from "./PersonUpdatedEvent";
 import { GUID } from "../utils/guid"
 import { NotesController } from "../notes";
 import { PersonListComponent } from "./PersonListComponent";
-import { PersonEditorComponent } from "./PersonEditionComponent";
+import { PersonEditorComponent } from "./PersonEditorComponent";
 import { PersonOverviewComponent } from "./PersonOverviewComponent";
 
 export class PersonController {
@@ -72,7 +72,7 @@ export class PersonController {
       this.eventBus.publishAsync(new PersonCreatedEvent(person))
         .then(() => this.uiContainer.unmountCurrent());
     }
-    const person: Person = { name: "", id: GUID.newGuid() }
+    const person: Person = { name: "", id: GUID.newGuid(), inCompanySince: null, inPositionSince: null, inTeamSince: null, position: "", role: "" }
     const component = <PersonEditor actionName="Create"
       onCancel={this.uiContainer.unmountCurrent}
       onValidate={addPerson}
