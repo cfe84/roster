@@ -1,5 +1,5 @@
-declare namespace JSX {
-  interface IntrinsicElements {
+namespace JSX {
+  export interface IntrinsicElements {
     div: any,
     p: any,
     span: any,

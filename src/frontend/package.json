@@ -40,7 +40,7 @@
   },
   "scripts": {
     "clean": "rm -r dist/",
-    "test": "mocha --require ts-node/register ./test/**/*.ts",
+    "test": "mocha --require ts-node/register ./src/html/IntrinsicElements.ts ./test/**/*.ts",
     "sass": "sass style/style.sass dist/style.css",
     "static": "mkdir -p dist && cp -r static/* dist/",
     "webpack": "npx webpack",

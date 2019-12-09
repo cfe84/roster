@@ -1,7 +1,7 @@
 import { UIElement, Component } from "../html/index";
 import { Person } from "./Person";
-import { dom } from "../utils/dom";
-import { dateUtils } from "../utils/dateUtils";
+import { TextInput, DateInput } from "../baseComponents";
+import { objectUtils } from "../utils/objectUtils";
 
 interface PersonEditorProps {
   actionName?: string,
@@ -13,57 +13,29 @@ interface PersonEditorProps {
 export class PersonEditorComponent extends Component {
 
   constructor(private props: PersonEditorProps) { super() }
+
   public render = (): UIElement => {
 
-    const person = this.props.person;
-
-    const updatePerson = (delegate: ((person: Person) => void)): (() => void) => {
-      return () => {
-        const person: Person = {
-          id: this.props.person.id,
-          name: dom.getInputValue("input-name"),
-          role: dom.getInputValue("input-role"),
-          position: dom.getInputValue("input-position"),
-          inPositionSince: new Date(Date.parse(dom.getInputValue("input-inpositionsince"))),
-          inCompanySince: new Date(Date.parse(dom.getInputValue("input-incompanysince"))),
-          inTeamSince: new Date(Date.parse(dom.getInputValue("input-inteamsince"))),
-        }
-        delegate(person);
-      }
-    }
+    const person = objectUtils.clone(this.props.person);
 
     return <div>
       <h2 class="text-center">{this.props.actionName || "Add a person"} {this.props.person.name}</h2>
       <form class="form-create-element">
-        <p class="mb-1">Person's name</p>
-        <input class="form-control mb-3" id="input-name" placeholder="Person name" type="text" value={person.name}></input>
-        <p class="mb-1">In company since</p>
-        <input class="form-control mb-3" id="input-incompanysince" placeholder="In company since" type="text" value={dateUtils.format(person.inCompanySince)}></input>
+        <TextInput caption="Name" object={person} field="name"></TextInput>
+        <DateInput caption="In company since" value={person.inCompanySince} onchange={(value) => person.inCompanySince = value}></DateInput>
         <div class="row">
-          <div class="col-4">
-            <p class="mb-1">Position / rank</p>
-            <input class="form-control mb-3" id="input-position" placeholder="Position" type="text" value={person.position}></input>
-          </div>
-          <div class="col">
-            <p class="mb-1">In position since</p>
-            <input class="form-control mb-3" id="input-inpositionsince" placeholder="In position since" type="text" value={dateUtils.format(person.inPositionSince)}></input>
-          </div>
+          <TextInput class="col-4" caption="Position / rank" object={person} field="position"></TextInput>
+          <DateInput class="col" caption="In position since" value={person.inPositionSince} onchange={(value) => person.inPositionSince = value}></DateInput>
         </div>
         <div class="row">
-          <div class="col-4">
-            <p class="mb-1">Role in team</p>
-            <input class="form-control mb-3" id="input-role" placeholder="Role in the team" type="text" value={person.role}></input>
-          </div>
-          <div class="col">
-            <p class="mb-1">In team since</p>
-            <input class="form-control mb-3" id="input-inteamsince" placeholder="In the team since" type="text" value={dateUtils.format(person.inTeamSince)}></input>
-          </div>
+          <TextInput class="col-4" caption="Role in team" object={person} field="role"></TextInput>
+          <DateInput class="col" caption="In team since" value={person.inTeamSince} onchange={(value) => person.inTeamSince = value}></DateInput>
         </div>
 
-        <button class="btn btn-primary" onclick={updatePerson(this.props.onValidate)}><i class="fa fa-save"></i> {this.props.actionName || "Create"} person</button>
+        <button class="btn btn-primary" onclick={(() => this.props.onValidate(person))}><i class="fa fa-save"></i> {this.props.actionName || "Create"} person</button>
         &nbsp;<button class="btn btn-secondary" onclick={this.props.onCancel}><i class="fa fa-times"></i> Cancel</button>
       </form>
-    </div>;
+    </div >;
   }
 }
 

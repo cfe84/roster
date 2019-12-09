@@ -5,5 +5,5 @@ import { Component } from "./Component";
 export {
   UIContainer,
   UIElement,
-  Component
+  Component,
 }
