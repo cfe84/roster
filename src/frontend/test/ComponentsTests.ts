@@ -8,6 +8,7 @@ import moment from "moment";
 import { dateUtils } from "../src/utils/dateUtils";
 import { ButtonProps, Button } from "../src/baseComponents/ButtonComponent";
 import { TextDisplayComponent, TextDisplayProps, TextDisplay } from "../src/baseComponents/TextDisplayComponent";
+import { MarkdownInputProps, MarkdownInput } from "../src/baseComponents/MarkdownInputComponent";
 
 const findChildByType = (element: UIElement, type: string) =>
   element.props.children.find((child: UIElement) => child.type === type)
@@ -193,7 +194,7 @@ describe("Common components", () => {
     })
   });
 
-  context("Display", () => {
+  context("Text display", () => {
     // given
     const props: TextDisplayProps = {
       caption: "The caption",
@@ -216,5 +217,46 @@ describe("Common components", () => {
     it("rendered value", () => should(pText.props.text).containEql("the value"));
     it("rendered class", () => should(div.props.class).containEql("myclass"));
 
-  })
+  });
+
+  context("Markdown input", () => {
+    context("renders base parameters", () => {
+      // given
+      const onchange: any = td.object("onchange");
+      const props: MarkdownInputProps = {
+        class: "thisisaclass",
+        caption: "this is a caption",
+        placeholder: "this is a placeholder",
+        value: "this is the default value",
+        id: "default-id",
+        onchange: onchange.onchange
+      };
+
+      // when
+      const component = MarkdownInput(props);
+      const rendered = component.render();
+      const div = rendered;
+      const caption = findChildByType(div, "p");
+      const captionText = findChildByType(caption, "TEXT");
+      const textArea = findChildByType(div, "textarea");
+      const textAreaText = findChildByType(textArea, "TEXT");
+
+      // then
+      should(div.type).equal("div");
+      it("renders class",
+        () => should(div.props.class).containEql(props.class));
+      it("displays caption",
+        () => should(captionText.props.text).eql(props.caption));
+      it("renders placeholder",
+        () => { should(textArea.props.placeholder).eql(props.placeholder) });
+      it("renders value when specified directly",
+        () => { should(textAreaText.props.text).eql(props.value) });
+      it("renders id when specified directly",
+        () => { should(textArea.props.id).eql(props.id) });
+      it("renders onchange when specified directly", () => {
+        textArea.props.onkeyup({ target: { value: "value" } });
+        td.verify(onchange.onchange("value"));
+      });
+    })
+  });
 });

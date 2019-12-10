@@ -7,6 +7,7 @@ import { Button, TextDisplay } from "../baseComponents";
 interface PersonOverviewProps {
   person: Person,
   notesController: NotesController
+  onEditClicked: (() => void)
   onExitClicked: (() => void)
 }
 

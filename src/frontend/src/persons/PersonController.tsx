@@ -42,6 +42,7 @@ export class PersonController {
     const component: PersonOverviewComponent = <PersonOverview
       person={person}
       notesController={this.notesController}
+      onEditClicked={() => this.displayEditPerson(person)}
       onExitClicked={this.uiContainer.unmountCurrent}
     ></PersonOverview>;
     const subscription = this.eventBus.subscribe(PersonUpdatedEvent.type, (evt: PersonUpdatedEvent) => {

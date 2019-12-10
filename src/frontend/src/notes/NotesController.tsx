@@ -16,12 +16,14 @@ export interface NotesControllerDependencies {
   eventBus: EventBus
 }
 
+export type notesFilter = (note: Note) => boolean;
+
 export class NotesController {
   constructor(private deps: NotesControllerDependencies) { }
 
-  public getNotesListAsync = async (personId: PersonId): Promise<NotesListComponent> => {
+  public getNotesListAsync = async (filter: notesFilter, personId: string): Promise<NotesListComponent> => {
     const notes = (await this.deps.db.getNotesAsync())
-      .filter((note) => note.personId === personId)
+      .filter(filter)
       .sort((a, b) => a.date < b.date ? 1 : -1);
     const component = <NotesList
       notes={notes}
@@ -72,7 +74,7 @@ export class NotesController {
     this.deps.uiContainer.mount(component);
   }
 
-  private displayEditNote = (note: Note): void => {
+  private displayEditNote = (note: Note, showTitle = false): void => {
     const commitEditNote = (note: Note) => {
       this.deps.eventBus.publishAsync(new NoteUpdatedEvent(note))
         .then(() => this.deps.uiContainer.unmountCurrent())

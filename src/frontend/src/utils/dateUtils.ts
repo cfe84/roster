@@ -13,8 +13,14 @@ export class dateUtils {
       ? null
       : moment(str).toDate();
 
-  public static isValidDate = (str: string): boolean =>
-    (str === null || str === "")
-    || (dateValidation.test(str) ?
-      moment(str).isValid() : false);
+  public static isValidDate = (str: string): boolean => {
+    if (str === null || str === "") {
+      return true;
+    }
+    if (!dateValidation.test(str)) {
+      return false;
+    }
+    return moment(Date.parse(str)).isValid();
+  }
+
 }
