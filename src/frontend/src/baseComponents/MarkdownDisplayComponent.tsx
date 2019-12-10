@@ -24,7 +24,7 @@ export class MarkdownDisplayComponent extends Component {
     const caption = <Caption caption={this.props.caption}></Caption>;
     const component = <div>
       {caption.render()}
-      <p class="mb-1" id={noteId}>Loading. You shouldn't see this, this is a very bad sign.</p>
+      <p class="mb-1 display-markdown" id={noteId}>Loading. You shouldn't see this, this is a very bad sign.</p>
       <script>{script}</script>
     </div>
     return component;

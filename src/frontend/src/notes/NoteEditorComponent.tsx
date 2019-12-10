@@ -2,7 +2,7 @@ import { UIElement, Component } from "../html/index";
 import { Note } from "./Note";
 import { dom } from "../utils/dom";
 import { dateUtils } from "../utils/dateUtils";
-import { MarkdownInput } from "../baseComponents";
+import { MarkdownInput, TextInput, DateInput, Button } from "../baseComponents";
 import { objectUtils } from "../utils/objectUtils";
 
 interface NoteEditorProps {
@@ -18,23 +18,15 @@ export class NoteEditorComponent extends Component {
 
   public render = (): UIElement => {
     const note = objectUtils.clone(this.props.note);
-    const markdownInput = <MarkdownInput
-      caption="Content"
-      object={note}
-      field="content"
-    ></MarkdownInput>
+    const saveButtonCaption = `${this.props.actionName || "Create"} note`
     return <div>
       <form class="form-create-element">
-        <div>
-          <h2 class="text-center">{this.props.actionName || "New note"} {this.props.note.title}</h2>
-          <p class="mb-1">Title</p>
-          <input class="form-control mb-3" id="input-title" placeholder="Title" type="text" value={note.title}></input>
-        </div>
-        {markdownInput.render()}
-        <p class="mb-1">Date</p>
-        <input class="form-control mb-3" id="input-date" placeholder="Date" type="text" value={dateUtils.format(note.date)}></input>
-        <button class="btn btn-primary" onclick={() => { this.props.onValidate(note) }}><i class="fa fa-save"></i> {this.props.actionName || "Create"} note</button>
-        &nbsp;<button class="btn btn-secondary" onclick={this.props.onCancel}><i class="fa fa-times"></i> Cancel</button>
+        <h2 class="text-center">{this.props.actionName || "New note"} {this.props.note.title}</h2>
+        <TextInput caption="Title" object={note} field="title" />
+        <MarkdownInput caption="Content" object={note} field="content" />
+        <DateInput caption="Date" object={note} field="date" />
+        <Button class="mr-2" onclick={() => { this.props.onValidate(note) }} icon="save" text={saveButtonCaption} />
+        <Button type="secondary" onclick={this.props.onCancel} icon="times" text="Cancel" />
       </form>
     </div>;
   }
