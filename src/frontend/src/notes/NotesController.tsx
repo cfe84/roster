@@ -21,9 +21,9 @@ export type notesFilter = (note: Note) => boolean;
 export class NotesController {
   constructor(private deps: NotesControllerDependencies) { }
 
-  public getNotesListAsync = async (filter: notesFilter, personId: string): Promise<NotesListComponent> => {
+  public getNotesListAsync = async (personId: string): Promise<NotesListComponent> => {
     const notes = (await this.deps.db.getNotesAsync())
-      .filter(filter)
+      .filter((note) => note.personId === personId)
       .sort((a, b) => a.date < b.date ? 1 : -1);
     const component = <NotesList
       notes={notes}

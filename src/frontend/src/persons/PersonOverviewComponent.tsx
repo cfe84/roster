@@ -17,7 +17,8 @@ export class PersonOverviewComponent extends Component {
 
   public render = async (): Promise<UIElement> => {
     const person = this.props.person;
-    const notesList = await this.props.notesController.getNotesListAsync(this.props.person.id);
+    const notesList = await this.props.notesController.getNotesListAsync(
+      this.props.person.id);
     return <div>
       <h3 class="text-center"><i class="fa fa-user"></i> {person.name}</h3>
       <div class="row">
