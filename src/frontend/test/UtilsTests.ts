@@ -35,6 +35,22 @@ describe("Utils", () => {
       // then
       should(d).eql(date.expected);
     }));
+
+    const datesToTest = [
+      { input: "2017-01-13", expected: true },
+      { input: "2018-13-10", expected: false },
+      { input: "2018-19", expected: false },
+      { input: "2018-01-0", expected: false },
+      { input: "2018-01-", expected: false },
+      { input: "", expected: true },
+    ];
+    datesToTest.forEach((date) => it(`should determine that ${date.input} is ${date.expected ? "" : "not "}valid`, () => {
+      // given
+      const res = dateUtils.isValidDate(date.input);
+
+      // then
+      should(res).eql(date.expected);
+    }))
   });
 
   context("Object utils", () => {
