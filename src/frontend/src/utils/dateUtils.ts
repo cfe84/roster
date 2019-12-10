@@ -15,6 +15,6 @@ export class dateUtils {
 
   public static isValidDate = (str: string): boolean =>
     (str === null || str === "")
-    || (dateValidation.test(str)
-      && moment(str).isValid());
+    || (dateValidation.test(str) ?
+      moment(str).isValid() : false);
 }

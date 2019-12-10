@@ -31,13 +31,18 @@ export class PersonOverviewComponent extends Component {
             <TextDisplay class="col-4" caption="Role in team" value={person.role}></TextDisplay>
             <TextDisplay class="col" caption="Joined team on " value={dateUtils.format(person.inTeamSince)}></TextDisplay>
           </div>
+
+          <div class="d-flex">
+            <Button icon="times" class="btn-danger" type="secondary" onclick={this.props.onExitClicked} text="Delete"></Button>
+            <Button icon="pen" class="ml-auto w-5 mr-2" type="primary" onclick={this.props.onEditClicked} text="Edit"></Button>
+            <Button icon="arrow-left" class="w-5" type="secondary" onclick={this.props.onExitClicked} text="Back"></Button>
+          </div>
         </div>
         <div class="col-sm">
           {notesList}
         </div>
       </div>
       <br />
-      <Button icon="arrow-left" class="w-5" type="secondary" onclick={this.props.onExitClicked} text="Back"></Button>
     </div>;
   }
 }
