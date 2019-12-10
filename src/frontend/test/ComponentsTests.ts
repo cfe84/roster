@@ -6,9 +6,13 @@ import * as td from "testdouble";
 import { DateInputProps } from "../src/baseComponents/DateInputComponent";
 import moment from "moment";
 import { dateUtils } from "../src/utils/dateUtils";
+import { ButtonProps, Button } from "../src/baseComponents/ButtonComponent";
+import { TextDisplayComponent, TextDisplayProps, TextDisplay } from "../src/baseComponents/TextDisplayComponent";
 
 const findChildByType = (element: UIElement, type: string) =>
   element.props.children.find((child: UIElement) => child.type === type)
+const findChildrenByType = (element: UIElement, type: string) =>
+  element.props.children.filter((child: UIElement) => child.type === type)
 
 describe("Common components", () => {
   const getTextInputElements = (element: UIElement): any => {
@@ -131,6 +135,86 @@ describe("Common components", () => {
       // then
       should((props.object as any)[fieldName]).eql(moment(newValue).toDate());
       should(elements.input.props.value).eql(dateUtils.format(initialValue))
+    });
+  });
+
+  context("Button", () => {
+    context("base rendering", () => {
+      // given
+      const onclick: any = td.object("onclick");
+      const fakeEvent: any = td.object("stopPropagation");
+      const clss = "right";
+      const props: ButtonProps = {
+        icon: "iconname",
+        class: clss,
+        onclick: onclick.onclick as () => void,
+        text: "the text"
+      };
+
+      // when
+      const component = Button(props);
+      const rendered = component.render();
+
+      // then
+      const button = rendered;
+      const icon = findChildByType(button, "i");
+      const textElements = findChildrenByType(button, "TEXT");
+      it("rendered icon", () => {
+        should(icon).not.be.null();
+        should(icon.props.class).eql("fa fa-iconname");
+      });
+      it("rendered class for primary", () => should(button.props.class).containEql("btn-primary"));
+      it("rendered additional class", () => should(button.props.class).containEql(clss));
+      it("rendered text", () => should(textElements).matchAny(text => should(text.props.text).containEql("the text")));
+      button.props.onclick(fakeEvent);
+      it("stops propagation of event onclick", () => { td.verify(fakeEvent.stopPropagation()); });
+      it("rendered onclick", () => { td.verify(onclick.onclick()); });
+    });
+
+    context("ignores icon", () => {
+      // given
+      const props: ButtonProps = {
+        onclick: () => { },
+        type: "secondary",
+        text: "the text"
+      };
+
+      // when
+      const component = Button(props);
+      const rendered = component.render();
+
+      // then
+      const button = rendered;
+      const icon = findChildByType(button, "i");
+      const textElements = findChildrenByType(button, "TEXT");
+      it("didnt render an icon", () => { should(icon).be.undefined(); });
+      it("rendered class for secondary", () => should(button.props.class).containEql("btn-secondary"));
+      it("rendered text", () => should(textElements).matchAny(text => should(text.props.text).containEql("the text")));
     })
+  });
+
+  context("Display", () => {
+    // given
+    const props: TextDisplayProps = {
+      caption: "The caption",
+      class: "myclass",
+      field: "thefield",
+      object: { thefield: "the value" }
+    };
+
+    // when
+    const component = TextDisplay(props);
+    const rendered = component.render();
+
+    // then
+    const div = rendered;
+    const em = findChildByType(div, "em");
+    const emText = findChildByType(em, "TEXT");
+    const p = findChildByType(div, "p");
+    const pText = findChildByType(p, "TEXT");
+    it("rendered caption", () => should(emText.props.text).containEql("The caption"));
+    it("rendered value", () => should(pText.props.text).containEql("the value"));
+    it("rendered class", () => should(div.props.class).containEql("myclass"));
+
   })
 });

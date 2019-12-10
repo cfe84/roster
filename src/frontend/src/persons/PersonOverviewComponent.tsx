@@ -2,6 +2,7 @@ import { UIElement, Component } from "../html/index";
 import { Person } from "./Person";
 import { NotesController } from "../notes";
 import { dateUtils } from "../utils/dateUtils";
+import { Button, TextDisplay } from "../baseComponents";
 
 interface PersonOverviewProps {
   person: Person,
@@ -21,19 +22,14 @@ export class PersonOverviewComponent extends Component {
       <div class="row">
         <div class="col-sm">
           <h3>Details</h3>
-          <p class="mb-1">In company since {dateUtils.format(person.inCompanySince)}</p>
+          <TextDisplay caption="In company since" value={dateUtils.format(person.inCompanySince)}></TextDisplay>
           <div class="row">
-            <div class="col-4">
-              <p class="mb-1">Position / rank: {person.position}</p>
-            </div>
-            <div class="col">
-              <p class="mb-1">In position since {dateUtils.format(person.inPositionSince)}</p>
-            </div>
+            <TextDisplay class="col-4" caption="Position / rank" value={person.position}></TextDisplay>
+            <TextDisplay class="col" caption="In position since" value={dateUtils.format(person.inPositionSince)}></TextDisplay>
           </div>
           <div class="row">
-            <div class="col-4">
-              <p class="mb-1">Role in team: {person.role}. Joined team on {dateUtils.format(person.inTeamSince)}</p>
-            </div>
+            <TextDisplay class="col-4" caption="Role in team" value={person.role}></TextDisplay>
+            <TextDisplay class="col" caption="Joined team on " value={dateUtils.format(person.inTeamSince)}></TextDisplay>
           </div>
         </div>
         <div class="col-sm">
@@ -41,8 +37,7 @@ export class PersonOverviewComponent extends Component {
         </div>
       </div>
       <br />
-      <button class="btn btn-primary w-5"
-        onclick={this.props.onExitClicked}><i class="fa fa-arrow-left"></i> Back</button>
+      <Button icon="arrow-left" class="w-5" type="secondary" onclick={this.props.onExitClicked} text="Back"></Button>
     </div>;
   }
 }

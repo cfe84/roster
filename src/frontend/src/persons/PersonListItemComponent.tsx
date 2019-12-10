@@ -1,5 +1,6 @@
 import { UIElement, Component } from "../html/index";
 import { Person } from ".";
+import { Button } from "../baseComponents";
 
 interface ListItemPersonProps {
   person: Person,
@@ -16,11 +17,7 @@ class PersonListItem extends Component {
       onclick={this.props.onPersonClicked}>
       <div class="">{this.props.person.name}</div>
       <div class="ml-auto">
-        <button
-          class="btn btn-primary align-right"
-          onclick={(event: MouseEvent) => { this.props.onEditClicked(); event.stopPropagation() }}>
-          <i class="fa fa-pen" /> Edit
-        </button>
+        <Button icon="pen" class="align-right" onclick={this.props.onEditClicked} text="Edit"></Button>
       </div>
     </li>
 }

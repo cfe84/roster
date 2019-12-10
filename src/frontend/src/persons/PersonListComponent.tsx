@@ -1,6 +1,7 @@
 import { UIElement, Component } from "../html/index";
 import { PersonListItemComponent } from "./PersonListItemComponent";
 import { Person } from "./Person";
+import { Button } from "../baseComponents";
 
 interface ListPeopleProps {
   people: Person[],
@@ -27,8 +28,7 @@ export class PersonListComponent extends Component {
       <ul class="list-group flex-column mb-2" id="elements">
         {generateRows()}
       </ul>
-      <button class="btn btn-primary"
-        onclick={this.props.onAddPersonClicked}><i class="fa fa-plus"></i> Add person</button>
+      <Button icon="plus" onclick={this.props.onAddPersonClicked} text="Add person"></Button>
     </div>;
   }
 }

@@ -16,6 +16,7 @@ namespace JSX {
     h3: any,
     b: any,
     i: any,
+    em: any,
     small: any,
     script: any,
     style: any

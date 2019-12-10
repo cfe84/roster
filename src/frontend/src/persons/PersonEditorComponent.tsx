@@ -1,6 +1,6 @@
 import { UIElement, Component } from "../html/index";
 import { Person } from "./Person";
-import { TextInput, DateInput } from "../baseComponents";
+import { TextInput, DateInput, Button } from "../baseComponents";
 import { objectUtils } from "../utils/objectUtils";
 
 interface PersonEditorProps {
@@ -17,7 +17,7 @@ export class PersonEditorComponent extends Component {
   public render = (): UIElement => {
 
     const person = objectUtils.clone(this.props.person);
-
+    const saveBtn = (this.props.actionName || "Create") + " person";
     return <div>
       <h2 class="text-center">{this.props.actionName || "Add a person"} {this.props.person.name}</h2>
       <form class="form-create-element">
@@ -31,9 +31,8 @@ export class PersonEditorComponent extends Component {
           <TextInput class="col-4" caption="Role in team" object={person} field="role"></TextInput>
           <DateInput class="col" caption="In team since" object={person} field="inTeamSince"></DateInput>
         </div>
-
-        <button class="btn btn-primary" onclick={(() => this.props.onValidate(person))}><i class="fa fa-save"></i> {this.props.actionName || "Create"} person</button>
-        &nbsp;<button class="btn btn-secondary" onclick={this.props.onCancel}><i class="fa fa-times"></i> Cancel</button>
+        <Button icon="save" class="mr-2" onclick={(() => this.props.onValidate(person))} text={saveBtn}></Button>
+        <Button icon="times" onclick={this.props.onCancel} type="secondary" text="Cancel"></Button>
       </form>
     </div >;
   }

@@ -1,7 +1,11 @@
 import { TextInputComponent, TextInput } from "./TextInputComponent";
 import { DateInput, DateInputComponent } from "./DateInputComponent";
+import { ButtonComponent, Button } from "./ButtonComponent";
+import { TextDisplayComponent, TextDisplay } from "./TextDisplayComponent";
 
 export {
   TextInput, TextInputComponent,
-  DateInput, DateInputComponent
+  DateInput, DateInputComponent,
+  Button, ButtonComponent,
+  TextDisplay, TextDisplayComponent
 }

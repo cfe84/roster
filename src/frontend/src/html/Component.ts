@@ -4,8 +4,6 @@ import { CHILDREN_PROPS_MEMBER, TEXT_TYPE } from "./UIElement";
 type UIElementConstructor = (a: any) => Component;
 
 export abstract class Component {
-  constructor() { }
-
   static create(type: string | UIElementConstructor, props: any, ...children: Component[]): Component {
     props = props || {};
     const childrenElements = children.map(child => {
