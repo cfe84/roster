@@ -18,7 +18,11 @@ export class NoteEditorComponent extends Component {
 
   public render = (): UIElement => {
     const note = objectUtils.clone(this.props.note);
-
+    const markdownInput = <MarkdownInput
+      caption="Content"
+      object={note}
+      field="content"
+    ></MarkdownInput>
     return <div>
       <form class="form-create-element">
         <div>
@@ -26,11 +30,7 @@ export class NoteEditorComponent extends Component {
           <p class="mb-1">Title</p>
           <input class="form-control mb-3" id="input-title" placeholder="Title" type="text" value={note.title}></input>
         </div>
-        <MarkdownInput
-          caption="Content"
-          object={note}
-          field="content"
-        ></MarkdownInput>
+        {markdownInput.render()}
         <p class="mb-1">Date</p>
         <input class="form-control mb-3" id="input-date" placeholder="Date" type="text" value={dateUtils.format(note.date)}></input>
         <button class="btn btn-primary" onclick={() => { this.props.onValidate(note) }}><i class="fa fa-save"></i> {this.props.actionName || "Create"} note</button>

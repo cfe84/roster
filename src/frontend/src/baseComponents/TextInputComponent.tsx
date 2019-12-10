@@ -1,5 +1,6 @@
 import { Component, UIElement } from "../html";
 import { GUID } from "../utils/guid";
+import { Caption } from ".";
 
 export interface TextInputProps {
   caption?: string,
@@ -40,8 +41,9 @@ export class TextInputComponent extends Component {
     const value = this.props.value || ((this.props.object && this.props.field) ? (this.props.object as any)[this.props.field] : "");
     const componentId = this.props.id || `input-${this.props.name || GUID.newGuid()}`;
     const onchange = getOnChange(this.props.onchange, this.props.object, this.props.field);
+    const caption = <Caption caption={this.props.caption || this.props.name} />;
     const component = <div class={this.props.class || ""}>
-      <p class="mb-1">{this.props.caption || this.props.name}</p>
+      {caption.render()}
       <input class="form-control mb-3"
         id={componentId}
         onkeyup={onchange}

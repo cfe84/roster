@@ -1,4 +1,4 @@
-import { TextInput, DateInput } from "../src/baseComponents";
+import { TextInput, DateInput, CaptionComponent } from "../src/baseComponents";
 import should from "should";
 import { TextInputProps } from "../src/baseComponents/TextInputComponent";
 import { UIElement } from "../src/html";
@@ -10,7 +10,7 @@ import { ButtonProps, Button } from "../src/baseComponents/ButtonComponent";
 import { TextDisplayComponent, TextDisplayProps, TextDisplay } from "../src/baseComponents/TextDisplayComponent";
 import { MarkdownInputProps, MarkdownInput } from "../src/baseComponents/MarkdownInputComponent";
 
-const findChildByType = (element: UIElement, type: string) =>
+const findChildByType = (element: UIElement, type: any) =>
   element.props.children.find((child: UIElement) => child.type === type)
 const findChildrenByType = (element: UIElement, type: string) =>
   element.props.children.filter((child: UIElement) => child.type === type)
@@ -19,9 +19,10 @@ describe("Common components", () => {
   const getTextInputElements = (element: UIElement): any => {
     const div = element;
     const p = findChildByType(div, "p");
-    const caption = findChildByType(p, "TEXT");
+    const em = findChildByType(p, "em")
+    const caption = findChildByType(em, "TEXT");
     const input = findChildByType(div, "input");
-    return { div, p, caption, input }
+    return { div, p, em, caption, input }
   }
   context("Text input", () => {
     context("renders base parameters", () => {
@@ -66,6 +67,7 @@ describe("Common components", () => {
       const fieldName = "fieldname";
       const props: TextInputProps = {
         object: { "fieldname": initialValue },
+        caption: "cap",
         field: fieldName
       };
 
@@ -124,6 +126,7 @@ describe("Common components", () => {
       const fieldName = "fieldname";
       const props: DateInputProps = {
         object: { "fieldname": initialValue },
+        caption: "ca",
         field: fieldName
       };
 
@@ -209,10 +212,10 @@ describe("Common components", () => {
 
     // then
     const div = rendered;
-    const em = findChildByType(div, "em");
+    const ps = findChildrenByType(div, "p");
+    const em = findChildByType(ps[0], "em");
     const emText = findChildByType(em, "TEXT");
-    const p = findChildByType(div, "p");
-    const pText = findChildByType(p, "TEXT");
+    const pText = findChildByType(ps[1], "TEXT");
     it("rendered caption", () => should(emText.props.text).containEql("The caption"));
     it("rendered value", () => should(pText.props.text).containEql("the value"));
     it("rendered class", () => should(div.props.class).containEql("myclass"));
@@ -257,6 +260,23 @@ describe("Common components", () => {
         textArea.props.onkeyup({ target: { value: "value" } });
         td.verify(onchange.onchange("value"));
       });
+    });
+
+    it("hides caption if it's not there", () => {
+      // given
+      const props: MarkdownInputProps = {};
+      const component = MarkdownInput(props);
+
+      // when
+      const rendered = component.render();
+      const div = rendered;
+      const caption = findChildByType(div, "p");
+      const textArea = findChildByType(div, "textarea");
+
+      // then
+      should(div.type).equal("div");
+      should(caption).be.undefined();
+      should(textArea).not.be.undefined();
     })
   });
 });

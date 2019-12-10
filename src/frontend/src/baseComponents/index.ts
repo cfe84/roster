@@ -3,11 +3,13 @@ import { DateInput, DateInputComponent } from "./DateInputComponent";
 import { ButtonComponent, Button } from "./ButtonComponent";
 import { TextDisplayComponent, TextDisplay } from "./TextDisplayComponent";
 import { MarkdownInput, MarkdownInputComponent } from "./MarkdownInputComponent";
+import { CaptionComponent, Caption } from "./CaptionComponent";
 
 export {
   TextInput, TextInputComponent,
   DateInput, DateInputComponent,
   Button, ButtonComponent,
   TextDisplay, TextDisplayComponent,
-  MarkdownInput, MarkdownInputComponent
+  MarkdownInput, MarkdownInputComponent,
+  Caption, CaptionComponent
 }
