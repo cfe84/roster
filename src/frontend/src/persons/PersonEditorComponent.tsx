@@ -22,14 +22,14 @@ export class PersonEditorComponent extends Component {
       <h2 class="text-center">{this.props.actionName || "Add a person"} {this.props.person.name}</h2>
       <form class="form-create-element">
         <TextInput caption="Name" object={person} field="name"></TextInput>
-        <DateInput caption="In company since" value={person.inCompanySince} onchange={(value) => person.inCompanySince = value}></DateInput>
+        <DateInput caption="In company since" object={person} field="inCompanySince"></DateInput>
         <div class="row">
           <TextInput class="col-4" caption="Position / rank" object={person} field="position"></TextInput>
-          <DateInput class="col" caption="In position since" value={person.inPositionSince} onchange={(value) => person.inPositionSince = value}></DateInput>
+          <DateInput class="col" caption="In position since" object={person} field="inPositionSince"></DateInput>
         </div>
         <div class="row">
           <TextInput class="col-4" caption="Role in team" object={person} field="role"></TextInput>
-          <DateInput class="col" caption="In team since" value={person.inTeamSince} onchange={(value) => person.inTeamSince = value}></DateInput>
+          <DateInput class="col" caption="In team since" object={person} field="inTeamSince"></DateInput>
         </div>
 
         <button class="btn btn-primary" onclick={(() => this.props.onValidate(person))}><i class="fa fa-save"></i> {this.props.actionName || "Create"} person</button>
