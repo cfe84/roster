@@ -23,20 +23,17 @@ describe("Utils", () => {
     }));
 
     const datesToParse = [
-      { input: "Fri Dec 06 2019", expected: new Date(2019, 12, 6) },
-      { input: "2019-01-02", expected: new Date(2019, 1, 2) },
+      { input: "2018-12-06", expected: new Date(2018, 11, 6) },
+      { input: "2019-01-02", expected: new Date(2019, 0, 2) },
       { input: "", expected: null },
       { input: null, expected: null },
     ];
-    dates.forEach((date) => it(`should parse ${date.input} to ${date.expected}`, async () => {
+    datesToParse.forEach((date) => it(`should parse ${date.input} to ${date.expected}`, async () => {
       // given
       const d = dateUtils.parseDate(date.input);
 
-      // when
-      const printed = dateUtils.format(d);
-
       // then
-      should(printed).equal(date.expected);
+      should(d).eql(date.expected);
     }));
   });
 

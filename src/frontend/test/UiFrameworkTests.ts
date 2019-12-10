@@ -99,7 +99,7 @@ describe("UI Framework", () => {
         should(rendered.props.children[0]).match((child: UIElement) => {
           child.type === "async-element" && child.props["prop1"] === "prop1"
         });
-      })
+      });
     });
 
     context("Render DOM object", () => {
@@ -183,7 +183,7 @@ describe("UI Framework", () => {
         should(dom).equal(fakeElement);
         td.verify(fakeElement.setAttribute("id", "id-1"));
         td.verify(fakeElement.setProperty("onstuff", handler));
-      })
+      });
     })
   })
 })

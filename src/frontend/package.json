@@ -78,6 +78,8 @@
     "webpack-cli": "^3.3.10"
   },
   "dependencies": {
-    "marked": "^0.7.0"
+    "@types/moment": "^2.13.0",
+    "marked": "^0.7.0",
+    "moment": "^2.24.0"
   }
 }
