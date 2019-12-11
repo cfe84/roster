@@ -2,7 +2,7 @@ import { UIElement, Component } from "../html/index";
 import { Person } from "./Person";
 import { NotesController } from "../notes";
 import { dateUtils } from "../utils/dateUtils";
-import { Button, TextDisplay } from "../baseComponents";
+import { Button, TextDisplay, DateDisplay } from "../baseComponents";
 import { DiscussionController } from "../discussions";
 
 interface PersonOverviewProps {
@@ -27,19 +27,19 @@ export class PersonOverviewComponent extends Component {
       <div class="row">
         <div class="col-sm">
           <h3>Details</h3>
-          <TextDisplay caption="In company since" value={dateUtils.format(person.inCompanySince)}></TextDisplay>
+          <DateDisplay caption="In company since" value={person.inCompanySince} includeTimespan={true} />
           <div class="row">
             <TextDisplay class="col-4" caption="Position / rank" value={person.position}></TextDisplay>
-            <TextDisplay class="col" caption="In position since" value={dateUtils.format(person.inPositionSince)}></TextDisplay>
+            <DateDisplay class="col" caption="In position since" includeTimespan={true} value={person.inPositionSince} />
           </div>
           <div class="row">
             <TextDisplay class="col-4" caption="Role in team" value={person.role}></TextDisplay>
-            <TextDisplay class="col" caption="Joined team on " value={dateUtils.format(person.inTeamSince)}></TextDisplay>
+            <DateDisplay class="col" caption="Joined team" value={person.inTeamSince} includeTimespan={true} />
           </div>
 
           <div class="d-flex">
-            <Button icon="times" class="btn-danger" type="secondary" onclick={this.props.onExitClicked} text="Delete"></Button>
-            <Button icon="pen" class="ml-auto w-5 mr-2" type="primary" onclick={this.props.onEditClicked} text="Edit"></Button>
+            {/* <Button icon="times" class="btn-danger" type="secondary" onclick={this.props.onExitClicked} text="Delete"></Button> */}
+            <Button icon="pen" class="w-5 mr-2" type="primary" onclick={this.props.onEditClicked} text="Edit"></Button>
             <Button icon="arrow-left" class="w-5" type="secondary" onclick={this.props.onExitClicked} text="Back"></Button>
           </div>
         </div>

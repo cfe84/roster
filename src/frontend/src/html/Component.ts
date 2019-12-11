@@ -25,7 +25,7 @@ export abstract class Component {
   }
 
   private static createText(text: string) {
-    return new UIElement(TEXT_TYPE, { text });
+    return new UIElement(TEXT_TYPE, { text: (text !== null && text !== undefined) ? text : "" });
   }
 
   public ondispose() { }

@@ -10,7 +10,7 @@ export class CaptionComponent extends Component {
   }
 
   render = (): UIElement => {
-    const component = this.props.caption ? <p><em class="mb-1">{this.props.caption}</em></p> : ""
+    const component = this.props.caption ? <p><em class="color-strong mb-1">{this.props.caption}</em></p> : ""
     return component;
   }
 }

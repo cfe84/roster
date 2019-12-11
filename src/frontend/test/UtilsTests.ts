@@ -50,7 +50,26 @@ describe("Utils", () => {
 
       // then
       should(res).eql(date.expected);
-    }))
+    }));
+
+    const now = new Date();
+    const oneMinuteAgo = new Date(); oneMinuteAgo.setMinutes(oneMinuteAgo.getMinutes() - 1);
+    const twoMinutesAgo = new Date(); twoMinutesAgo.setMinutes(twoMinutesAgo.getMinutes() - 2);
+    const twoDaysAgo = new Date(); twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+    const inTwoDays = new Date(); inTwoDays.setDate(inTwoDays.getDate() + 2);
+    const timespans = [
+      { input: oneMinuteAgo, expected: "a minute ago" },
+      { input: twoMinutesAgo, expected: "2 minutes ago" },
+      { input: twoDaysAgo, expected: "2 days ago" },
+      { input: inTwoDays, expected: "in 2 days" },
+    ]
+    timespans.forEach((timespan) => it(`should output ${timespan.input} as ${timespan.expected}`, () => {
+      // given
+      const res = dateUtils.timeSpan(timespan.input);
+      // then
+
+      should(res).eql(timespan.expected);
+    }));
   });
 
   context("Object utils", () => {

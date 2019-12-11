@@ -60,7 +60,7 @@ describe("Common components", () => {
       });
     });
 
-    it("use the object if specified", () => {
+    it("uses the object if specified", () => {
       // given
       const initialValue = "initial value";
       const newValue = "new value";
@@ -80,6 +80,25 @@ describe("Common components", () => {
       // then
       should((props.object as any)[fieldName]).eql(newValue);
       should(elements.input.props.value).eql(initialValue)
+    });
+
+    it("sets default value to empty string if undefined", () => {
+      // given
+      const initialValue = undefined;
+      const fieldName = "fieldname";
+      const props: TextInputProps = {
+        object: { "fieldname": initialValue },
+        caption: "cap",
+        field: fieldName
+      };
+
+      // when
+      const component = TextInput(props);
+      const rendered = component.render();
+      const elements = getTextInputElements(rendered);
+
+      // then
+      should(elements.input.props.value).eql("")
     });
   });
   context("Date input", () => {

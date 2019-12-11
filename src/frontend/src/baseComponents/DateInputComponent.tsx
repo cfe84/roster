@@ -13,8 +13,8 @@ export interface DateInputProps {
   placeholder?: string,
   class?: string,
   object?: any,
-  field?: string
-  value?: Date
+  field?: string,
+  value?: Date,
 }
 
 const getOnChange = (onchange?: onChangeDelegate, object?: object, field?: string): onTxtChangeDelegate => {

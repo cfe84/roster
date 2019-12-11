@@ -23,4 +23,9 @@ export class dateUtils {
     return moment(Date.parse(str)).isValid();
   }
 
+  public static timeSpan = (date: Date): string => {
+    const dt = moment(date);
+    return dt.fromNow();
+  }
+
 }

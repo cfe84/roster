@@ -5,6 +5,7 @@ import { TextDisplayComponent, TextDisplay } from "./TextDisplayComponent";
 import { MarkdownInput, MarkdownInputComponent } from "./MarkdownInputComponent";
 import { CaptionComponent, Caption } from "./CaptionComponent";
 import { ListItem, ListItemComponent } from "./ListItemComponent";
+import { DateDisplayComponent, DateDisplay } from "./DateDisplayComponent";
 
 export {
   TextInput, TextInputComponent,
@@ -13,5 +14,6 @@ export {
   TextDisplay, TextDisplayComponent,
   MarkdownInput, MarkdownInputComponent,
   Caption, CaptionComponent,
-  ListItem, ListItemComponent
+  ListItem, ListItemComponent,
+  DateDisplay, DateDisplayComponent
 }

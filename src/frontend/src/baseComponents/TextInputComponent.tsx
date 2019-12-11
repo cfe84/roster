@@ -48,7 +48,7 @@ export class TextInputComponent extends Component {
         onkeyup={onchange}
         placeholder={this.props.placeholder || this.props.caption || ""}
         type="text"
-        value={value}></input>
+        value={value || ""}></input>
     </div>
     return component;
   }
