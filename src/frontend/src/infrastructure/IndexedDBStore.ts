@@ -136,6 +136,9 @@ export class IndexedDBStore implements IPersonStore, INotesStore, IDiscussionSto
   public updatePersonAsync = async (person: Person): Promise<void> => {
     await this.db.putEntityAsync(OBJECTSTORE_PEOPLE, person);
   }
+  public deletePersonAsync = async (person: Person): Promise<void> => {
+    await this.db.deleteEntityAsync(OBJECTSTORE_PEOPLE, person.id);
+  }
 
   public getNotesAsync = async (): Promise<Note[]> =>
     (await this.db.getAllAsync<Note>(OBJECTSTORE_NOTES))

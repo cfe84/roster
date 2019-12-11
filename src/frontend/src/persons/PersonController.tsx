@@ -10,6 +10,8 @@ import { PersonListComponent } from "./PersonListComponent";
 import { PersonEditorComponent } from "./PersonEditorComponent";
 import { PersonOverviewComponent } from "./PersonOverviewComponent";
 import { DiscussionController } from "../discussions";
+import { PersonDeletedEvent } from "./PersonDeletedEvent";
+import { ConfirmationDialog } from "../baseComponents/ConfirmationDialog";
 
 export class PersonController {
   constructor(private eventBus: EventBus, private uiContainer: UIContainer, private peopleStore: IPersonStore, private notesController: NotesController, private discussionController: DiscussionController) {
@@ -66,6 +68,7 @@ export class PersonController {
       person={person}
       onCancel={this.uiContainer.unmountCurrent}
       onValidate={commitEditPerson}
+      onDelete={() => this.displayDeletePerson(person)}
     ></PersonEditor>;
     this.uiContainer.mount(component);
   }
@@ -81,6 +84,18 @@ export class PersonController {
       onValidate={addPerson}
       person={person}
     > </PersonEditor>;
+    this.uiContainer.mount(component);
+  }
+
+  private displayDeletePerson = (person: Person): void => {
+    const deletePerson = () => {
+      this.eventBus.publishAsync(new PersonDeletedEvent(person)).then(() => this.uiContainer.unmountCurrent())
+    }
+    const component = <ConfirmationDialog
+      oncancel={this.uiContainer.unmountCurrent}
+      onyes={deletePerson}
+      text={`Are you sure you want to delete "${person.name}"?`}
+      title={`Confirm deletion of ${person.name}`} />
     this.uiContainer.mount(component);
   }
 }

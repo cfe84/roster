@@ -7,6 +7,7 @@ interface PersonEditorProps {
   actionName?: string,
   person: Person,
   onValidate: ((person: Person) => void),
+  onDelete?: (() => void)
   onCancel: (() => void)
 }
 
@@ -18,6 +19,7 @@ export class PersonEditorComponent extends Component {
 
     const person = objectUtils.clone(this.props.person);
     const saveBtn = (this.props.actionName || "Create") + " person";
+    const deleteBtn = this.props.onDelete ? <Button class="ml-auto" icon="trash" onclick={this.props.onDelete} type="delete" text="Delete"></Button> : "";
     return <div>
       <h2 class="text-center">{this.props.actionName || "Add a person"} {this.props.person.name}</h2>
       <form class="form-create-element">
@@ -31,8 +33,11 @@ export class PersonEditorComponent extends Component {
           <TextInput class="col-4" caption="Role in team" object={person} field="role"></TextInput>
           <DateInput class="col" caption="In team since" object={person} field="inTeamSince"></DateInput>
         </div>
-        <Button icon="save" class="mr-2" onclick={(() => this.props.onValidate(person))} text={saveBtn}></Button>
-        <Button icon="times" onclick={this.props.onCancel} type="secondary" text="Cancel"></Button>
+        <span class="d-flex">
+          <Button icon="save" class="mr-2" onclick={(() => this.props.onValidate(person))} text={saveBtn}></Button>
+          <Button icon="times" onclick={this.props.onCancel} type="secondary" text="Cancel"></Button>
+          {deleteBtn}
+        </span>
       </form>
     </div >;
   }
