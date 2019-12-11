@@ -4,12 +4,15 @@ import { Note } from "../notes";
 import { Discussion } from "../discussions";
 import { IStore } from "../storage/IStore";
 import { IDiscussionStore } from "../discussions/IDiscussionStore";
+import { IDeadlineStore } from "../deadlines/IDeadlineStore";
+import { Deadline } from "../deadlines";
 
 const DB_NAME: string = "rosterdb";
-const DB_VERSION: number = 4;
+const DB_VERSION: number = 5;
 const OBJECTSTORE_PEOPLE: string = "people";
 const OBJECTSTORE_NOTES: string = "notes";
 const OBJECTSTORE_DISCUSSIONS: string = "discussions";
+const OBJECTSTORE_DEADLINES: string = "deadlines";
 
 const getTarget = <T>(evt: any): T => (evt.target as T)
 
@@ -95,7 +98,8 @@ class AsyncIndexedDB {
     });
 }
 
-export class IndexedDBStore implements IPersonStore, INotesStore, IDiscussionStore {
+export class IndexedDBStore implements IPersonStore, INotesStore, IDiscussionStore, IDeadlineStore {
+
 
   private static createObjectStore(db: IDBDatabase, storeName: string, parameters: IDBObjectStoreParameters): IDBObjectStore | null {
     const storeAlreadyExists = db.objectStoreNames.contains(storeName)
@@ -108,12 +112,17 @@ export class IndexedDBStore implements IPersonStore, INotesStore, IDiscussionSto
   }
   private static updateDatabase(db: IDBDatabase) {
     console.log(`Creating db in version ${DB_VERSION}`);
-    const peopleObjectStore = IndexedDBStore.createObjectStore(db, OBJECTSTORE_PEOPLE, { keyPath: "id" });
-    if (peopleObjectStore !== null) peopleObjectStore.createIndex("name", "name", { unique: false });
-    const notesObjectStore = IndexedDBStore.createObjectStore(db, OBJECTSTORE_NOTES, { keyPath: "id" });
-    if (notesObjectStore !== null) notesObjectStore.createIndex("personid", "personid", { unique: false });
-    const discussionObjectStore = IndexedDBStore.createObjectStore(db, OBJECTSTORE_DISCUSSIONS, { keyPath: "id" });
-    if (discussionObjectStore !== null) discussionObjectStore.createIndex("personid", "personid", { unique: false });
+    const stores = [
+      { name: OBJECTSTORE_PEOPLE, key: "id", index: "name" },
+      { name: OBJECTSTORE_NOTES, key: "id", index: "personid" },
+      { name: OBJECTSTORE_DISCUSSIONS, key: "id", index: "personid" },
+      { name: OBJECTSTORE_DEADLINES, key: "id", index: "personid" },
+    ];
+    stores.forEach((storeInfo) => {
+      const store = IndexedDBStore.createObjectStore(db, storeInfo.name, { keyPath: storeInfo.key });
+      if (store)
+        store.createIndex(storeInfo.index, storeInfo.index, { unique: false });
+    });
   }
 
   static OpenDbAsync = async (): Promise<IndexedDBStore> => {
@@ -169,5 +178,19 @@ export class IndexedDBStore implements IPersonStore, INotesStore, IDiscussionSto
   }
   public deleteDiscussionAsync = async (element: Discussion): Promise<void> => {
     await this.db.deleteEntityAsync(OBJECTSTORE_DISCUSSIONS, element.id);
+  }
+
+  public getDeadlinesAsync = async (): Promise<Deadline[]> =>
+    (await this.db.getAllAsync<Deadline>(OBJECTSTORE_DEADLINES))
+      .sort((a, b) => (a.deadline.getTime() < b.deadline.getTime() ? 1 : -1))
+
+  public createDeadlineAsync = async (element: Deadline): Promise<void> => {
+    await this.db.createEntityAsync(OBJECTSTORE_DEADLINES, element);
+  }
+  public updateDeadlineAsync = async (element: Deadline): Promise<void> => {
+    await this.db.putEntityAsync(OBJECTSTORE_DEADLINES, element);
+  }
+  public deleteDeadlineAsync = async (element: Deadline): Promise<void> => {
+    await this.db.deleteEntityAsync(OBJECTSTORE_DEADLINES, element.id);
   }
 }

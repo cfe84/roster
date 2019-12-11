@@ -7,7 +7,7 @@ interface ListProps<T> {
   elements: T[],
   elementDisplay: ((element: T) => UIElement),
   onClicked: ((element: T) => void),
-  onAddClicked: (() => void),
+  onAddClicked?: (() => void),
   onEditClicked: ((element: T) => void)
 }
 
@@ -21,12 +21,14 @@ export class ListComponent<T> extends Component {
         onEditClicked: () => this.props.onEditClicked(element)
       }));
 
+    const addButton = this.props.onAddClicked ? <Button onclick={this.props.onAddClicked} icon="plus" text="Add" /> : ""
+
     return <div>
       <ul class="list-group flex-column" id="elements">
         {rows}
       </ul>
       <br />
-      <Button onclick={this.props.onAddClicked} icon="plus" text="Add" />
+      {addButton}
     </div>;
   }
 }

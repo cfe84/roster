@@ -12,10 +12,15 @@ import { PersonOverviewComponent } from "./PersonOverviewComponent";
 import { DiscussionController } from "../discussions";
 import { PersonDeletedEvent } from "./PersonDeletedEvent";
 import { ConfirmationDialog } from "../baseComponents/ConfirmationDialog";
+import { DeadlineController } from "../deadlines";
 
 export class PersonController {
-  constructor(private eventBus: EventBus, private uiContainer: UIContainer, private peopleStore: IPersonStore, private notesController: NotesController, private discussionController: DiscussionController) {
+  constructor(private eventBus: EventBus, private uiContainer: UIContainer,
+    private peopleStore: IPersonStore, private notesController: NotesController, private discussionController: DiscussionController,
+    private deadlineController: DeadlineController) {
   }
+
+  rootComponent?: PersonListComponent;
 
   public loadPeopleListAsync = async (): Promise<PersonListComponent> => {
     const people = await this.peopleStore.getPeopleAsync();
@@ -38,6 +43,7 @@ export class PersonController {
       this.eventBus.unsubscribe(subscription1);
       this.eventBus.unsubscribe(subscription2);
     }
+    this.rootComponent = component;
     return component;
   }
 
@@ -46,6 +52,7 @@ export class PersonController {
       person={person}
       notesController={this.notesController}
       discussionController={this.discussionController}
+      deadlineController={this.deadlineController}
       onEditClicked={() => this.displayEditPerson(person)}
       onExitClicked={this.uiContainer.unmountCurrent}
     ></PersonOverview>;
@@ -89,7 +96,9 @@ export class PersonController {
 
   private displayDeletePerson = (person: Person): void => {
     const deletePerson = () => {
-      this.eventBus.publishAsync(new PersonDeletedEvent(person)).then(() => this.uiContainer.unmountCurrent())
+      this.eventBus.publishAsync(new PersonDeletedEvent(person)).then(() => {
+        this.uiContainer.unmountCurrent()
+      })
     }
     const component = <ConfirmationDialog
       oncancel={this.uiContainer.unmountCurrent}

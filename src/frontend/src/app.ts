@@ -8,6 +8,8 @@ import { DashboardController } from "./dashboard/DashboardController";
 import { FontAwesomeLoader } from "./utils/FontAwesomeLoader";
 import { DiscussionController } from "./discussions";
 import { StoreDiscussionsChangesReactor } from "./discussions/StoreDiscussionsChangesReactor";
+import { DeadlineController } from "./deadlines";
+import { StoreDeadlinesChangesReactor } from "./deadlines/StoreDeadlinesChangesReactor";
 
 class App {
   private eventBus: EventBus = new EventBus(true);
@@ -31,11 +33,15 @@ class App {
       notesReactor.registerReactors(this.eventBus);
       const discussionReactor = new StoreDiscussionsChangesReactor(dbStore);
       discussionReactor.registerReactors(this.eventBus);
+      const deadlineReactor = new StoreDeadlinesChangesReactor(dbStore);
+      deadlineReactor.registerReactors(this.eventBus);
       const notesController = new NotesController({ uiContainer, db: dbStore, eventBus: this.eventBus });
       const discussionController = new DiscussionController({ db: dbStore, eventBus: this.eventBus, uiContainer })
-      const peopleController = new PersonController(this.eventBus, uiContainer, dbStore, notesController, discussionController);
+      const deadlineController = new DeadlineController({ db: dbStore, eventBus: this.eventBus, uiContainer });
+      const peopleController = new PersonController(this.eventBus, uiContainer, dbStore, notesController, discussionController, deadlineController);
       const dashboardController = new DashboardController({
         container: uiContainer,
+        deadlineController: deadlineController,
         personController: peopleController
       })
       dashboardController.displayDashboard();

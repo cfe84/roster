@@ -27,7 +27,7 @@ export class NotesListComponent extends Component {
       </ul>
       <br />
       <button class="btn btn-primary"
-        onclick={this.props.onAddNoteClicked}><i class="fa fa-plus"></i> Add note</button>
+        onclick={this.props.onAddNoteClicked}><i class="fa fa-plus"></i> Add</button>
     </div>;
   }
 }

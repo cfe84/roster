@@ -47,4 +47,14 @@ export class UIContainer {
     this.currentElement = this.stack.pop() || null;
     this.renderAsync().then(() => { });
   }
+
+  unmountTo = (target: Component) => {
+    // doesnt work with html rendering as is...
+    if (this.currentElement === null) {
+      throw Error("Didn't find the target component")
+    }
+    while (this.currentElement !== target) {
+      this.unmountCurrent();
+    }
+  }
 }

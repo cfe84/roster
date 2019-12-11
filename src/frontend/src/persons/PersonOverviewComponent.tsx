@@ -4,11 +4,13 @@ import { NotesController } from "../notes";
 import { dateUtils } from "../utils/dateUtils";
 import { Button, TextDisplay, DateDisplay } from "../baseComponents";
 import { DiscussionController } from "../discussions";
+import { DeadlineController } from "../deadlines";
 
 interface PersonOverviewProps {
   person: Person,
   notesController: NotesController,
   discussionController: DiscussionController,
+  deadlineController: DeadlineController,
   onEditClicked: (() => void)
   onExitClicked: (() => void)
 }
@@ -19,10 +21,11 @@ export class PersonOverviewComponent extends Component {
 
   public render = async (): Promise<UIElement> => {
     const person = this.props.person;
-    const notesList = await this.props.notesController.getNotesListAsync(
-      this.props.person.id);
-    const discussionList = await this.props.discussionController.getDiscussionListAsync(this.props.person.id);
+    const notesList = await this.props.notesController.getNotesListAsync(person.id);
+    const discussionList = await this.props.discussionController.getDiscussionListAsync(person.id);
+    const deadlinesList = await this.props.deadlineController.getDeadlineListAsync(person.id);
     return <div>
+      <Button icon="arrow-left" class="w-5" type="secondary" onclick={this.props.onExitClicked} text="Back"></Button>
       <h3 class="text-center"><i class="fa fa-user"></i> {person.name}</h3>
       <div class="row">
         <div class="col-sm">
@@ -40,8 +43,9 @@ export class PersonOverviewComponent extends Component {
           <div class="d-flex">
             {/* <Button icon="times" class="btn-danger" type="secondary" onclick={this.props.onExitClicked} text="Delete"></Button> */}
             <Button icon="pen" class="w-5 mr-2" type="primary" onclick={this.props.onEditClicked} text="Edit"></Button>
-            <Button icon="arrow-left" class="w-5" type="secondary" onclick={this.props.onExitClicked} text="Back"></Button>
           </div>
+          <h3 class="text-center mt-4"><i class="fa fa-calendar-day"></i> Deadlines</h3>
+          {deadlinesList}
         </div>
         <div class="col-sm">
           <h3 class="text-center"><i class="fa fa-comments"></i> Discussions</h3>

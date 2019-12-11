@@ -45,7 +45,7 @@ export class DiscussionController {
       notes: "",
       preparation: "",
       date: new Date(),
-      description: name + " - " + dateUtils.format(new Date()),
+      description: name,
       id: GUID.newGuid(),
       personId: personId
     }
