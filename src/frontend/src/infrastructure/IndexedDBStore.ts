@@ -84,6 +84,15 @@ class AsyncIndexedDB {
         (request: IDBRequest<IDBValidKey>) => resolve(),
         (request: IDBRequest<IDBValidKey>) => reject(request.error));
     });
+
+  public deleteEntityAsync = (storeName: string, entityId: string): Promise<void> =>
+    new Promise((resolve, reject) => {
+      const objectStore = this.createDbTransaction(storeName, "readwrite");
+      const request = objectStore.delete(entityId);
+      AsyncIndexedDB.addEventHandlersToRequest(request,
+        (request: IDBRequest<undefined>) => resolve(),
+        (request: IDBRequest<undefined>) => reject(request.error));
+    });
 }
 
 export class IndexedDBStore implements IPersonStore, INotesStore, IDiscussionStore {
@@ -141,6 +150,10 @@ export class IndexedDBStore implements IPersonStore, INotesStore, IDiscussionSto
     await this.db.putEntityAsync(OBJECTSTORE_NOTES, note);
   }
 
+  public deleteNoteAsync = async (note: Note): Promise<void> => {
+    await this.db.deleteEntityAsync(OBJECTSTORE_NOTES, note.id);
+  }
+
   public getDiscussionsAsync = async (): Promise<Discussion[]> =>
     (await this.db.getAllAsync<Discussion>(OBJECTSTORE_DISCUSSIONS))
       .sort((a, b) => (a.date.getTime() < b.date.getTime() ? 1 : -1));
@@ -150,5 +163,8 @@ export class IndexedDBStore implements IPersonStore, INotesStore, IDiscussionSto
   }
   public updateDiscussionAsync = async (element: Discussion): Promise<void> => {
     await this.db.putEntityAsync(OBJECTSTORE_DISCUSSIONS, element);
+  }
+  public deleteDiscussionAsync = async (element: Discussion): Promise<void> => {
+    await this.db.deleteEntityAsync(OBJECTSTORE_DISCUSSIONS, element.id);
   }
 }

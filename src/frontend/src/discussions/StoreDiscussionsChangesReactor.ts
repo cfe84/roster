@@ -2,6 +2,7 @@ import { EventBus, IEvent } from "../events";
 import { IDiscussionStore } from "./IDiscussionStore";
 import { DiscussionCreatedEvent } from "./DiscussionCreatedEvent";
 import { DiscussionUpdatedEvent } from "./DiscussionUpdatedEvent";
+import { DiscussionDeletedEvent } from "./DiscussionDeletedEvent";
 
 export class StoreDiscussionsChangesReactor {
   constructor(private store: IDiscussionStore) { }
@@ -13,5 +14,8 @@ export class StoreDiscussionsChangesReactor {
     eventBus.subscribe(DiscussionUpdatedEvent.type, async (evt: DiscussionUpdatedEvent) => {
       await this.store.updateDiscussionAsync(evt.discussion);
     });
+    eventBus.subscribe(DiscussionDeletedEvent.type, async (evt: DiscussionDeletedEvent) => {
+      await this.store.deleteDiscussionAsync(evt.discussion);
+    })
   }
 }

@@ -4,4 +4,5 @@ export interface INotesStore {
   getNotesAsync(): Promise<Note[]>;
   createNoteAsync(note: Note): Promise<void>;
   updateNoteAsync(note: Note): Promise<void>;
+  deleteNoteAsync(note: Note): Promise<void>;
 }

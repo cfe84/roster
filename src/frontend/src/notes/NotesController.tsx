@@ -9,6 +9,8 @@ import { EventBus } from "../events";
 import { NoteCreatedEvent } from "./NoteCreatedEvent";
 import { NoteUpdatedEvent } from "./NoteUpdatedEvent";
 import { NoteReaderComponent, NoteReader } from "./NoteReaderComponent";
+import { ConfirmationDialogComponent, ConfirmationDialog } from "../baseComponents/ConfirmationDialog";
+import { NoteDeletedEvent } from "./NoteDeletedEvent";
 
 export interface NotesControllerDependencies {
   uiContainer: UIContainer,
@@ -64,7 +66,8 @@ export class NotesController {
     const component: NoteReaderComponent = <NoteReader
       note={note}
       onBack={this.deps.uiContainer.unmountCurrent}
-      onEdit={(note: Note) => this.displayEditNote(note)}
+      onEdit={() => this.displayEditNote(note)}
+      onDelete={() => this.displayDeleteNote(note)}
     ></NoteReader>
     const subscription = this.deps.eventBus.subscribe(NoteUpdatedEvent.type, (evt: NoteUpdatedEvent) => {
       component.props.note = evt.note;
@@ -86,6 +89,19 @@ export class NotesController {
       onCancel={this.deps.uiContainer.unmountCurrent}
       onValidate={commitEditNote}
     ></NoteEditor>;
+    this.deps.uiContainer.mount(component);
+  }
+
+  private displayDeleteNote = (note: Note): void => {
+    const deleteNote = () => {
+      this.deps.eventBus.publishAsync(new NoteDeletedEvent(note)).then(() => this.deps.uiContainer.unmountCurrent())
+
+    }
+    const component = <ConfirmationDialog
+      oncancel={this.deps.uiContainer.unmountCurrent}
+      onyes={deleteNote}
+      text={`Are you sure you want to delete note "${note.title}"?`}
+      title="Confirm note deletion" />
     this.deps.uiContainer.mount(component);
   }
 

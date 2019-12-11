@@ -11,6 +11,8 @@ import { GUID } from "../utils/guid";
 import { DiscussionCreatedEvent } from "./DiscussionCreatedEvent";
 import { DiscussionUpdatedEvent } from "./DiscussionUpdatedEvent";
 import { DiscussionReader, DiscussionReaderComponent } from "./DiscussionReaderComponent";
+import { ConfirmationDialog } from "../baseComponents/ConfirmationDialog";
+import { DiscussionDeletedEvent } from "./DiscussionDeletedEvent";
 
 export interface DiscussionControllerDependencies {
   db: IDiscussionStore,
@@ -76,14 +78,30 @@ export class DiscussionController {
     const component: DiscussionReaderComponent = <DiscussionReader
       discussion={discussion}
       onBack={this.deps.uiContainer.unmountCurrent}
+      onDelete={() => { this.displayDeleteDiscussion(discussion) }}
       onEdit={() => this.loadEditDiscussion(discussion)}
     ></DiscussionReader>
-    const subscription = this.deps.eventBus.subscribe(DiscussionUpdatedEvent.type, (evt: DiscussionUpdatedEvent) => {
+    const updateSubscription = this.deps.eventBus.subscribe(DiscussionUpdatedEvent.type, (evt: DiscussionUpdatedEvent) => {
       if (evt.discussion.id === discussion.id)
         component.props.discussion = evt.discussion;
       this.deps.uiContainer.rerenderIfCurrent(component);
     });
-    component.ondispose = () => subscription.unsubscribe();
+    component.ondispose = () => {
+      updateSubscription.unsubscribe()
+    };
+    this.deps.uiContainer.mount(component);
+  }
+
+  private displayDeleteDiscussion = (discussion: Discussion): void => {
+    const deleteNote = () => {
+      this.deps.eventBus.publishAsync(new DiscussionDeletedEvent(discussion))
+        .then(() => this.deps.uiContainer.unmountCurrent());
+    }
+    const component = <ConfirmationDialog
+      oncancel={this.deps.uiContainer.unmountCurrent}
+      onyes={deleteNote}
+      text={`Are you sure you want to delete discussion "${discussion.description}"?`}
+      title="Confirm deletion" />
     this.deps.uiContainer.mount(component);
   }
 }

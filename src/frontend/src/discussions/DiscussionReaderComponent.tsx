@@ -5,10 +5,12 @@ import marked from "marked";
 import { GUID } from "../utils/guid";
 import { MarkdownDisplay } from "../baseComponents/MarkdownDisplayComponent";
 import { Discussion } from ".";
+import { Button } from "../baseComponents";
 
 interface DiscussionReaderProps {
   discussion: Discussion,
-  onEdit: ((discussion: Discussion) => void),
+  onEdit: (() => void),
+  onDelete: (() => void),
   onBack: (() => void)
 }
 
@@ -31,11 +33,13 @@ export class DiscussionReaderComponent extends Component {
       <p class="text-center"><small class="mb-1 ml-auto color-medium">{dateUtils.format(discussion.date)}</small></p>
       {preparationMarkdownDisplay.render()}
       {meetingNotesMarkdownDisplay.render()}
-      <button class="btn btn-primary" onclick={() => this.props.onEdit(discussion)}><i class="fa fa-pen"></i> Edit</button>
-      &nbsp;<button class="btn btn-secondary" onclick={this.props.onBack}><i class="fa fa-arrow-left"></i> Back</button>
+      <span class="d-flex">
+        <Button class="mr-2" type="primary" onclick={this.props.onEdit} icon="pen" text="Edit" />
+        <Button type="secondary" onclick={this.props.onBack} icon="arrow-left" text="Back" />
+        <Button type="delete" class="ml-auto" onclick={this.props.onDelete} icon="trash" text="Delete" />
+      </span>
     </div>;
   }
-
 }
 
 export const DiscussionReader = (props: DiscussionReaderProps) => new DiscussionReaderComponent(props);
