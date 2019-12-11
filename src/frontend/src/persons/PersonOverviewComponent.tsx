@@ -5,6 +5,7 @@ import { dateUtils } from "../utils/dateUtils";
 import { Button, TextDisplay, DateDisplay } from "../baseComponents";
 import { DiscussionController } from "../discussions";
 import { DeadlineController } from "../deadlines";
+import { PageTitle } from "../baseComponents/PageTitleComponent";
 
 interface PersonOverviewProps {
   person: Person,
@@ -25,8 +26,7 @@ export class PersonOverviewComponent extends Component {
     const discussionList = await this.props.discussionController.getDiscussionListAsync(person.id);
     const deadlinesList = await this.props.deadlineController.getDeadlineListAsync(person.id);
     return <div>
-      <Button icon="arrow-left" class="w-5" type="secondary" onclick={this.props.onExitClicked} text="Back"></Button>
-      <h3 class="text-center"><i class="fa fa-user"></i> {person.name}</h3>
+      <PageTitle title={person.name} icon="user" onBack={this.props.onExitClicked}></PageTitle>
       <div class="row">
         <div class="col-sm">
           <h3>Details</h3>
@@ -41,14 +41,11 @@ export class PersonOverviewComponent extends Component {
           </div>
 
           <div class="d-flex">
-            {/* <Button icon="times" class="btn-danger" type="secondary" onclick={this.props.onExitClicked} text="Delete"></Button> */}
             <Button icon="pen" class="w-5 mr-2" type="primary" onclick={this.props.onEditClicked} text="Edit"></Button>
           </div>
-          <h3 class="text-center mt-4"><i class="fa fa-calendar-day"></i> Deadlines</h3>
           {deadlinesList}
         </div>
         <div class="col-sm">
-          <h3 class="text-center"><i class="fa fa-comments"></i> Discussions</h3>
           {discussionList}
           {notesList}
         </div>

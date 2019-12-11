@@ -11,6 +11,7 @@ import { NoteUpdatedEvent } from "./NoteUpdatedEvent";
 import { NoteReaderComponent, NoteReader } from "./NoteReaderComponent";
 import { ConfirmationDialogComponent, ConfirmationDialog } from "../baseComponents/ConfirmationDialog";
 import { NoteDeletedEvent } from "./NoteDeletedEvent";
+import { List } from "../baseComponents/ListComponent";
 
 export interface NotesControllerDependencies {
   uiContainer: UIContainer,
@@ -27,14 +28,16 @@ export class NotesController {
     const notes = (await this.deps.db.getNotesAsync())
       .filter((note) => note.personId === personId)
       .sort((a, b) => a.title.localeCompare(b.title));
-    const component = <NotesList
-      notes={notes}
-      onAddNoteClicked={() => this.displayNewNote(personId)}
-      onEditNoteClicked={(note: Note) => { this.displayEditNote(note) }}
-      onNoteClicked={(note: Note) => { this.displayNoteReader(note) }}
-    ></NotesList>
-      ;
-    return component;
+    const list = <List
+      title="Notes"
+      titleIcon="sticky-note"
+      elements={notes}
+      elementDisplay={(note) => new UIElement("TEXT", { text: note.title })}
+      onAddClicked={() => this.displayNewNote(personId)}
+      onClicked={(note: Note) => { this.displayNoteReader(note) }}
+      onEditClicked={(note: Note) => { this.displayEditNote(note) }}
+    ></List>
+    return list;
   }
 
   public displayNewNote(personId: PersonId): void {

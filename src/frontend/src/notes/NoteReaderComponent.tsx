@@ -5,7 +5,7 @@ import { dateUtils } from "../utils/dateUtils";
 import marked from "marked";
 import { GUID } from "../utils/guid";
 import { MarkdownDisplay } from "../baseComponents/MarkdownDisplayComponent";
-import { DateDisplay, Button } from "../baseComponents";
+import { DateDisplay, Button, PageTitle } from "../baseComponents";
 
 interface NoteReaderProps {
   note: Note,
@@ -24,13 +24,12 @@ export class NoteReaderComponent extends Component {
       value={note.content}
     ></MarkdownDisplay>;
     return <div class="flex-column">
-      <h2 class="text-center"><i class="fa fa-sticky-note"></i> {this.props.note.title}</h2>
+      <PageTitle title={note.title} icon="sticky-note" onBack={this.props.onBack} />
       <p class="text-center row"><DateDisplay class="col" caption="Created" value={note.createdDate} /><DateDisplay class="col" caption="Last update" value={note.lastEditDate} /></p>
       {markdownDisplay.render()}
 
       <span class="d-flex">
-        <Button class="mr-2" type="primary" onclick={this.props.onEdit} icon="pen" text="Edit" />
-        <Button type="secondary" onclick={this.props.onBack} icon="arrow-left" text="Back" />
+        <Button type="primary" onclick={this.props.onEdit} icon="pen" text="Edit" />
         <Button type="delete" class="ml-auto" onclick={this.props.onDelete} icon="trash" text="Delete" />
       </span>
     </div>;

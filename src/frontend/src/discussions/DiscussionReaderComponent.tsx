@@ -5,7 +5,7 @@ import marked from "marked";
 import { GUID } from "../utils/guid";
 import { MarkdownDisplay } from "../baseComponents/MarkdownDisplayComponent";
 import { Discussion } from ".";
-import { Button } from "../baseComponents";
+import { Button, PageTitle } from "../baseComponents";
 
 interface DiscussionReaderProps {
   discussion: Discussion,
@@ -29,13 +29,12 @@ export class DiscussionReaderComponent extends Component {
       value={discussion.notes}
     ></MarkdownDisplay>;
     return <div class="flex-column">
-      <h2 class="text-center"><i class="fa fa-sticky-note"></i> {discussion.description}</h2>
+      <PageTitle title={discussion.description} icon="comments" onBack={this.props.onBack} />
       <p class="text-center"><small class="mb-1 ml-auto color-medium">{dateUtils.format(discussion.date)}</small></p>
       {preparationMarkdownDisplay.render()}
       {meetingNotesMarkdownDisplay.render()}
       <span class="d-flex">
-        <Button class="mr-2" type="primary" onclick={this.props.onEdit} icon="pen" text="Edit" />
-        <Button type="secondary" onclick={this.props.onBack} icon="arrow-left" text="Back" />
+        <Button type="primary" onclick={this.props.onEdit} icon="pen" text="Edit" />
         <Button type="delete" class="ml-auto" onclick={this.props.onDelete} icon="trash" text="Delete" />
       </span>
     </div>;

@@ -1,4 +1,4 @@
-import { TextInput, DateInput, CaptionComponent } from "../src/baseComponents";
+import { TextInput, DateInput, CaptionComponent, ListItemComponent } from "../src/baseComponents";
 import should from "should";
 import { TextInputProps } from "../src/baseComponents/TextInputComponent";
 import { UIElement } from "../src/html";
@@ -6,9 +6,10 @@ import * as td from "testdouble";
 import { DateInputProps } from "../src/baseComponents/DateInputComponent";
 import moment from "moment";
 import { dateUtils } from "../src/utils/dateUtils";
-import { ButtonProps, Button } from "../src/baseComponents/ButtonComponent";
+import { ButtonProps, Button, ButtonComponent } from "../src/baseComponents/ButtonComponent";
 import { TextDisplayComponent, TextDisplayProps, TextDisplay } from "../src/baseComponents/TextDisplayComponent";
 import { MarkdownInputProps, MarkdownInput } from "../src/baseComponents/MarkdownInputComponent";
+import { ListComponent, ListProps } from "../src/baseComponents/ListComponent";
 
 const findChildByType = (element: UIElement, type: any) =>
   element.props.children.find((child: UIElement) => child.type === type)
@@ -297,4 +298,66 @@ describe("Common components", () => {
       should(textArea).not.be.undefined();
     })
   });
+
+  context("List", () => {
+    class FakeClass { }
+    context("Base rendering", () => {
+      // given
+      const fake = td.object(["display", "addClicked", "clicked", "editClicked"]);
+      const elements = [new FakeClass(), new FakeClass()]
+      const fakeEvent = td.object(["stopPropagation"])
+      const title = "title-1";
+      const props: ListProps<FakeClass> = {
+        elementDisplay: (element) => fake.display(element),
+        elements,
+        title,
+        onAddClicked: () => fake.addClicked(),
+        onClicked: (element) => fake.clicked(element),
+        onEditClicked: (element) => fake.editClicked(element)
+      }
+
+      // when
+      const list = new ListComponent(props);
+      const rendered = list.render();
+      const div = rendered;
+      const ul = findChildByType(div, "ul");
+      const button: ButtonComponent = div.props.children.find((child: object) => child instanceof ButtonComponent)
+      const rows: ListItemComponent<FakeClass>[] = ul.props.children[0];
+      const renderedRows = rows.map(row => row.render())
+      const titleComponent = findChildByType(div, "h3");
+
+      button.props.onclick();
+      renderedRows.forEach((element: UIElement) => element.props.onclick());
+      renderedRows.forEach((element: UIElement) => findChildByType(findChildByType(element, "div"), "button").props.onclick(fakeEvent));
+
+
+      // then
+      it("should render children using elementDisplay", () => elements.forEach((element) => td.verify(fake.display(element))));
+      it("should handle addClicked", () => td.verify(fake.addClicked()));
+      it("should handle element clicked", () => elements.forEach(element => td.verify(fake.clicked(element))))
+      it("should handle element edit clicked", () => elements.forEach(element => td.verify(fake.editClicked(element))))
+      it("should render title when specified", () => {
+        should(titleComponent).not.be.undefined();
+        should(findChildrenByType(titleComponent, "TEXT")).matchAny(child => child.props.text === title)
+      });
+    });
+    it("hides title when not specified", () => {
+      // given
+      const elements = [new FakeClass];
+      const fake = td.object(["display"]);
+
+      // when
+      const list = new ListComponent({
+        elementDisplay: fake.display,
+        elements
+      })
+      const rendered = list.render();
+      const div = rendered;
+      const titleComponent = findChildByType(div, "h3");
+
+
+      // then
+      should(titleComponent).be.undefined();
+    })
+  })
 });

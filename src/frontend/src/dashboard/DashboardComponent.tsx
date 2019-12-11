@@ -19,7 +19,6 @@ export class DashboardComponent extends Component {
         {peopleList}
       </div>
       <div class="col-sm">
-        <h3>Deadlines</h3>
         {deadlines}
       </div>
     </div>;

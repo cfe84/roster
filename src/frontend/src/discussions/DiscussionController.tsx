@@ -30,6 +30,8 @@ export class DiscussionController {
       .sort((a, b) => a.date < b.date ? 1 : -1);
     const elementDisplay = (discussion: Discussion) => <span><span>{discussion.description}</span> - <span class="text-secondary">{dateUtils.timeSpan(discussion.date)}<i> ({dateUtils.format(discussion.date)})</i></span></span>
     const component = <List
+      title="Discussions"
+      titleIcon="comments"
       elements={discussions}
       onAddClicked={() => { this.loadCreateDiscussion(personId) }}
       onEditClicked={(discussion: Discussion) => { this.loadEditDiscussion(discussion) }}

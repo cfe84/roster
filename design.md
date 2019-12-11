@@ -4,10 +4,11 @@
 
 - Login
 - Lock with PIN-code.
-- Add **person** --> _person added_
-- Add **note** to a **person** --> _note added_
-- Add **relationships** between **persons** --> _relationship added_
-- Add **committment** to a **person** --> _committment added_
+- Add **person**
+- Add **note** to a **person**
+- Manage **deadlines** (promotions, raises, trainings, etc.)
+- Manage **actions** from both sides.
+- Add **committment** to a **person**
 - Logout
 
 # Design

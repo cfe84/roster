@@ -2,7 +2,7 @@ import { UIElement, Component } from "../html/index";
 import { dateUtils } from "../utils/dateUtils";
 import { MarkdownDisplay } from "../baseComponents/MarkdownDisplayComponent";
 import { Deadline } from ".";
-import { Button } from "../baseComponents";
+import { Button, PageTitle } from "../baseComponents";
 
 interface DeadlineReaderProps {
   deadline: Deadline,
@@ -22,13 +22,12 @@ export class DeadlineReaderComponent extends Component {
       value={deadline.notes}
     ></MarkdownDisplay>;
     return <div class="flex-column">
-      <h2 class="text-center"><i class="fa fa-calendar-day"></i> {deadline.description}</h2>
+      <PageTitle title={deadline.description} icon="calendar-day" onBack={this.props.onBack} />
       <h1 class="text-center color-primary">{dateUtils.format(deadline.deadline)}</h1>
       <p class="text-center color-primary">{dateUtils.timeSpan(deadline.deadline)}</p>
       {notes.render()}
       <span class="d-flex">
-        <Button class="mr-2" type="primary" onclick={this.props.onEdit} icon="pen" text="Edit" />
-        <Button type="secondary" onclick={this.props.onBack} icon="arrow-left" text="Back" />
+        <Button type="primary" onclick={this.props.onEdit} icon="pen" text="Edit" />
         <Button type="delete" class="ml-auto" onclick={this.props.onDelete} icon="trash" text="Delete" />
       </span>
     </div>;

@@ -23,7 +23,7 @@ const getClass = (type?: string) => {
 }
 
 export class ButtonComponent extends Component {
-  constructor(private props: ButtonProps) { super(); }
+  constructor(public props: ButtonProps) { super(); }
   render = (): UIElement => {
     const onclick = (event: MouseEvent) => {
       if (this.props.onclick) {

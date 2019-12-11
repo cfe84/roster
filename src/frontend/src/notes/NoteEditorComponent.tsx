@@ -2,7 +2,7 @@ import { UIElement, Component } from "../html/index";
 import { Note } from "./Note";
 import { dom } from "../utils/dom";
 import { dateUtils } from "../utils/dateUtils";
-import { MarkdownInput, TextInput, DateInput, Button, DateDisplay } from "../baseComponents";
+import { MarkdownInput, TextInput, DateInput, Button, DateDisplay, PageTitle } from "../baseComponents";
 import { objectUtils } from "../utils/objectUtils";
 
 interface NoteEditorProps {
@@ -19,9 +19,10 @@ export class NoteEditorComponent extends Component {
   public render = (): UIElement => {
     const note: Note = objectUtils.clone(this.props.note);
     const saveButtonCaption = `${this.props.actionName || "Create"} note`
+    const title = `${this.props.actionName || "New note"} ${note.title}`;
     return <div>
+      <PageTitle title={title} icon="sticky-note" onBack={this.props.onCancel} />
       <form class="form-create-element">
-        <h2 class="text-center">{this.props.actionName || "New note"} {note.title}</h2>
         <TextInput caption="Title" object={note} field="title" />
         <MarkdownInput caption="Content" object={note} field="content" />
         <DateDisplay caption="Created date" object={note} field="createdDate" />

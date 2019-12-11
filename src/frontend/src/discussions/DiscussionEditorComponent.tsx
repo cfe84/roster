@@ -1,6 +1,6 @@
 import { UIElement, Component } from "../html/index";
 import { Discussion } from "./Discussion";
-import { MarkdownInput, TextInput, DateInput, Button } from "../baseComponents";
+import { MarkdownInput, TextInput, DateInput, Button, PageTitle } from "../baseComponents";
 import { objectUtils } from "../utils/objectUtils";
 
 interface DiscussionEditorProps {
@@ -17,9 +17,10 @@ export class DiscussionEditorComponent extends Component {
   public render = (): UIElement => {
     const discussion = objectUtils.clone(this.props.discussion);
     const saveButtonCaption = `${this.props.actionName || "Create"} discussion`
+    const title = `${this.props.actionName || "New discussion"} ${discussion.description}`;
     return <div>
+      <PageTitle title={title} icon="comments" onBack={this.props.onCancel} />
       <form class="form-create-element">
-        <h2 class="text-center"><i class="fa fa-comments"></i> {this.props.actionName || "New discussion"} {discussion.description}</h2>
         <div class="row">
           <TextInput class="col" caption="Title" object={discussion} field="description" />
           <DateInput class="col-sm" caption="Date" object={discussion} field="date" />

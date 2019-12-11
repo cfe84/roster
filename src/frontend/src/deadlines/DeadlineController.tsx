@@ -29,6 +29,8 @@ export class DeadlineController {
     const elementDisplay = (deadline: Deadline) =>
       <span><i class="fa fa-map-marker"></i> {dateUtils.format(deadline.deadline)} <i>({dateUtils.timeSpan(deadline.deadline)})</i>: <b>{deadline.description}</b></span>;
     const component = <List
+      title="Deadlines"
+      titleIcon="calendar-day"
       elements={deadlines}
       onAddClicked={personId ? (() => { this.loadCreateDeadline(personId) }) : undefined}
       onEditClicked={(deadline: Deadline) => { this.loadEditDeadline(deadline) }}

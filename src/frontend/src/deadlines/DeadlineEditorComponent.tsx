@@ -1,6 +1,6 @@
 import { UIElement, Component } from "../html/index";
 import { Deadline } from "./Deadline";
-import { MarkdownInput, TextInput, DateInput, Button } from "../baseComponents";
+import { MarkdownInput, TextInput, DateInput, Button, PageTitle } from "../baseComponents";
 import { objectUtils } from "../utils/objectUtils";
 
 interface DeadlineEditorProps {
@@ -17,9 +17,10 @@ export class DeadlineEditorComponent extends Component {
   public render = (): UIElement => {
     const deadline: Deadline = objectUtils.clone(this.props.deadline);
     const saveButtonCaption = `${this.props.actionName || "Create"} deadline`
+    const title = `${this.props.actionName || "New deadline"} ${deadline.description}`;
     return <div>
+      <PageTitle title={title} icon="calendar-day" onBack={this.props.onCancel} />
       <form class="form-create-element">
-        <h2 class="text-center"><i class="fa fa-comments"></i> {this.props.actionName || "New deadline"} {deadline.description}</h2>
         <div class="row">
           <TextInput class="col" caption="Title" object={deadline} field="description" />
           <DateInput class="col-sm" caption="Date" object={deadline} field="deadline" />

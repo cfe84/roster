@@ -1,6 +1,6 @@
 import { UIElement, Component } from "../html/index";
 import { Person } from "./Person";
-import { TextInput, DateInput, Button } from "../baseComponents";
+import { TextInput, DateInput, Button, PageTitle } from "../baseComponents";
 import { objectUtils } from "../utils/objectUtils";
 
 interface PersonEditorProps {
@@ -20,8 +20,9 @@ export class PersonEditorComponent extends Component {
     const person = objectUtils.clone(this.props.person);
     const saveBtn = (this.props.actionName || "Create") + " person";
     const deleteBtn = this.props.onDelete ? <Button class="ml-auto" icon="trash" onclick={this.props.onDelete} type="delete" text="Delete"></Button> : "";
+    const title = `${this.props.actionName || "New person"} ${person.name}`;
     return <div>
-      <h2 class="text-center">{this.props.actionName || "Add a person"} {this.props.person.name}</h2>
+      <PageTitle title={title} icon="user" onBack={this.props.onCancel}></PageTitle>
       <form class="form-create-element">
         <TextInput caption="Name" object={person} field="name"></TextInput>
         <DateInput caption="In company since" object={person} field="inCompanySince"></DateInput>
