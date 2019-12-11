@@ -21,7 +21,7 @@ export class NoteEditorComponent extends Component {
     const saveButtonCaption = `${this.props.actionName || "Create"} note`
     return <div>
       <form class="form-create-element">
-        <h2 class="text-center">{this.props.actionName || "New note"} {this.props.note.title}</h2>
+        <h2 class="text-center">{this.props.actionName || "New note"} {note.title}</h2>
         <TextInput caption="Title" object={note} field="title" />
         <MarkdownInput caption="Content" object={note} field="content" />
         <DateInput caption="Date" object={note} field="date" />

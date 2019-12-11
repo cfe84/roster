@@ -19,7 +19,7 @@ export class DiscussionEditorComponent extends Component {
     const saveButtonCaption = `${this.props.actionName || "Create"} discussion`
     return <div>
       <form class="form-create-element">
-        <h2 class="text-center"><i class="fa fa-comments"></i> {this.props.actionName || "New discussion"} {this.props.discussion.description}</h2>
+        <h2 class="text-center"><i class="fa fa-comments"></i> {this.props.actionName || "New discussion"} {discussion.description}</h2>
         <div class="row">
           <TextInput class="col" caption="Title" object={discussion} field="description" />
           <DateInput class="col-sm" caption="Date" object={discussion} field="date" />

@@ -10,7 +10,7 @@ import { dateUtils } from "../utils/dateUtils";
 import { GUID } from "../utils/guid";
 import { DiscussionCreatedEvent } from "./DiscussionCreatedEvent";
 import { DiscussionUpdatedEvent } from "./DiscussionUpdatedEvent";
-import { DiscussionReader } from "./DiscussionReaderComponent";
+import { DiscussionReader, DiscussionReaderComponent } from "./DiscussionReaderComponent";
 
 export interface DiscussionControllerDependencies {
   db: IDiscussionStore,
@@ -63,8 +63,8 @@ export class DiscussionController {
       actionName="Update"
       discussion={discussion}
       onCancel={this.deps.uiContainer.unmountCurrent}
-      onValidate={(discussion: Discussion) => {
-        this.deps.eventBus.publishAsync(new DiscussionUpdatedEvent(discussion))
+      onValidate={(dis: Discussion) => {
+        this.deps.eventBus.publishAsync(new DiscussionUpdatedEvent(dis))
           .then(() => this.deps.uiContainer.unmountCurrent())
       }}
     ></DiscussionEditor>
@@ -72,11 +72,17 @@ export class DiscussionController {
   }
 
   public loadReadDiscussion = (discussion: Discussion) => {
-    const component = <DiscussionReader
+    const component: DiscussionReaderComponent = <DiscussionReader
       discussion={discussion}
       onBack={this.deps.uiContainer.unmountCurrent}
       onEdit={() => this.loadEditDiscussion(discussion)}
     ></DiscussionReader>
+    const subscription = this.deps.eventBus.subscribe(DiscussionUpdatedEvent.type, (evt: DiscussionUpdatedEvent) => {
+      if (evt.discussion.id === discussion.id)
+        component.props.discussion = evt.discussion;
+      this.deps.uiContainer.rerenderIfCurrent(component);
+    });
+    component.ondispose = () => subscription.unsubscribe();
     this.deps.uiContainer.mount(component);
   }
 }
