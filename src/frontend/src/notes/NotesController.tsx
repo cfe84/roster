@@ -24,7 +24,7 @@ export class NotesController {
   public getNotesListAsync = async (personId: string): Promise<NotesListComponent> => {
     const notes = (await this.deps.db.getNotesAsync())
       .filter((note) => note.personId === personId)
-      .sort((a, b) => a.date < b.date ? 1 : -1);
+      .sort((a, b) => a.title.localeCompare(b.title));
     const component = <NotesList
       notes={notes}
       onAddNoteClicked={() => this.displayNewNote(personId)}
@@ -46,7 +46,7 @@ export class NotesController {
       id: GUID.newGuid(),
       typeId: "note",
       content: "",
-      date: now,
+      createdDate: now,
       lastEditDate: now,
       personId: personId
     }

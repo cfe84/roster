@@ -6,5 +6,6 @@ export interface Discussion {
   personId: PersonId,
   date: Date,
   description: string,
-  content: string
+  preparation: string,
+  notes: string
 }

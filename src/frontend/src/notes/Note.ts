@@ -5,7 +5,7 @@ export type NoteId = string;
 export interface Note {
   typeId: string,
   personId: PersonId,
-  date: Date,
+  createdDate: Date,
   id: NoteId,
   title: string,
   lastEditDate: Date,

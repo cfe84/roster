@@ -24,7 +24,8 @@ export class DiscussionEditorComponent extends Component {
           <TextInput class="col" caption="Title" object={discussion} field="description" />
           <DateInput class="col-sm" caption="Date" object={discussion} field="date" />
         </div>
-        <MarkdownInput caption="Content" object={discussion} field="content" />
+        <MarkdownInput caption="Prep notes" object={discussion} field="preparation" />
+        <MarkdownInput caption="Meeting notes" object={discussion} field="notes" />
         <Button class="mr-2" onclick={() => { this.props.onValidate(discussion) }} icon="save" text={saveButtonCaption} />
         <Button type="secondary" onclick={this.props.onCancel} icon="times" text="Cancel" />
       </form>

@@ -17,7 +17,7 @@ class NotesListItemComponent extends Component {
       <div class="">{this.props.note.title}
       </div>
       <div class="ml-auto">
-        <small class="mr-2 color-medium" >({dateUtils.format(this.props.note.date)})</small>
+        <small class="mr-2 color-medium" >({dateUtils.format(this.props.note.lastEditDate)})</small>
         <button
           class="btn btn-primary align-right"
           onclick={(event: MouseEvent) => { this.props.onEditClicked(this.props.note); event.stopPropagation() }}>

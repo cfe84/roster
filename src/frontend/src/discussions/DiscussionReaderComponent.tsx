@@ -18,13 +18,19 @@ export class DiscussionReaderComponent extends Component {
 
   public render = (): UIElement => {
     const discussion = this.props.discussion;
-    const markdownDisplay = <MarkdownDisplay
-      value={discussion.content}
+    const preparationMarkdownDisplay = <MarkdownDisplay
+      caption="Prep notes"
+      value={discussion.preparation}
+    ></MarkdownDisplay>;
+    const meetingNotesMarkdownDisplay = <MarkdownDisplay
+      caption="Meeting notes"
+      value={discussion.notes}
     ></MarkdownDisplay>;
     return <div class="flex-column">
       <h2 class="text-center"><i class="fa fa-sticky-note"></i> {discussion.description}</h2>
       <p class="text-center"><small class="mb-1 ml-auto color-medium">{dateUtils.format(discussion.date)}</small></p>
-      {markdownDisplay.render()}
+      {preparationMarkdownDisplay.render()}
+      {meetingNotesMarkdownDisplay.render()}
       <button class="btn btn-primary" onclick={() => this.props.onEdit(discussion)}><i class="fa fa-pen"></i> Edit</button>
       &nbsp;<button class="btn btn-secondary" onclick={this.props.onBack}><i class="fa fa-arrow-left"></i> Back</button>
     </div>;

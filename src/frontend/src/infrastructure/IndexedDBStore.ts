@@ -130,7 +130,7 @@ export class IndexedDBStore implements IPersonStore, INotesStore, IDiscussionSto
 
   public getNotesAsync = async (): Promise<Note[]> =>
     (await this.db.getAllAsync<Note>(OBJECTSTORE_NOTES))
-      .sort((a, b) => (a.date.getTime() < b.date.getTime() ? 1 : -1));
+      .sort((a, b) => (a.title.localeCompare(b.title)));
 
 
   public createNoteAsync = async (note: Note): Promise<void> => {

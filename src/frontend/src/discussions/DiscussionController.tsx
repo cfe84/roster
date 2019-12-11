@@ -26,7 +26,7 @@ export class DiscussionController {
     const discussions = (await this.deps.db.getDiscussionsAsync())
       .filter((discussion) => discussion.personId === personId)
       .sort((a, b) => a.date < b.date ? 1 : -1);
-    const elementDisplay = (discussion: Discussion) => <span>{discussion.description}</span>
+    const elementDisplay = (discussion: Discussion) => <span><span>{discussion.description}</span> - <span class="text-secondary">{dateUtils.timeSpan(discussion.date)}<i> ({dateUtils.format(discussion.date)})</i></span></span>
     const component = <List
       elements={discussions}
       onAddClicked={() => { this.loadCreateDiscussion(personId) }}
@@ -40,7 +40,8 @@ export class DiscussionController {
 
   public loadCreateDiscussion = (personId: PersonId, name: string = "Discussion") => {
     const discussion: Discussion = {
-      content: "",
+      notes: "",
+      preparation: "",
       date: new Date(),
       description: name + " - " + dateUtils.format(new Date()),
       id: GUID.newGuid(),
