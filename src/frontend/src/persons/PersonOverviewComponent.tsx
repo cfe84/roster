@@ -12,7 +12,7 @@ interface PersonOverviewProps {
   notesController: NotesController,
   discussionController: DiscussionController,
   deadlineController: DeadlineController,
-  onEditClicked: (() => void)
+  onEditClicked: ((person: Person) => void)
   onExitClicked: (() => void)
 }
 
@@ -29,7 +29,7 @@ export class PersonOverviewComponent extends Component {
       <PageTitle title={person.name} icon="user" onBack={this.props.onExitClicked}></PageTitle>
       <div class="row">
         <div class="col-sm">
-          <h3>Details</h3>
+          <h3 class="text-center"><i class="fa fa-info-circle" /> Information</h3>
           <DateDisplay caption="In company since" value={person.inCompanySince} includeTimespan={true} />
           <div class="row">
             <TextDisplay class="col-4" caption="Position / rank" value={person.position}></TextDisplay>
@@ -41,7 +41,7 @@ export class PersonOverviewComponent extends Component {
           </div>
 
           <div class="d-flex">
-            <Button icon="pen" class="w-5 mr-2" type="primary" onclick={this.props.onEditClicked} text="Edit"></Button>
+            <Button icon="pen" class="w-5 mr-2" type="primary" onclick={() => this.props.onEditClicked(person)} text="Edit"></Button>
           </div>
           {deadlinesList}
         </div>

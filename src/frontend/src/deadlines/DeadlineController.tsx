@@ -33,7 +33,7 @@ export class DeadlineController {
       titleIcon="calendar-day"
       elements={deadlines}
       onAddClicked={personId ? (() => { this.loadCreateDeadline(personId) }) : undefined}
-      onEditClicked={(deadline: Deadline) => { this.loadEditDeadline(deadline) }}
+      onEditClicked={this.loadEditDeadline}
       onClicked={(deadline: Deadline) => { this.loadReadDeadline(deadline) }}
       elementDisplay={elementDisplay}
     > </List>;
@@ -82,7 +82,7 @@ export class DeadlineController {
       onBack={this.deps.uiContainer.unmountCurrent}
       onDelete={() => { this.displayDeleteDeadline(deadline) }
       }
-      onEdit={() => this.loadEditDeadline(deadline)}
+      onEdit={this.loadEditDeadline}
     > </DeadlineReader>
     const updateSubscription = this.deps.eventBus.subscribe(DeadlineUpdatedEvent.type, (evt: DeadlineUpdatedEvent) => {
       if (evt.deadline.id === deadline.id)

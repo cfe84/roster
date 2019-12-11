@@ -35,7 +35,7 @@ export class NotesController {
       elementDisplay={(note) => new UIElement("TEXT", { text: note.title })}
       onAddClicked={() => this.displayNewNote(personId)}
       onClicked={(note: Note) => { this.displayNoteReader(note) }}
-      onEditClicked={(note: Note) => { this.displayEditNote(note) }}
+      onEditClicked={this.displayEditNote}
     ></List>
     return list;
   }
@@ -69,7 +69,7 @@ export class NotesController {
     const component: NoteReaderComponent = <NoteReader
       note={note}
       onBack={this.deps.uiContainer.unmountCurrent}
-      onEdit={() => this.displayEditNote(note)}
+      onEdit={this.displayEditNote}
       onDelete={() => this.displayDeleteNote(note)}
     ></NoteReader>
     const subscription = this.deps.eventBus.subscribe(NoteUpdatedEvent.type, (evt: NoteUpdatedEvent) => {

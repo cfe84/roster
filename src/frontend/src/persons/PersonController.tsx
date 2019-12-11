@@ -53,7 +53,7 @@ export class PersonController {
       notesController={this.notesController}
       discussionController={this.discussionController}
       deadlineController={this.deadlineController}
-      onEditClicked={() => this.displayEditPerson(person)}
+      onEditClicked={this.displayEditPerson}
       onExitClicked={this.uiContainer.unmountCurrent}
     ></PersonOverview>;
     const subscription = this.eventBus.subscribe(PersonUpdatedEvent.type, (evt: PersonUpdatedEvent) => {

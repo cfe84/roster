@@ -9,7 +9,7 @@ import { DateDisplay, Button, PageTitle } from "../baseComponents";
 
 interface NoteReaderProps {
   note: Note,
-  onEdit: (() => void),
+  onEdit: ((note: Note) => void),
   onDelete: (() => void),
   onBack: (() => void)
 }
@@ -29,7 +29,7 @@ export class NoteReaderComponent extends Component {
       {markdownDisplay.render()}
 
       <span class="d-flex">
-        <Button type="primary" onclick={this.props.onEdit} icon="pen" text="Edit" />
+        <Button type="primary" onclick={() => this.props.onEdit(note)} icon="pen" text="Edit" />
         <Button type="delete" class="ml-auto" onclick={this.props.onDelete} icon="trash" text="Delete" />
       </span>
     </div>;

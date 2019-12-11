@@ -34,7 +34,7 @@ export class DiscussionController {
       titleIcon="comments"
       elements={discussions}
       onAddClicked={() => { this.loadCreateDiscussion(personId) }}
-      onEditClicked={(discussion: Discussion) => { this.loadEditDiscussion(discussion) }}
+      onEditClicked={this.loadEditDiscussion}
       onClicked={(discussion: Discussion) => { this.loadReadDiscussion(discussion) }}
       elementDisplay={elementDisplay}
     ></List>
@@ -81,7 +81,7 @@ export class DiscussionController {
       discussion={discussion}
       onBack={this.deps.uiContainer.unmountCurrent}
       onDelete={() => { this.displayDeleteDiscussion(discussion) }}
-      onEdit={() => this.loadEditDiscussion(discussion)}
+      onEdit={this.loadEditDiscussion}
     ></DiscussionReader>
     const updateSubscription = this.deps.eventBus.subscribe(DiscussionUpdatedEvent.type, (evt: DiscussionUpdatedEvent) => {
       if (evt.discussion.id === discussion.id)

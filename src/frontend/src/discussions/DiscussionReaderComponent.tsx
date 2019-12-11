@@ -9,7 +9,7 @@ import { Button, PageTitle } from "../baseComponents";
 
 interface DiscussionReaderProps {
   discussion: Discussion,
-  onEdit: (() => void),
+  onEdit: ((discussion: Discussion) => void),
   onDelete: (() => void),
   onBack: (() => void)
 }
@@ -34,7 +34,7 @@ export class DiscussionReaderComponent extends Component {
       {preparationMarkdownDisplay.render()}
       {meetingNotesMarkdownDisplay.render()}
       <span class="d-flex">
-        <Button type="primary" onclick={this.props.onEdit} icon="pen" text="Edit" />
+        <Button type="primary" onclick={() => this.props.onEdit(discussion)} icon="pen" text="Edit" />
         <Button type="delete" class="ml-auto" onclick={this.props.onDelete} icon="trash" text="Delete" />
       </span>
     </div>;

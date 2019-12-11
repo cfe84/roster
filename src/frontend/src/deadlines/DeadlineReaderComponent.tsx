@@ -6,7 +6,7 @@ import { Button, PageTitle } from "../baseComponents";
 
 interface DeadlineReaderProps {
   deadline: Deadline,
-  onEdit: (() => void),
+  onEdit: ((deadline: Deadline) => void),
   onDelete: (() => void),
   onBack: (() => void)
 }
@@ -27,7 +27,7 @@ export class DeadlineReaderComponent extends Component {
       <p class="text-center color-primary">{dateUtils.timeSpan(deadline.deadline)}</p>
       {notes.render()}
       <span class="d-flex">
-        <Button type="primary" onclick={this.props.onEdit} icon="pen" text="Edit" />
+        <Button type="primary" onclick={() => this.props.onEdit(deadline)} icon="pen" text="Edit" />
         <Button type="delete" class="ml-auto" onclick={this.props.onDelete} icon="trash" text="Delete" />
       </span>
     </div>;
