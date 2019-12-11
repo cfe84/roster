@@ -1,5 +1,6 @@
 import { Component, UIElement } from "../html";
 import { GUID } from "../utils/guid";
+import { Caption } from ".";
 
 export interface MarkdownInputProps {
   caption?: string,
@@ -39,7 +40,7 @@ export class MarkdownInputComponent extends Component {
     const value = this.props.value || ((this.props.object && this.props.field) ? (this.props.object as any)[this.props.field] : "");
     const componentId = this.props.id || `input-${GUID.newGuid()}`;
     const onchange = getOnChange(this.props.onchange, this.props.object, this.props.field);
-    const caption = this.props.caption ? <p class="mb-1">{this.props.caption}</p> : "";
+    const caption = this.props.caption ? <Caption caption={this.props.caption} /> : "";
     const component = <div class={this.props.class || ""}>
       {caption}
       <textarea class="form-control mb-3 input-markdown"

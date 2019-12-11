@@ -1,11 +1,15 @@
 import { IPersonStore, Person } from "../persons";
 import { INotesStore } from "../notes/INotesStore";
 import { Note } from "../notes";
+import { Discussion } from "../discussions";
+import { IStore } from "../storage/IStore";
+import { IDiscussionStore } from "../discussions/IDiscussionStore";
 
 const DB_NAME: string = "rosterdb";
-const DB_VERSION: number = 3;
+const DB_VERSION: number = 4;
 const OBJECTSTORE_PEOPLE: string = "people";
 const OBJECTSTORE_NOTES: string = "notes";
+const OBJECTSTORE_DISCUSSIONS: string = "discussions";
 
 const getTarget = <T>(evt: any): T => (evt.target as T)
 
@@ -82,7 +86,8 @@ class AsyncIndexedDB {
     });
 }
 
-export class IndexedDBStore implements IPersonStore, INotesStore {
+export class IndexedDBStore implements IPersonStore, INotesStore, IDiscussionStore {
+
   private static createObjectStore(db: IDBDatabase, storeName: string, parameters: IDBObjectStoreParameters): IDBObjectStore | null {
     const storeAlreadyExists = db.objectStoreNames.contains(storeName)
     if (storeAlreadyExists) {
@@ -98,6 +103,8 @@ export class IndexedDBStore implements IPersonStore, INotesStore {
     if (peopleObjectStore !== null) peopleObjectStore.createIndex("name", "name", { unique: false });
     const notesObjectStore = IndexedDBStore.createObjectStore(db, OBJECTSTORE_NOTES, { keyPath: "id" });
     if (notesObjectStore !== null) notesObjectStore.createIndex("personid", "personid", { unique: false });
+    const discussionObjectStore = IndexedDBStore.createObjectStore(db, OBJECTSTORE_DISCUSSIONS, { keyPath: "id" });
+    if (discussionObjectStore !== null) discussionObjectStore.createIndex("personid", "personid", { unique: false });
   }
 
   static OpenDbAsync = async (): Promise<IndexedDBStore> => {
@@ -132,5 +139,16 @@ export class IndexedDBStore implements IPersonStore, INotesStore {
 
   public updateNoteAsync = async (note: Note): Promise<void> => {
     await this.db.putEntityAsync(OBJECTSTORE_NOTES, note);
+  }
+
+  public getDiscussionsAsync = async (): Promise<Discussion[]> =>
+    (await this.db.getAllAsync<Discussion>(OBJECTSTORE_DISCUSSIONS))
+      .sort((a, b) => (a.date.getTime() < b.date.getTime() ? 1 : -1));
+
+  public createDiscussionAsync = async (element: Discussion): Promise<void> => {
+    await this.db.createEntityAsync(OBJECTSTORE_DISCUSSIONS, element);
+  }
+  public updateDiscussionAsync = async (element: Discussion): Promise<void> => {
+    await this.db.putEntityAsync(OBJECTSTORE_DISCUSSIONS, element);
   }
 }

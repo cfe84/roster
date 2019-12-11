@@ -239,8 +239,7 @@ describe("Common components", () => {
       const component = MarkdownInput(props);
       const rendered = component.render();
       const div = rendered;
-      const caption = findChildByType(div, "p");
-      const captionText = findChildByType(caption, "TEXT");
+      const caption = div.props.children[0];
       const textArea = findChildByType(div, "textarea");
       const textAreaText = findChildByType(textArea, "TEXT");
 
@@ -249,7 +248,7 @@ describe("Common components", () => {
       it("renders class",
         () => should(div.props.class).containEql(props.class));
       it("displays caption",
-        () => should(captionText.props.text).eql(props.caption));
+        () => should(caption.props.caption).eql(props.caption));
       it("renders placeholder",
         () => { should(textArea.props.placeholder).eql(props.placeholder) });
       it("renders value when specified directly",

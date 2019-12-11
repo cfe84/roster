@@ -1,7 +1,6 @@
 import { Component, UIElement } from "../html";
-import { TextInput, TextInputComponent } from ".";
+import { TextInput } from ".";
 import { dateUtils } from "../utils/dateUtils";
-import { GUID } from "../utils/guid";
 import { TextInputProps } from "./TextInputComponent";
 
 type onChangeDelegate = (val: Date | null) => void;
@@ -12,7 +11,6 @@ export interface DateInputProps {
   id?: string,
   onchange?: onChangeDelegate,
   placeholder?: string,
-  name?: string,
   class?: string,
   object?: any,
   field?: string
@@ -48,7 +46,6 @@ export class DateInputComponent extends Component {
       caption: this.props.caption,
       class: this.props.class,
       id: this.props.id,
-      name: this.props.name,
       onchange: onchange,
       placeholder: this.props.placeholder,
       value: dateUtils.format(value)

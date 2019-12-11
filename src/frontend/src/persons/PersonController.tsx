@@ -9,9 +9,10 @@ import { NotesController } from "../notes";
 import { PersonListComponent } from "./PersonListComponent";
 import { PersonEditorComponent } from "./PersonEditorComponent";
 import { PersonOverviewComponent } from "./PersonOverviewComponent";
+import { DiscussionController } from "../discussions";
 
 export class PersonController {
-  constructor(private eventBus: EventBus, private uiContainer: UIContainer, private peopleStore: IPersonStore, private notesController: NotesController) {
+  constructor(private eventBus: EventBus, private uiContainer: UIContainer, private peopleStore: IPersonStore, private notesController: NotesController, private discussionController: DiscussionController) {
   }
 
   public loadPeopleListAsync = async (): Promise<PersonListComponent> => {
@@ -42,6 +43,7 @@ export class PersonController {
     const component: PersonOverviewComponent = <PersonOverview
       person={person}
       notesController={this.notesController}
+      discussionController={this.discussionController}
       onEditClicked={() => this.displayEditPerson(person)}
       onExitClicked={this.uiContainer.unmountCurrent}
     ></PersonOverview>;

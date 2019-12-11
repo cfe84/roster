@@ -3,10 +3,12 @@ import { Person } from "./Person";
 import { NotesController } from "../notes";
 import { dateUtils } from "../utils/dateUtils";
 import { Button, TextDisplay } from "../baseComponents";
+import { DiscussionController } from "../discussions";
 
 interface PersonOverviewProps {
   person: Person,
-  notesController: NotesController
+  notesController: NotesController,
+  discussionController: DiscussionController,
   onEditClicked: (() => void)
   onExitClicked: (() => void)
 }
@@ -19,6 +21,7 @@ export class PersonOverviewComponent extends Component {
     const person = this.props.person;
     const notesList = await this.props.notesController.getNotesListAsync(
       this.props.person.id);
+    const discussionList = await this.props.discussionController.getDiscussionListAsync(this.props.person.id);
     return <div>
       <h3 class="text-center"><i class="fa fa-user"></i> {person.name}</h3>
       <div class="row">
@@ -41,6 +44,8 @@ export class PersonOverviewComponent extends Component {
           </div>
         </div>
         <div class="col-sm">
+          <h3 class="text-center"><i class="fa fa-comments"></i> Discussions</h3>
+          {discussionList}
           {notesList}
         </div>
       </div>

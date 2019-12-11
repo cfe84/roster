@@ -9,7 +9,6 @@ export interface TextInputProps {
   placeholder?: string,
   object?: object,
   field?: string,
-  name?: string,
   class?: string,
   value?: string
 }
@@ -39,15 +38,15 @@ export class TextInputComponent extends Component {
 
   render = (): UIElement => {
     const value = this.props.value || ((this.props.object && this.props.field) ? (this.props.object as any)[this.props.field] : "");
-    const componentId = this.props.id || `input-${this.props.name || GUID.newGuid()}`;
+    const componentId = this.props.id || `input-${GUID.newGuid()}`;
     const onchange = getOnChange(this.props.onchange, this.props.object, this.props.field);
-    const caption = <Caption caption={this.props.caption || this.props.name} />;
+    const caption = this.props.caption ? <Caption caption={this.props.caption} /> : "";
     const component = <div class={this.props.class || ""}>
       {caption.render()}
       <input class="form-control mb-3"
         id={componentId}
         onkeyup={onchange}
-        placeholder={this.props.placeholder || this.props.name || ""}
+        placeholder={this.props.placeholder || this.props.caption || ""}
         type="text"
         value={value}></input>
     </div>

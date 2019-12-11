@@ -4,6 +4,7 @@ import { ButtonComponent, Button } from "./ButtonComponent";
 import { TextDisplayComponent, TextDisplay } from "./TextDisplayComponent";
 import { MarkdownInput, MarkdownInputComponent } from "./MarkdownInputComponent";
 import { CaptionComponent, Caption } from "./CaptionComponent";
+import { ListItem, ListItemComponent } from "./ListItemComponent";
 
 export {
   TextInput, TextInputComponent,
@@ -11,5 +12,6 @@ export {
   Button, ButtonComponent,
   TextDisplay, TextDisplayComponent,
   MarkdownInput, MarkdownInputComponent,
-  Caption, CaptionComponent
+  Caption, CaptionComponent,
+  ListItem, ListItemComponent
 }
