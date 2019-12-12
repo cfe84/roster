@@ -1,0 +1,29 @@
+{
+  "name": "roster-common",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc && mkdir -p ../frontend/obj/common/ && cp -r dist/* ../frontend/obj/common/ && mkdir -p ../backend/obj/common && cp -r dist/* ../backend/obj/common/",
+    "test": "mocha --require ts-node/register ./test/**/*.ts",
+    "clean": "rm -r dist ../frontend/obj/common/ ../backend/obj/common/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cfe84/roster.git"
+  },
+  "author": "Charles Feval",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cfe84/roster/issues"
+  },
+  "homepage": "https://github.com/cfe84/roster#readme",
+  "devDependencies": {
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^12.12.17",
+    "mocha": "^6.2.2",
+    "npm-watch": "^0.6.0",
+    "ts-node": "^8.5.4",
+    "typescript": "^3.7.3"
+  }
+}

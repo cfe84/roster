@@ -7,7 +7,7 @@
 <body>
   <div id="tidledoo"></div>
   <script>
-    var socket = io('http://localhost:3501');
+    var socket = io('https://roster.feval.ca');
     const id = Math.random() * 10000000000;
     socket.emit('handshake', { id }, () => {
 
@@ -17,7 +17,9 @@
       const el = document.getElementById("tidledoo");
       el.innerHTML += data.message + "<br/>";
     })
-
+    socket.on("connect_error", (err) => console.error("connect-error" + err));
+    socket.on("error", (err) => console.error("error" + err));
+    socket.on("connect_timeout", (err) => console.error("timeout" + err));
   </script>
 </body>
 

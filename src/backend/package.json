@@ -15,15 +15,22 @@
         "src"
       ],
       "extensions": "ts"
+    },
+    "test": {
+      "patterns": [
+        "test",
+        "src"
+      ],
+      "extensions": "ts"
     }
   },
   "scripts": {
-    "test": "mocha --require ts-node/register ./src/html/IntrinsicElements.ts ./test/**/*.ts",
+    "test": "mocha --require ts-node/register ./test/**/*.ts",
     "watch": "npm-watch",
     "clean": "rm -r dist/",
     "start": "node dist/app.js",
     "bnr": "npm run build && npm run start",
-    "build": "tsc"
+    "build": "tsc && cp -r obj/common dist/"
   },
   "repository": {
     "type": "git",
@@ -36,10 +43,12 @@
   },
   "homepage": "https://github.com/cfe84/roster#readme",
   "devDependencies": {
+    "@types/mocha": "^5.2.7",
     "@types/node": "^12.12.17",
     "@types/socket.io": "^2.1.4",
     "mocha": "^6.2.2",
     "npm-watch": "^0.6.0",
+    "ts-node": "^8.5.4",
     "typescript": "^3.7.3"
   },
   "dependencies": {

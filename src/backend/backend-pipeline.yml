@@ -9,6 +9,7 @@ trigger:
   paths:
     include:
       - src/backend/*
+      - src/common/*
       - chart/*
 
 resources:
@@ -31,8 +32,8 @@ stages:
             inputs:
               command: buildAndPush
               containerRegistry: ACR
-              dockerfile: "src/backend/Dockerfile"
-              buildContext: "src/backend"
+              dockerfile: "src/Backend.Dockerfile"
+              buildContext: "src"
               repository: roster-backend
               tags: |
                 $(tag)
