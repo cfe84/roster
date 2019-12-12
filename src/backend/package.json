@@ -1,0 +1,49 @@
+{
+  "name": "roster-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/app.js",
+  "watch": {
+    "build": {
+      "patterns": [
+        "src"
+      ],
+      "extensions": "ts"
+    },
+    "bnr": {
+      "patterns": [
+        "src"
+      ],
+      "extensions": "ts"
+    }
+  },
+  "scripts": {
+    "test": "mocha --require ts-node/register ./src/html/IntrinsicElements.ts ./test/**/*.ts",
+    "watch": "npm-watch",
+    "clean": "rm -r dist/",
+    "start": "node dist/app.js",
+    "bnr": "npm run build && npm run start",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cfe84/roster.git"
+  },
+  "author": "Charles Feval",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cfe84/roster/issues"
+  },
+  "homepage": "https://github.com/cfe84/roster#readme",
+  "devDependencies": {
+    "@types/node": "^12.12.17",
+    "@types/socket.io": "^2.1.4",
+    "mocha": "^6.2.2",
+    "npm-watch": "^0.6.0",
+    "typescript": "^3.7.3"
+  },
+  "dependencies": {
+    "socket.io": "^2.3.0",
+    "socket.io-client": "^2.3.0"
+  }
+}

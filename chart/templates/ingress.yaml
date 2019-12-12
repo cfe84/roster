@@ -17,6 +17,10 @@ spec:
           servicePort: 3501
         path: /api
       - backend:
+          serviceName: roster-backend-service
+          servicePort: 3501
+        path: /socket.io
+      - backend:
           serviceName: roster-frontend-service
           servicePort: 3500
         path: /
