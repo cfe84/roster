@@ -1,6 +1,8 @@
 import should from "should";
 import { dateUtils } from "../src/utils/dateUtils";
 import { objectUtils } from "../src/utils/objectUtils";
+import { AsyncTimeout } from "../src/utils/AsyncTimeout";
+import moment from "moment";
 
 describe("Utils", () => {
   context("Date tools", () => {
@@ -94,6 +96,38 @@ describe("Utils", () => {
           should(clonedObject).not.be.exactly(objectToClone);
         }
       }));
+  });
 
+  context("AsyncTimeout", () => {
+    it("should handle return after set time", async () => {
+      // given
+      const t = new AsyncTimeout();
+      const start = new Date();
+      let running = false;
+
+      // when
+      setTimeout(() => running = t.isRunning(), 10);
+      await t.sleepAsync(100);
+
+      // then
+      const finish = new Date();
+      should(finish.getTime() - start.getTime()).within(99, 120);
+      should(running).be.true();
+    });
+
+    it("should return from waiting when aborting", async () => {
+
+      // given
+      const t = new AsyncTimeout();
+      const start = new Date();
+
+      // when
+      setTimeout(() => t.abort(), 100);
+      await t.sleepAsync(1000);
+
+      // then
+      const finish = new Date();
+      should(finish.getTime() - start.getTime()).within(99, 120);
+    })
   })
 });

@@ -8,6 +8,8 @@ This is rather than a REST API. The REST API might come later.
 
 A replication manager replicates all events to the server. There will be events that don't need replication (e.g. `replicationFailed`), these will be marked as `requiresReplication: false`.
 
+For now we operate under the assumption of connectivity. If event sync fails, too bad.
+
 # Reason
 
-This is very simple to implement, and given the scale of the application, should be good enough for now.
+This is very simple to implement, and given the scale of the application and its mono-user character, should be good enough for now.
