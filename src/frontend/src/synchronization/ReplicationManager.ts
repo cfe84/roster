@@ -46,8 +46,8 @@ export class ReplicationManager {
     }
   }
 
-  private receiveEventsAsync = async () => {
-
+  private processInboundEventAsync = async (event: IEvent): Promise<void> => {
+    await this.deps.eventBus.publishAsync(event);
   }
 
   private synchronizeAsync = async () => {
@@ -62,10 +62,13 @@ export class ReplicationManager {
     }
     this.running = true;
     this.onReplicationStarted();
+    this.deps.adapter.onEventReceivedAsync = this.processInboundEventAsync;
+    Promise.resolve(this.deps.adapter.startReceivingEventsAsync()).then();
     while (this.running) {
       await this.synchronizeAsync();
       await this.timeout.sleepAsync(this.intervalMs);
     }
+    await this.deps.adapter.stopReceivingEventsAsync();
     this.onReplicationFinished();
   }
 

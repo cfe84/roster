@@ -6,12 +6,12 @@ import { EventInfo } from "../src/events/EventInfo";
 import { AsyncTimeout } from "../src/utils/AsyncTimeout";
 
 describe("Replication", () => {
+  const createFakes = () => ({
+    adapter: td.object(["sendEventAsync", "onEventReceivedAsync", "startReceivingEventsAsync", "stopReceivingEventsAsync"]),
+    queue: td.object(["pushAsync", "peekAsync", "countAsync", "deleteAsync"])
+  })
   context("Replication to server", () => {
-    const createFakes = () => ({
-      adapter: td.object(["sendEventAsync", "receiveEventsAsync"]),
-      queue: td.object(["pushAsync", "peekAsync", "countAsync", "deleteAsync"])
-    })
-    it("should replicate all events", async () => {
+    it("should store events in a queue", async () => {
       // given
       const event1: IEvent = { info: new EventInfo("type-1") };
       const event2: IEvent = { info: new EventInfo("type-2") };
@@ -124,4 +124,38 @@ describe("Replication", () => {
       td.verify(fakeCallbacks.onReplicationFinished(), { times: 1, ignoreExtraArgs: true });
     });
   });
+
+  context("Replication from server", () => {
+    it("should forward events from server to the local bus", async () => {
+      // given
+      const event1 = { info: new EventInfo("type-1"), id: 1 } as IEvent;
+      const event2 = { info: new EventInfo("type-2"), id: 2 } as IEvent;
+
+      const eventBus = new EventBus();
+      const fakes = createFakes();
+      const fakeSubscriber = td.object(["callback1", "callback2"]);
+      eventBus.subscribe("type-1", fakeSubscriber.callback1);
+      eventBus.subscribe("type-2", fakeSubscriber.callback2);
+      td.when(fakes.queue.countAsync()).thenReturn(0);
+      const manager = new ReplicationManager({ eventBus, adapter: fakes.adapter, queue: fakes.queue });
+      manager.intervalMs = 10000;
+      const timeout = new AsyncTimeout();
+
+      // when
+      setTimeout(() => manager.stopSyncing(), 50);
+      manager.startSyncingAsync().then();
+      await timeout.sleepAsync(10);
+      await fakes.adapter.onEventReceivedAsync(event1);
+      await fakes.adapter.onEventReceivedAsync(event2);
+
+      // then
+      td.verify(fakes.adapter.startReceivingEventsAsync(), { times: 1 })
+      td.verify(fakes.adapter.stopReceivingEventsAsync(), { times: 0, ignoreExtraArgs: true })
+      td.verify(fakeSubscriber.callback1(event1));
+      td.verify(fakeSubscriber.callback2(event2));
+      await timeout.sleepAsync(40);
+      td.verify(fakes.adapter.stopReceivingEventsAsync())
+
+    });
+  })
 });
