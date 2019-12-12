@@ -88,6 +88,35 @@ describe("Replication", () => {
       td.verify(fakes.adapter.sendEventAsync(event1));
     });
 
+
+    it("should retry if a message fails", async () => {
+      // given
+      const event1 = { info: new EventInfo("type-1"), id: 1 } as IEvent;
+      const message1 = { data: event1 };
+
+      const eventBus = new EventBus();
+      const fakes = createFakes();
+      const error = Error("sdfsg");
+      const fakeCallbacks = td.object(["onError"]);
+      td.when(fakes.queue.countAsync()).thenResolve(1, 1, 0, 0);
+      td.when(fakes.queue.peekAsync()).thenResolve(message1, message1, null, null);
+      td.when(fakes.adapter.sendEventAsync(event1)).thenReturn(Promise.reject(error), Promise.resolve());
+      const manager = new ReplicationManager({ eventBus, adapter: fakes.adapter, queue: fakes.queue });
+      manager.onError = fakeCallbacks.onError;
+      manager.intervalMs = 25;
+      const timeout = new AsyncTimeout();
+      // when
+      setTimeout(() => manager.stopSyncing(), 200);
+      manager.startSyncingAsync().then();
+      await timeout.sleepAsync(10);
+      td.verify(fakeCallbacks.onError(error), { times: 1 });
+      td.verify(fakes.queue.deleteAsync(message1), { times: 0, ignoreExtraArgs: true });
+      await timeout.sleepAsync(20);
+
+      // then
+      td.verify(fakes.queue.deleteAsync(message1), { times: 1, ignoreExtraArgs: true });
+    });
+
     it("should call onSyncStarted and onSyncFinished", async () => {
       // given
       const event1 = { info: new EventInfo("type-1"), id: 1 } as IEvent;
@@ -97,7 +126,7 @@ describe("Replication", () => {
       const fakes = createFakes();
       td.when(fakes.queue.countAsync()).thenResolve(1, 0, 0);
       td.when(fakes.queue.peekAsync()).thenResolve(message1, null, null);
-      td.when(fakes.adapter.sendEventAsync(event1)).thenDo(async () => await new AsyncTimeout().sleepAsync(100));
+      td.when(fakes.adapter.sendEventAsync(event1)).thenDo(async () => await new AsyncTimeout().sleepAsync(50));
       const fakeCallbacks = td.object(["onStarted", "onFinished", "onReplicationStarted", "onReplicationFinished"]);
       const manager = new ReplicationManager({ eventBus, adapter: fakes.adapter, queue: fakes.queue });
       manager.onSyncStarted = fakeCallbacks.onStarted;
@@ -108,19 +137,19 @@ describe("Replication", () => {
       const timeout = new AsyncTimeout();
 
       // when
-      setTimeout(() => manager.stopSyncing(), 300);
+      setTimeout(() => manager.stopSyncing(), 200);
       manager.startSyncingAsync().then();
       await timeout.sleepAsync(10);
       td.verify(fakeCallbacks.onReplicationStarted(), { times: 1, ignoreExtraArgs: true });
       td.verify(fakeCallbacks.onStarted(), { times: 1, ignoreExtraArgs: true });
       td.verify(fakeCallbacks.onFinished(), { times: 0, ignoreExtraArgs: true });
-      await timeout.sleepAsync(110);
+      await timeout.sleepAsync(60);
 
       // then
       td.verify(fakeCallbacks.onStarted(), { times: 1, ignoreExtraArgs: true });
       td.verify(fakeCallbacks.onFinished(), { times: 1, ignoreExtraArgs: true });
       td.verify(fakeCallbacks.onReplicationFinished(), { times: 0, ignoreExtraArgs: true });
-      await timeout.sleepAsync(200);
+      await timeout.sleepAsync(150);
       td.verify(fakeCallbacks.onReplicationFinished(), { times: 1, ignoreExtraArgs: true });
     });
   });

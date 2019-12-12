@@ -21,6 +21,7 @@ export class ReplicationManager {
   onSyncFinished = () => { }
   onReplicationStarted = () => { }
   onReplicationFinished = () => { }
+  onError = (error: Error) => { }
 
   onEventAsync = async (event: IEvent) => {
     await this.deps.queue.pushAsync(event);
@@ -39,7 +40,7 @@ export class ReplicationManager {
       try {
         await this.deps.adapter.sendEventAsync(message.data);
       } catch (error) {
-        console.error(error);
+        this.onError(error);
         return;
       }
       await this.deps.queue.deleteAsync(message);
