@@ -1,3 +1,5 @@
+import { IEvent } from "../lib/common/events/IEvent"
+
 export interface IEventStore {
-  // storeEvent(event: IEvent)
+  storeEventAsync(event: IEvent): Promise<void>
 }

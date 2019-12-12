@@ -30,7 +30,7 @@
     "clean": "rm -r dist/",
     "start": "node dist/app.js",
     "bnr": "npm run build && npm run start",
-    "build": "tsc && cp -r obj/common dist/"
+    "build": "tsc"
   },
   "repository": {
     "type": "git",

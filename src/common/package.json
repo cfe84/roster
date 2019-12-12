@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc && mkdir -p ../frontend/obj/common/ && cp -r dist/* ../frontend/obj/common/ && mkdir -p ../backend/obj/common && cp -r dist/* ../backend/obj/common/",
+    "build": "tsc",
+    "cp": " mkdir -p ../frontend/lib/common/ && cp -r src/* ../frontend/lib/common/ && mkdir -p ../backend/lib/common && cp -r src/* ../backend/lib/common/",
     "test": "mocha --require ts-node/register ./test/**/*.ts",
-    "clean": "rm -r dist ../frontend/obj/common/ ../backend/obj/common/"
+    "clean": "rm -r dist ../frontend/lib/common/ ../backend/lib/common/"
   },
   "repository": {
     "type": "git",

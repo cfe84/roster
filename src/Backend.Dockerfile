@@ -3,12 +3,12 @@ FROM node:12.13.1-alpine as build
 # Common
 ###########
 WORKDIR /app/common
-COPY common/package.json ./
-COPY common/package-lock.json ./
+COPY common/package*.json ./
 RUN npm install
 COPY common .
 RUN npm run test
 RUN npm run build
+RUN npm run cp
 ###########
 # Backend
 ###########
@@ -28,7 +28,7 @@ COPY backend/package-lock.json ./
 COPY backend/index.html ./
 RUN npm install --production
 COPY --from=build /app/backend/dist/src ./dist
-COPY --from=build /app/backend/dist/common ./dist
+COPY --from=build /app/backend/dist/lib ./dist
 
 EXPOSE 3501
 
