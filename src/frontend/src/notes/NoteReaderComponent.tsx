@@ -3,7 +3,7 @@ import { Note } from "./Note";
 import { dateUtils } from "../utils/dateUtils";
 // import MarkdownIt from "markdown-it";
 import marked from "marked";
-import { GUID } from "../utils/guid";
+import { GUID } from "../../lib/common/utils/guid";
 import { MarkdownDisplay } from "../baseComponents/MarkdownDisplayComponent";
 import { DateDisplay, Button, PageTitle } from "../baseComponents";
 

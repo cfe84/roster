@@ -1,6 +1,6 @@
-import { IEvent } from "../events";
+import { IEvent } from "../../lib/common/events/";
 import { Person } from "./Person";
-import { EventInfo } from "../events/EventInfo";
+import { EventInfo } from "../../lib/common/events//EventInfo";
 
 export class PersonCreatedEvent implements IEvent {
   static type: string = "personCreatedEvent";

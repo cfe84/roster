@@ -1,6 +1,6 @@
-import { IEvent } from "../events";
+import { IEvent } from "../../lib/common/events/";
 import { Discussion } from "./Discussion";
-import { EventInfo } from "../events/EventInfo";
+import { EventInfo } from "../../lib/common/events//EventInfo";
 
 export class DiscussionUpdatedEvent implements IEvent {
   static type: string = "discussionUpdatedEvent";

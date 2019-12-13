@@ -1,6 +1,6 @@
 import should from "should";
 import * as td from "testdouble";
-import { EventBus } from "../src/events";
+import { EventBus } from "../lib/common/events";
 import { StorePeopleChangesReactor } from "../src/persons/StorePeopleChangesReactor";
 import { PersonCreatedEvent } from "../src/persons/PersonCreatedEvent";
 import { IPersonStore } from "../src/persons/IPersonStore";

@@ -1,4 +1,4 @@
-import { EventBus, IEvent } from "../events";
+import { EventBus, IEvent } from "../../lib/common/events/";
 import { IDiscussionStore } from "./IDiscussionStore";
 import { DiscussionCreatedEvent } from "./DiscussionCreatedEvent";
 import { DiscussionUpdatedEvent } from "./DiscussionUpdatedEvent";

@@ -1,6 +1,6 @@
-import { IEvent } from "../events";
+import { IEvent } from "../../lib/common/events/";
 import { Note } from "./Note";
-import { EventInfo } from "../events/EventInfo";
+import { EventInfo } from "../../lib/common/events//EventInfo";
 
 export class NoteUpdatedEvent implements IEvent {
   static type: string = "noteUpdatedEvent";

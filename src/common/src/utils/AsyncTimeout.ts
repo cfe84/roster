@@ -1,5 +1,5 @@
 export class AsyncTimeout {
-  private id: number = 0;
+  private id: any;
   private promiseCallback?: () => void;
   private running = false;
   isRunning = (): boolean => this.running;

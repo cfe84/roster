@@ -1,6 +1,5 @@
 import { UIElement, Component } from "../html/index";
 import { Note } from "./Note";
-import { dom } from "../utils/dom";
 import { dateUtils } from "../utils/dateUtils";
 import { MarkdownInput, TextInput, DateInput, Button, DateDisplay, PageTitle } from "../baseComponents";
 import { objectUtils } from "../utils/objectUtils";

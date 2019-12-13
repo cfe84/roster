@@ -1,7 +1,7 @@
-import { EventBus, IEvent } from "../events";
+import { EventBus, IEvent } from "../../lib/common/events/";
 import { IReplicationAdapter } from "./IReplicationAdapter";
 import { IQueue } from "./IEventQueue";
-import { AsyncTimeout } from "../utils/AsyncTimeout";
+import { AsyncTimeout } from "../../lib/common/utils/AsyncTimeout";
 
 export interface ReplicationManagerDependencies {
   eventBus: EventBus;

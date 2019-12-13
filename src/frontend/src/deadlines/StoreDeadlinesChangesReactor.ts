@@ -1,4 +1,4 @@
-import { EventBus, IEvent } from "../events";
+import { EventBus, IEvent } from "../../lib/common/events/";
 import { IDeadlineStore } from "./IDeadlineStore";
 import { DeadlineCreatedEvent, DeadlineUpdatedEvent, DeadlineDeletedEvent } from "./DeadlineEvents";
 

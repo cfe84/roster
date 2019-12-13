@@ -1,4 +1,4 @@
-import { IEvent } from "../events";
+import { IEvent } from "../../lib/common/events/";
 
 export interface IReplicationAdapter {
   sendEventAsync(event: IEvent): Promise<void>;

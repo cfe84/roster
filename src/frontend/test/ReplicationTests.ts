@@ -1,9 +1,8 @@
 import should from "should";
 import td from "testdouble";
 import { ReplicationManager } from "../src/synchronization/ReplicationManager";
-import { EventBus, IEvent } from "../src/events";
-import { EventInfo } from "../src/events/EventInfo";
-import { AsyncTimeout } from "../src/utils/AsyncTimeout";
+import { EventBus, IEvent, EventInfo } from "../lib/common/events";
+import { AsyncTimeout } from "../lib/common/utils/AsyncTimeout";
 
 describe("Replication", () => {
   const createFakes = () => ({

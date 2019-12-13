@@ -1,5 +1,5 @@
 import { IPersonStore } from "./IPersonStore";
-import { EventBus, IEvent } from "../events";
+import { EventBus, IEvent } from "../../lib/common/events/";
 import { PersonCreatedEvent } from "./PersonCreatedEvent";
 import { PersonUpdatedEvent } from "./PersonUpdatedEvent";
 import { PersonDeletedEvent } from "./PersonDeletedEvent";

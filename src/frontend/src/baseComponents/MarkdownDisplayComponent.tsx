@@ -1,6 +1,6 @@
 import { Component, UIElement } from "../html";
 import marked from "marked";
-import { GUID } from "../utils/guid";
+import { GUID } from "../../lib/common/utils/guid";
 import { Caption } from ".";
 
 export interface MarkdownDisplayProps {

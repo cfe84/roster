@@ -1,10 +1,10 @@
 import { PersonEditor, PersonList, IPersonStore, PersonOverview } from "./index";
 import { UIContainer, Component, UIElement } from "../html";
-import { EventBus } from "../events";
+import { EventBus } from "../../lib/common/events/";
 import { PersonCreatedEvent } from "./PersonCreatedEvent";
 import { Person } from "./Person";
 import { PersonUpdatedEvent } from "./PersonUpdatedEvent";
-import { GUID } from "../utils/guid"
+import { GUID } from "../../lib/common/utils/guid"
 import { NotesController } from "../notes";
 import { PersonListComponent } from "./PersonListComponent";
 import { PersonEditorComponent } from "./PersonEditorComponent";

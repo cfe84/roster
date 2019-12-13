@@ -1,4 +1,4 @@
-import { EventBus, IEvent } from "../events";
+import { EventBus, IEvent } from "../../lib/common/events/";
 import { INotesStore } from "./INotesStore";
 import { NoteCreatedEvent } from "./NoteCreatedEvent";
 import { NoteUpdatedEvent } from "./NoteUpdatedEvent";

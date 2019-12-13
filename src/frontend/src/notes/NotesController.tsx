@@ -1,11 +1,11 @@
 import { Note, NoteEditorComponent } from ".";
-import { GUID } from "../utils/guid";
+import { GUID } from "../../lib/common/utils/guid";
 import { PersonId } from "../persons";
 import { UIElement, UIContainer, Component } from "../html";
 import { INotesStore } from "./INotesStore";
 import { NotesList, NotesListComponent } from "./NotesListComponent";
 import { NoteEditor } from "./NoteEditorComponent";
-import { EventBus } from "../events";
+import { EventBus } from "../../lib/common/events/";
 import { NoteCreatedEvent } from "./NoteCreatedEvent";
 import { NoteUpdatedEvent } from "./NoteUpdatedEvent";
 import { NoteReaderComponent, NoteReader } from "./NoteReaderComponent";

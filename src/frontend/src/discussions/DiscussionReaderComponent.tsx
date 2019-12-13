@@ -2,7 +2,7 @@ import { UIElement, Component } from "../html/index";
 import { dateUtils } from "../utils/dateUtils";
 // import MarkdownIt from "markdown-it";
 import marked from "marked";
-import { GUID } from "../utils/guid";
+import { GUID } from "../../lib/common/utils/guid";
 import { MarkdownDisplay } from "../baseComponents/MarkdownDisplayComponent";
 import { Discussion } from ".";
 import { Button, PageTitle } from "../baseComponents";

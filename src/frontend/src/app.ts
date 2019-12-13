@@ -1,5 +1,5 @@
 import { StorePeopleChangesReactor, PersonController } from "./persons";
-import { EventBus } from "./events";
+import { EventBus } from "../lib/common/events";
 import { IndexedDBStore } from "./infrastructure/IndexedDBStore";
 import { NotesController, StoreNotesChangesReactor } from "./notes";
 import { UIContainer } from "./html/UIContainer";
