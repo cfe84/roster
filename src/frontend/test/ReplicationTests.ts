@@ -27,7 +27,7 @@ describe("Replication", () => {
       td.verify(fakes.queue.pushAsync(event2));
     });
 
-    context("process queue for sending when starting sync", async () => {
+    it("process queue for sending when starting sync", async () => {
       // given
       const event1 = { info: new EventInfo("type-1"), id: 1 } as IEvent;
       const event2 = { info: new EventInfo("type-2"), id: 2 } as IEvent;
@@ -49,14 +49,10 @@ describe("Replication", () => {
       await timeout.sleepAsync(10);
 
       // then
-      it("should send events to the adapter", () => {
-        td.verify(fakes.adapter.sendEventAsync(event1));
-        td.verify(fakes.adapter.sendEventAsync(event2));
-      });
-      it("should delete messages from local queue", () => {
-        td.verify(fakes.queue.deleteAsync(message1));
-        td.verify(fakes.queue.deleteAsync(message2));
-      });
+      td.verify(fakes.adapter.sendEventAsync(event1));
+      td.verify(fakes.adapter.sendEventAsync(event2));
+      td.verify(fakes.queue.deleteAsync(message1));
+      td.verify(fakes.queue.deleteAsync(message2));
     });
 
     it("should process its queue immediately when a message comes in", async () => {

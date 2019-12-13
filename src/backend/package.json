@@ -28,7 +28,7 @@
     "test": "mocha --require ts-node/register ./test/**/*.ts",
     "watch": "npm-watch",
     "clean": "rm -r dist/",
-    "start": "node dist/app.js",
+    "start": "node dist/src/app.js",
     "bnr": "npm run build && npm run start",
     "build": "tsc"
   },

@@ -9,9 +9,7 @@
   <script>
     var socket = io('https://roster.feval.ca');
     const id = Math.random() * 10000000000;
-    socket.emit('handshake', { id }, () => {
-
-    });
+    socket.emit('handshake', { id }, () => { });
     socket.on("evt", function (data) {
       console.log("received")
       const el = document.getElementById("tidledoo");

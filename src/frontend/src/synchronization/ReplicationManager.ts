@@ -1,6 +1,6 @@
 import { EventBus, IEvent } from "../../lib/common/events/";
 import { IReplicationAdapter } from "./IReplicationAdapter";
-import { IQueue } from "./IEventQueue";
+import { IQueue } from "./IQueue";
 import { AsyncTimeout } from "../../lib/common/utils/AsyncTimeout";
 
 export interface ReplicationManagerDependencies {
@@ -51,7 +51,7 @@ export class ReplicationManager {
     await this.deps.eventBus.publishAsync(event);
   }
 
-  private synchronizeAsync = async () => {
+  private synchronizationRetryLoopAsync = async () => {
     this.onSyncStarted();
     await this.processSendQueueAsync();
     this.onSyncFinished();
@@ -66,7 +66,7 @@ export class ReplicationManager {
     this.deps.adapter.onEventReceivedAsync = this.processInboundEventAsync;
     Promise.resolve(this.deps.adapter.startReceivingEventsAsync()).then();
     while (this.running) {
-      await this.synchronizeAsync();
+      await this.synchronizationRetryLoopAsync();
       await this.timeout.sleepAsync(this.intervalMs);
     }
     await this.deps.adapter.stopReceivingEventsAsync();

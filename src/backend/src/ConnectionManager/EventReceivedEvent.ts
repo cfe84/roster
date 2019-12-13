@@ -1,6 +1,6 @@
 import { IEvent } from "../../lib/common/events";
 import { EventInfo } from "../../lib/common/events/EventInfo";
-import { ClientId } from "./Message";
+import { ClientId } from "../../lib/common/message/Message";
 
 export class EventReceivedEvent implements IEvent {
   static type: string = "EventReceivedEvent";

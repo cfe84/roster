@@ -1,4 +1,4 @@
-import { IEvent } from "../../lib/common/events/";
+import { IEvent } from "../../lib/common/events";
 
 export interface IQueueMessage<T> {
   data: T

@@ -1,10 +1,10 @@
 import { IEventStore } from "../Storage/IEventStore";
 import { ISocket } from "../ISocket";
-import { Message, ClientId, MessageTypes } from "./Message";
+import { Message, ClientId, MessageTypes } from "../../lib/common/message/Message";
 import { EventBus, IEvent } from "../../lib/common/events";
 import { EventReceivedEvent } from "./EventReceivedEvent";
-import { ICommand } from "./ICommand";
-import { StartReceivingEventsCommand } from "./StartReceivingEventsCommand";
+import { ICommand } from "../../lib/common/message/ICommand";
+import { StartReceivingEventsCommand } from "../../lib/common/message/StartReceivingEventsCommand";
 import { SubscriptionRecord } from "../../lib/common/events/SubscriptionRecord";
 
 export interface ConnectionManagerDependencies {

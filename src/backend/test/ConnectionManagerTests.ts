@@ -1,10 +1,10 @@
 import { ConnectionManager, ConnectionManagerDependencies } from "../src/ConnectionManager/ConnectionManager"
 import { EventBus, IEvent } from "../lib/common/events"
 import * as td from "testdouble";
-import { MessageTypes, Message } from "../src/ConnectionManager/Message";
+import { MessageTypes, Message } from "../lib/common/message/Message";
 import { EventInfo } from "../lib/common/events/EventInfo";
 import { EventReceivedEvent } from "../src/ConnectionManager/EventReceivedEvent";
-import { StartReceivingEventsCommand } from "../src/ConnectionManager/StartReceivingEventsCommand";
+import { StartReceivingEventsCommand } from "../lib/common/message/StartReceivingEventsCommand";
 
 describe("Connection Manager", () => {
   it("should forward inbound event to bus", async () => {
