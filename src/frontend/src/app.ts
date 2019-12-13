@@ -38,6 +38,7 @@ class App {
       const replicationManager = new ReplicationManager({
         adapter: replicationAdapter, eventBus: this.eventBus, queue
       });
+      await replicationManager.startSyncingAsync();
     }
     catch (error) {
       console.error(error);
