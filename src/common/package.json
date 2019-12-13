@@ -3,10 +3,20 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "watch": {
+    "test": {
+      "patterns": [
+        "test",
+        "src"
+      ],
+      "extensions": "ts"
+    }
+  },
   "scripts": {
     "build": "tsc",
     "cp": " mkdir -p ../frontend/lib/common/ && cp -r src/* ../frontend/lib/common/ && mkdir -p ../backend/lib/common && cp -r src/* ../backend/lib/common/",
     "test": "mocha --require ts-node/register ./test/**/*.ts",
+    "watch": "npm-watch",
     "clean": "rm -r dist ../frontend/lib/common/ ../backend/lib/common/"
   },
   "repository": {

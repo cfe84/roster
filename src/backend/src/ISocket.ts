@@ -1,6 +1,6 @@
-import { Message } from "./Message";
+import { Message } from "./ConnectionManager/Message";
 
 export interface ISocket {
-  onAsync(eventType: string, message: Message): Promise<void>;
-  sendAsync(eventType: string, message: Message): Promise<void>;
+  onAsync(eventType: string, message: Message<any>): Promise<void>;
+  sendAsync(eventType: string, message: Message<any>): Promise<void>;
 }
