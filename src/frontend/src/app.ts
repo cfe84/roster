@@ -33,7 +33,7 @@ class App {
       const dbStore = await IndexedDBStore.OpenDbAsync();
       this.loadReactors(dbStore);
       this.loadUI(dbStore);
-      const replicationAdapter = new SocketReplicationAdapter("http://localhost:3500", "12314");
+      const replicationAdapter = new SocketReplicationAdapter("https://roster.feval.ca", "12314");
       const queue = new LocalStorageQueue<IEvent>();
       const replicationManager = new ReplicationManager({
         adapter: replicationAdapter, eventBus: this.eventBus, queue
