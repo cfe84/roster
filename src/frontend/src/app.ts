@@ -14,6 +14,14 @@ import { SocketReplicationAdapter } from "./infrastructure/SocketReplicationAdap
 import { ReplicationManager, ReplicationManagerDependencies } from "./synchronization/ReplicationManager";
 import { LocalStorageQueue } from "./infrastructure/LocalStorageQueue";
 
+const getSocketUrl = () => {
+  if (window.location.protocol === "file:") {
+    return "http://localhost:3501";
+  } else {
+    return window.location.href;
+  }
+}
+
 class App {
   private eventBus: EventBus;
   private clientId: string;
@@ -34,7 +42,7 @@ class App {
       this.loadReactors(dbStore);
       this.loadUI(dbStore);
       console.log("Loading")
-      const replicationAdapter = new SocketReplicationAdapter("http://localhost:3501", this.clientId.toString());
+      const replicationAdapter = new SocketReplicationAdapter(getSocketUrl(), this.clientId.toString());
       const queue = new LocalStorageQueue<IEvent>();
       const replicationManager = new ReplicationManager({
         adapter: replicationAdapter, eventBus: this.eventBus, queue
