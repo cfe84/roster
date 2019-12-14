@@ -91,6 +91,6 @@ export class ReplicationManager {
   }
 
   private registerHandler() {
-    this.deps.eventBus.subscribeToAll(this.onEventAsync);
+    this.deps.eventBus.subscribeToAllLocal(this.onEventAsync);
   }
 }

@@ -10,21 +10,24 @@ describe("Replication", () => {
     queue: td.object(["pushAsync", "peekAsync", "countAsync", "deleteAsync"])
   })
   context("Replication to server", () => {
-    it("should store events in a queue", async () => {
+    it("should store local events to a queue", async () => {
       // given
-      const event1: IEvent = { info: new EventInfo("type-1") };
-      const event2: IEvent = { info: new EventInfo("type-2") };
+      const localEvent1: IEvent = { info: new EventInfo("type-1", "local-client-id") };
+      const localEvent2: IEvent = { info: new EventInfo("type-2", "local-client-id") };
+      const remoteEvent: IEvent = { info: new EventInfo("type-2", "external-client-id") };
       const fakes = createFakes();
-      const eventBus = new EventBus("");
+      const eventBus = new EventBus("local-client-id");
       new ReplicationManager({ eventBus, adapter: fakes.adapter, queue: fakes.queue });
 
       // when
-      await eventBus.publishAsync(event1);
-      await eventBus.publishAsync(event2);
+      await eventBus.publishAsync(localEvent1);
+      await eventBus.publishAsync(localEvent2);
+      await eventBus.publishAsync(remoteEvent);
 
       // then
-      td.verify(fakes.queue.pushAsync(event1));
-      td.verify(fakes.queue.pushAsync(event2));
+      td.verify(fakes.queue.pushAsync(localEvent1));
+      td.verify(fakes.queue.pushAsync(localEvent2));
+      td.verify(fakes.queue.pushAsync(remoteEvent), { times: 0, ignoreExtraArgs: true });
     });
 
     it("process queue for sending when starting sync", async () => {
@@ -82,7 +85,6 @@ describe("Replication", () => {
       // then
       td.verify(fakes.adapter.sendEventAsync(event1));
     });
-
 
     it("should retry if a message fails", async () => {
       // given
