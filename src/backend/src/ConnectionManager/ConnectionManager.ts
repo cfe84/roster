@@ -13,7 +13,7 @@ export interface ConnectionManagerDependencies {
 
 export class ConnectionManager {
   private clientId?: ClientId;
-  private receiveEventSubscription?: SubscriptionRecord<EventReceivedEvent>;
+  private forwardEventSubscription?: SubscriptionRecord<EventReceivedEvent>;
   private receivingEvents = false;
 
   constructor(private deps: ConnectionManagerDependencies, private socket: ISocket, private debug = false) {
@@ -45,8 +45,8 @@ export class ConnectionManager {
   }
 
   private onDisconnectAsync = async (): Promise<void> => {
-    if (this.receiveEventSubscription) {
-      this.receiveEventSubscription.unsubscribe();
+    if (this.forwardEventSubscription) {
+      this.forwardEventSubscription.unsubscribe();
     }
     this.log(`Client ${this.clientId} disconnected`)
   }
@@ -55,35 +55,40 @@ export class ConnectionManager {
     const command = message.payload;
     switch (command.command) {
       case StartReceivingEventsCommand.command:
-        this.startReceivingEvents(message);
+        await this.startReceivingEventsAsync(message as Message<StartReceivingEventsCommand>);
         break;
       default:
         throw Error(`Unknown command: ${command.command}`);
     }
   }
 
-  private startReceivingEvents = (message: Message<ICommand>) => {
+  private startReceivingEventsAsync = async (message: Message<StartReceivingEventsCommand>) => {
     if (this.receivingEvents) {
       throw Error("Already receiving events");
     }
     this.clientId = message.emitterId;
     this.log(`Starting event reception for client ${this.clientId}`)
     this.receivingEvents = true;
-    this.receiveEventSubscription = this.deps.eventBus.subscribe(EventReceivedEvent.type, async (event: EventReceivedEvent) => {
+    const eventsToForward = await this.deps.eventStore.getEventsAsync(message.payload.lastReceivedDateMs);
+    for (let i = 0; i < eventsToForward.length; i++) {
+      await this.forwardEventAsync(eventsToForward[i]);
+    }
+    this.forwardEventSubscription = this.deps.eventBus.subscribe(EventReceivedEvent.type, async (event: EventReceivedEvent) => {
       if (this.clientId !== event.emitterId) {
-        await this.forwardEventAsync(event)
+        await this.forwardEventAsync(event.event)
       }
     });
   }
 
-  private forwardEventAsync = async (event: EventReceivedEvent): Promise<void> => {
-    const message = new Message(event.emitterId, event.event);
+  private forwardEventAsync = async (event: IEvent): Promise<void> => {
+    const message = new Message(event.info.emitterId || "", event);
     this.log(`Forwarding event ${JSON.stringify(event)} to client ${this.clientId}`)
     await this.socket.sendAsync(MessageTypes.EVENT, message);
   }
 
   private async processInboundEventAsync(message: Message<IEvent>): Promise<void> {
     this.log(`Received event from ${this.clientId}: ${JSON.stringify(message)}`);
+    await this.deps.eventStore.storeEventAsync(message.payload);
     await this.deps.eventBus.publishAsync(new EventReceivedEvent(message.payload, message.emitterId));
   }
 
