@@ -168,7 +168,7 @@ export class IndexedDBStore implements IPersonStore, INotesStore, IDiscussionSto
 
   public getDiscussionsAsync = async (): Promise<Discussion[]> =>
     (await this.db.getAllAsync<Discussion>(OBJECTSTORE_DISCUSSIONS))
-      .sort((a, b) => (a.date.getTime() < b.date.getTime() ? 1 : -1));
+      .sort((a, b) => ((a.date && b.date && a.date.getTime && b.date.getTime && a.date.getTime() < b.date.getTime()) ? 1 : -1));
 
   public createDiscussionAsync = async (element: Discussion): Promise<void> => {
     await this.db.createEntityAsync(OBJECTSTORE_DISCUSSIONS, element);
@@ -182,7 +182,7 @@ export class IndexedDBStore implements IPersonStore, INotesStore, IDiscussionSto
 
   public getDeadlinesAsync = async (): Promise<Deadline[]> =>
     (await this.db.getAllAsync<Deadline>(OBJECTSTORE_DEADLINES))
-      .sort((a, b) => (a.deadline.getTime() < b.deadline.getTime() ? 1 : -1))
+      .sort((a, b) => (a.deadline && b.deadline && a.deadline.getTime() < b.deadline.getTime() ? 1 : -1))
 
   public createDeadlineAsync = async (element: Deadline): Promise<void> => {
     await this.db.createEntityAsync(OBJECTSTORE_DEADLINES, element);

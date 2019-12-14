@@ -21,13 +21,13 @@ export class NoteEditorComponent extends Component {
     const title = `${this.props.actionName || "New note"} ${note.title}`;
     return <div>
       <PageTitle title={title} icon="sticky-note" onBack={this.props.onCancel} />
-      <form class="form-create-element">
+      <div class="form-create-element">
         <TextInput caption="Title" object={note} field="title" />
         <MarkdownInput caption="Content" object={note} field="content" />
         <DateDisplay caption="Created date" object={note} field="createdDate" />
         <Button class="mr-2" onclick={() => { note.lastEditDate = new Date(); this.props.onValidate(note) }} icon="save" text={saveButtonCaption} />
         <Button type="secondary" onclick={this.props.onCancel} icon="times" text="Cancel" />
-      </form>
+      </div>
     </div>;
   }
 

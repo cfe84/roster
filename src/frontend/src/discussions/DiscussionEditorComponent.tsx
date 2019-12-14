@@ -20,7 +20,7 @@ export class DiscussionEditorComponent extends Component {
     const title = `${this.props.actionName || "New discussion"} ${discussion.description}`;
     return <div>
       <PageTitle title={title} icon="comments" onBack={this.props.onCancel} />
-      <form class="form-create-element">
+      <div class="form-create-element">
         <div class="row">
           <TextInput class="col" caption="Title" object={discussion} field="description" />
           <DateInput class="col-sm" caption="Date" object={discussion} field="date" />
@@ -29,7 +29,7 @@ export class DiscussionEditorComponent extends Component {
         <MarkdownInput caption="Meeting notes" object={discussion} field="notes" />
         <Button class="mr-2" onclick={() => { this.props.onValidate(discussion) }} icon="save" text={saveButtonCaption} />
         <Button type="secondary" onclick={this.props.onCancel} icon="times" text="Cancel" />
-      </form>
+      </div>
     </div>;
   }
 

@@ -23,7 +23,7 @@ export class PersonEditorComponent extends Component {
     const title = `${this.props.actionName || "New person"} ${person.name}`;
     return <div>
       <PageTitle title={title} icon="user" onBack={this.props.onCancel}></PageTitle>
-      <form class="form-create-element">
+      <div class="form-create-element">
         <TextInput caption="Name" object={person} field="name"></TextInput>
         <DateInput caption="In company since" object={person} field="inCompanySince"></DateInput>
         <div class="row">
@@ -39,7 +39,7 @@ export class PersonEditorComponent extends Component {
           <Button icon="times" onclick={this.props.onCancel} type="secondary" text="Cancel"></Button>
           {deleteBtn}
         </span>
-      </form>
+      </div>
     </div >;
   }
 }

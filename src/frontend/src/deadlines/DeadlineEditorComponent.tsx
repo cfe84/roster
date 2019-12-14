@@ -20,7 +20,7 @@ export class DeadlineEditorComponent extends Component {
     const title = `${this.props.actionName || "New deadline"} ${deadline.description}`;
     return <div>
       <PageTitle title={title} icon="calendar-day" onBack={this.props.onCancel} />
-      <form class="form-create-element">
+      <div class="form-create-element">
         <div class="row">
           <TextInput class="col" caption="Title" object={deadline} field="description" />
           <DateInput class="col-sm" caption="Date" object={deadline} field="deadline" />
@@ -28,7 +28,7 @@ export class DeadlineEditorComponent extends Component {
         <MarkdownInput caption="Meeting notes" object={deadline} field="notes" />
         <Button class="mr-2" onclick={() => { this.props.onValidate(deadline) }} icon="save" text={saveButtonCaption} />
         <Button type="secondary" onclick={this.props.onCancel} icon="times" text="Cancel" />
-      </form>
+      </div>
     </div>;
   }
 
