@@ -27,9 +27,9 @@ COPY backend/package.json ./
 COPY backend/package-lock.json ./
 COPY backend/index.html ./
 RUN npm install --production
-COPY --from=build /app/backend/dist/src ./dist
-COPY --from=build /app/backend/dist/lib ./dist
+COPY --from=build /app/backend/dist/src ./dist/src
+COPY --from=build /app/backend/dist/lib ./dist/lib
 
 EXPOSE 3501
 
-ENTRYPOINT node dist/app.js
+ENTRYPOINT node dist/src/app.js
