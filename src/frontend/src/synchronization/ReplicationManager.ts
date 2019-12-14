@@ -1,6 +1,6 @@
 import { EventBus, IEvent } from "../../lib/common/events/";
 import { IReplicationAdapter } from "./IReplicationAdapter";
-import { IQueue } from "./IQueue";
+import { IQueue, IQueueMessage } from "./IQueue";
 import { AsyncTimeout } from "../../lib/common/utils/AsyncTimeout";
 
 export interface ReplicationManagerDependencies {
@@ -13,7 +13,14 @@ export class ReplicationManager {
   private timeout = new AsyncTimeout();
   private running = false;
   public intervalMs: number = 10000;
-  constructor(private deps: ReplicationManagerDependencies) {
+
+  private log(text: string) {
+    if (this.debug) {
+      console.log(text);
+    }
+  }
+
+  constructor(private deps: ReplicationManagerDependencies, private debug: boolean = false) {
     this.registerHandler();
   }
 
@@ -24,6 +31,7 @@ export class ReplicationManager {
   onError = (error: Error) => { }
 
   onEventAsync = async (event: IEvent) => {
+    this.log(`Queued event for forwarding: ${event}`);
     await this.deps.queue.pushAsync(event);
     this.syncNow();
   }
@@ -36,8 +44,9 @@ export class ReplicationManager {
 
   private processSendQueueAsync = async () => {
     while (await this.deps.queue.countAsync() > 0) {
-      const message = await this.deps.queue.peekAsync();
+      const message: IQueueMessage<IEvent> = await this.deps.queue.peekAsync();
       try {
+        this.log(`Sending event : ${JSON.stringify(message)}`);
         await this.deps.adapter.sendEventAsync(message.data);
       } catch (error) {
         this.onError(error);
@@ -48,6 +57,7 @@ export class ReplicationManager {
   }
 
   private processInboundEventAsync = async (event: IEvent): Promise<void> => {
+    this.log(`Received event from server: ${event}`)
     await this.deps.eventBus.publishAsync(event);
   }
 

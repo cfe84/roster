@@ -15,7 +15,7 @@ describe("Replication", () => {
       const event1: IEvent = { info: new EventInfo("type-1") };
       const event2: IEvent = { info: new EventInfo("type-2") };
       const fakes = createFakes();
-      const eventBus = new EventBus();
+      const eventBus = new EventBus("");
       new ReplicationManager({ eventBus, adapter: fakes.adapter, queue: fakes.queue });
 
       // when
@@ -34,7 +34,7 @@ describe("Replication", () => {
       const message1 = { data: event1 };
       const message2 = { data: event2 };
 
-      const eventBus = new EventBus();
+      const eventBus = new EventBus("");
       const fakes = createFakes();
 
       td.when(fakes.queue.countAsync()).thenResolve(2, 1, 0, 0);
@@ -61,7 +61,7 @@ describe("Replication", () => {
       const event2 = { info: new EventInfo("type-2"), id: 2 } as IEvent;
       const message1 = { data: event1 };
 
-      const eventBus = new EventBus();
+      const eventBus = new EventBus("");
       const fakes = createFakes();
       td.when(fakes.queue.countAsync()).thenResolve(0, 1, 0, 0);
       td.when(fakes.queue.peekAsync()).thenResolve(message1, null, null);
@@ -89,7 +89,7 @@ describe("Replication", () => {
       const event1 = { info: new EventInfo("type-1"), id: 1 } as IEvent;
       const message1 = { data: event1 };
 
-      const eventBus = new EventBus();
+      const eventBus = new EventBus("");
       const fakes = createFakes();
       const error = Error("sdfsg");
       const fakeCallbacks = td.object(["onError"]);
@@ -117,7 +117,7 @@ describe("Replication", () => {
       const event1 = { info: new EventInfo("type-1"), id: 1 } as IEvent;
       const message1 = { data: event1 };
 
-      const eventBus = new EventBus();
+      const eventBus = new EventBus("");
       const fakes = createFakes();
       td.when(fakes.queue.countAsync()).thenResolve(1, 0, 0);
       td.when(fakes.queue.peekAsync()).thenResolve(message1, null, null);
@@ -155,7 +155,7 @@ describe("Replication", () => {
       const event1 = { info: new EventInfo("type-1"), id: 1 } as IEvent;
       const event2 = { info: new EventInfo("type-2"), id: 2 } as IEvent;
 
-      const eventBus = new EventBus();
+      const eventBus = new EventBus("");
       const fakes = createFakes();
       const fakeSubscriber = td.object(["callback1", "callback2"]);
       eventBus.subscribe("type-1", fakeSubscriber.callback1);

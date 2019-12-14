@@ -16,7 +16,7 @@ class FakeLocalStorage implements ILocalStorage {
 }
 
 describe("Infrastructure", () => {
-  context.only("LocalStorageQueue", () => {
+  context("LocalStorageQueue", () => {
     it("should return count 0", async () => {
       // given
       const queue = new LocalStorageQueue(new FakeLocalStorage());
@@ -42,7 +42,7 @@ describe("Infrastructure", () => {
 
         // then
         should(count).eql(1);
-        should(retrieved).deepEqual(item);
+        should(retrieved.data).deepEqual(item);
         should(await queue.countAsync()).eql(0);
       }
     });
@@ -64,11 +64,28 @@ describe("Infrastructure", () => {
       let count = 0;
       while (await queue.countAsync() > 0) {
         const msg = await queue.peekAsync();
-        should((msg as any).id).eql(count);
+        should((msg.data as any).id).eql(count);
         await queue.deleteAsync(msg);
         count++;
       }
       should(count).eql(totalMessageCount);
+    });
+
+    it("should throw when deleting a message that is not top of queue", async () => {
+      // given
+      const queue = new LocalStorageQueue(new FakeLocalStorage());
+      const item1 = { id: 1 };
+      const item2 = { id: 2 };
+
+      // when
+      await queue.pushAsync(item1);
+      await queue.pushAsync(item2);
+      const retrieved1 = await queue.peekAsync();
+      const retrieved2 = await queue.peekAsync();
+      await queue.deleteAsync(retrieved1);
+
+      // then
+      await should(queue.deleteAsync(retrieved1)).be.rejected();
     })
   })
 })

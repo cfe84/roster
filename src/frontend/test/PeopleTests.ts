@@ -12,7 +12,7 @@ describe("People", () => {
     // given
     const store = td.object(["createPersonAsync"]);
     const reactor = new StorePeopleChangesReactor(store as IPersonStore)
-    const bus = new EventBus();
+    const bus = new EventBus("");
     const person: Person = { "id": "123", "name": "dsfs", inCompanySince: undefined, inPositionSince: undefined, inTeamSince: undefined, position: "sdfs", role: "dfsdf" };
     const evt = new PersonCreatedEvent(person);
 
@@ -28,7 +28,7 @@ describe("People", () => {
     // given
     const store = td.object(["updatePersonAsync"]);
     const reactor = new StorePeopleChangesReactor(store as IPersonStore)
-    const bus = new EventBus();
+    const bus = new EventBus("");
     const person: Person = { "id": "123", "name": "dsfs", inCompanySince: undefined, inPositionSince: undefined, inTeamSince: undefined, position: "sdfs", role: "dfsdf" };
     const evt = new PersonUpdatedEvent(person);
 

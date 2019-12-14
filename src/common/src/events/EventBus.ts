@@ -2,6 +2,7 @@ import { IEvent } from "./IEvent";
 import { SubscriptionRecord } from "./SubscriptionRecord";
 
 const CATCH_ALL = "CATCH_ALL";
+const CATCH_ALL_LOCAL = "CATCH_ALL_LOCAL";
 type syncEventHandler<T extends IEvent> = ((event: T) => void);
 type asyncEventHandler<T extends IEvent> = ((event: T) => Promise<void>);
 export type eventHandler<T extends IEvent> = syncEventHandler<T> | asyncEventHandler<T>;
@@ -26,16 +27,23 @@ export class EventBus {
     }
   }
 
-  constructor(private debug: boolean = false) {
+  constructor(private emitterId: string, private debug: boolean = false) {
   }
 
   private subscriptions = new Subscriptions();
   private subscriptionRecords = new SubscriptionRecordList();
 
-  async publishAsync(event: IEvent): Promise<void> {
+  publishAsync = async (event: IEvent): Promise<void> => {
     this.log(`Eventbus - publishing event ${event.info.type}: ${JSON.stringify(event, null, 2)}`);
+    if (!event.info.emitterId) {
+      event.info.emitterId = this.emitterId;
+    }
     await this.callHandlersForType(event.info.type, event);
     await this.callHandlersForType(CATCH_ALL, event);
+    const isLocal = event.info.emitterId === this.emitterId;
+    if (isLocal) {
+      await this.callHandlersForType(CATCH_ALL_LOCAL, event);
+    }
   }
 
   private async callHandlersForType(type: string, event: IEvent) {
@@ -63,6 +71,9 @@ export class EventBus {
 
   subscribeToAll = (handler: eventHandler<IEvent>): SubscriptionRecord<IEvent> =>
     this.subscribe(CATCH_ALL, handler)
+
+  subscribeToAllLocal = (handler: eventHandler<IEvent>): SubscriptionRecord<IEvent> =>
+    this.subscribe(CATCH_ALL_LOCAL, handler)
 
   unsubscribe<T extends IEvent>(record: SubscriptionRecord<T>) {
     const subsForType = this.subscriptions[record.type];

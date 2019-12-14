@@ -4,12 +4,12 @@ import * as td from "testdouble";
 import { MessageTypes, Message } from "../lib/common/message/Message";
 import { EventInfo } from "../lib/common/events/EventInfo";
 import { EventReceivedEvent } from "../src/ConnectionManager/EventReceivedEvent";
-import { StartReceivingEventsCommand } from "../lib/common/message/StartReceivingEventsCommand";
+import { StartReceivingEventsCommand } from "../lib/common/message";
 
 describe("Connection Manager", () => {
   it("should forward inbound event to bus", async () => {
     // given
-    const eventBus = new EventBus();
+    const eventBus = new EventBus("server");
     const fakeStore = td.object(["storeEventAsync"]);
     const fakeSocket = td.object(["onAsync", "sendAsync"])
     const fakeSubscriber = td.object(["onEvent"]);
@@ -42,7 +42,7 @@ describe("Connection Manager", () => {
 
   it("should forward received events to connected clients but not to the emitter", async () => {
     // given
-    const eventBus = new EventBus();
+    const eventBus = new EventBus("server");
     const fakeStore = td.object(["storeEventAsync"]);
     const fakeSocket1 = td.object(["onAsync", "sendAsync"])
     const fakeSocket2 = td.object(["onAsync", "sendAsync"])

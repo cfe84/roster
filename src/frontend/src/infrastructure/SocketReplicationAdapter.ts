@@ -9,16 +9,21 @@ export class SocketReplicationAdapter implements IReplicationAdapter {
   constructor(backendUrl: string, private clientId: string) {
     this.socket = io(backendUrl);
     this.socket.on(MessageTypes.EVENT,
-      (message: Message<IEvent>) => this.onEventReceivedAsync(message.payload));
+      (message: Message<IEvent>) => {
+        console.log(message);
+        this.onEventReceivedAsync(message.payload)
+      });
   }
 
   sendEventAsync = (event: IEvent): Promise<void> => new Promise((resolve, reject) => {
     const message = new Message(this.clientId, event);
+    console.log(`Sending to socket: ${JSON.stringify(message)}`);
     this.socket.emit(MessageTypes.EVENT, message);
     resolve();
   });
 
   startReceivingEventsAsync = (): Promise<void> => new Promise((resolve, reject) => {
+    console.log("Asking socket to listen");
     const command = new StartReceivingEventsCommand();
     const message = new Message(this.clientId, command);
     this.socket.emit(MessageTypes.COMMAND, message);
@@ -29,5 +34,7 @@ export class SocketReplicationAdapter implements IReplicationAdapter {
     throw new Error("Method not implemented.");
   }
 
-  onEventReceivedAsync = async (event: IEvent): Promise<void> => { }
+  onEventReceivedAsync = async (event: IEvent): Promise<void> => {
+    console.error("Received an event on the fake receiver")
+  }
 }

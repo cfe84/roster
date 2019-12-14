@@ -15,10 +15,11 @@ import { ReplicationManager, ReplicationManagerDependencies } from "./synchroniz
 import { LocalStorageQueue } from "./infrastructure/LocalStorageQueue";
 
 class App {
-  private eventBus: EventBus = new EventBus(true);
-
+  private eventBus: EventBus;
+  private clientId: string;
   constructor() {
-
+    this.clientId = Math.ceil(Math.random() * 10000000000).toString();
+    this.eventBus = new EventBus(this.clientId);
   }
 
   notesController?: NotesController;
@@ -29,15 +30,15 @@ class App {
 
   async loadAsync(): Promise<void> {
     try {
-
       const dbStore = await IndexedDBStore.OpenDbAsync();
       this.loadReactors(dbStore);
       this.loadUI(dbStore);
-      const replicationAdapter = new SocketReplicationAdapter("https://roster.feval.ca", "12314");
+      console.log("Loading")
+      const replicationAdapter = new SocketReplicationAdapter("http://localhost:3501", this.clientId.toString());
       const queue = new LocalStorageQueue<IEvent>();
       const replicationManager = new ReplicationManager({
         adapter: replicationAdapter, eventBus: this.eventBus, queue
-      });
+      }, true);
       await replicationManager.startSyncingAsync();
     }
     catch (error) {

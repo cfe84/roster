@@ -3,8 +3,7 @@ import { ISocket } from "../ISocket";
 import { Message, ClientId, MessageTypes } from "../../lib/common/message/Message";
 import { EventBus, IEvent } from "../../lib/common/events";
 import { EventReceivedEvent } from "./EventReceivedEvent";
-import { ICommand } from "../../lib/common/message/ICommand";
-import { StartReceivingEventsCommand } from "../../lib/common/message/StartReceivingEventsCommand";
+import { ICommand, StartReceivingEventsCommand } from "../../lib/common/message";
 import { SubscriptionRecord } from "../../lib/common/events/SubscriptionRecord";
 
 export interface ConnectionManagerDependencies {
@@ -22,6 +21,7 @@ export class ConnectionManager {
   }
 
   private onAsync = async (messageType: string, message: Message<any>): Promise<void> => {
+    console.log(`Received message of type ${messageType}`)
     switch (messageType) {
       case MessageTypes.HANDSHAKE:
         await this.processHandshakeAsync(message);
@@ -53,6 +53,7 @@ export class ConnectionManager {
       throw Error("Already receiving events");
     }
     this.clientId = message.emitterId;
+    console.log(`Starting event reception for client ${this.clientId}`)
     this.receivingEvents = true;
     this.receiveEventSubscription = this.deps.eventBus.subscribe(EventReceivedEvent.type, async (event: EventReceivedEvent) => {
       if (this.clientId !== event.emitterId) {
@@ -63,10 +64,12 @@ export class ConnectionManager {
 
   private forwardEventAsync = async (event: EventReceivedEvent): Promise<void> => {
     const message = new Message(event.emitterId, event.event);
+    console.log(`Forwarding event ${JSON.stringify(event)} to client ${this.clientId}`)
     await this.socket.sendAsync(MessageTypes.EVENT, message);
   }
 
   private async processInboundEventAsync(message: Message<IEvent>): Promise<void> {
+    console.log(`Received event from ${this.clientId}: ${JSON.stringify(message)}`);
     await this.deps.eventBus.publishAsync(new EventReceivedEvent(message.payload, message.emitterId));
   }
 

@@ -50,6 +50,9 @@ export class LocalStorageQueue<T> implements IQueue<T> {
   deleteAsync = async (message: IQueueMessage<T>): Promise<void> => {
     const lsMessage = message as LocalStorageQueueMessage<T>;
     const thisMessageIndex = await this.getIndexForNextMessageAsync();
+    if (lsMessage.index !== thisMessageIndex) {
+      throw Error("Trying to delete a message that is not top of the queue");
+    }
     if (await this.countAsync() === 1) {
       this.setQueueToEmpty();
     } else {
@@ -70,7 +73,7 @@ export class LocalStorageQueue<T> implements IQueue<T> {
     if (serializedMessage === null) {
       throw Error("Message is null, this shouldn't happen");
     }
-    return JSON.parse(serializedMessage);
+    return new LocalStorageQueueMessage(JSON.parse(serializedMessage), messageIndex);
   }
 
   pushAsync = async (message: T): Promise<void> => {

@@ -7,18 +7,22 @@
 <body>
   <div id="tidledoo"></div>
   <script>
-    var socket = io('https://roster.feval.ca');
-    const id = Math.random() * 10000000000;
-    socket.emit('handshake', { id }, () => { });
-    socket.on("evt", function (data) {
+    var socket = io('http://localhost:3501/');
+    const id = Math.ceil(Math.random() * 10000000000);
+    socket.emit('command', { emitterId: id, payload: { command: "StartReceivingEvents" } }, () => { });
+    socket.on("event", function (data) {
       console.log("received")
       const el = document.getElementById("tidledoo");
-      el.innerHTML += data.message + "<br/>";
+      el.innerHTML += JSON.stringify(data) + "<br/>";
     })
     socket.on("connect_error", (err) => console.error("connect-error" + err));
     socket.on("error", (err) => console.error("error" + err));
     socket.on("connect_timeout", (err) => console.error("timeout" + err));
+    function sendEvent() {
+      socket.emit("event", { emitterId: id, payload: { hello: 'world' } });
+    }
   </script>
+  <button onclick="sendEvent()">Send event</button>
 </body>
 
 </html>
