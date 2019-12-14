@@ -1,5 +1,6 @@
 import { IQueue, IQueueMessage } from "../synchronization/IQueue";
 import { IEvent } from "../../lib/common/events";
+import { JsonSerializer } from "../../lib/common/utils/JsonSerializer";
 
 export interface ILocalStorage {
   getItem(key: string): string | null;
@@ -73,7 +74,7 @@ export class LocalStorageQueue<T> implements IQueue<T> {
     if (serializedMessage === null) {
       throw Error("Message is null, this shouldn't happen");
     }
-    return new LocalStorageQueueMessage(JSON.parse(serializedMessage), messageIndex);
+    return new LocalStorageQueueMessage(JsonSerializer.deserialize(serializedMessage), messageIndex);
   }
 
   pushAsync = async (message: T): Promise<void> => {

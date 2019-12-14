@@ -57,7 +57,7 @@ export class ReplicationManager {
   }
 
   private processInboundEventAsync = async (event: IEvent): Promise<void> => {
-    this.log(`Received event from server: ${event}`)
+    this.log(`Received event from server: ${JSON.stringify(event)}`)
     await this.deps.eventBus.publishAsync(event);
   }
 

@@ -4,7 +4,8 @@ import * as td from "testdouble";
 import { MessageTypes, Message } from "../lib/common/message/Message";
 import { EventInfo } from "../lib/common/events/EventInfo";
 import { EventReceivedEvent } from "../src/ConnectionManager/EventReceivedEvent";
-import { StartReceivingEventsCommand } from "../lib/common/message";
+import { StartReceivingEventsCommand, EventReceivedAck } from "../lib/common/message";
+import should from "should";
 
 describe("Connection Manager", () => {
   it("should forward inbound event to bus and store them", async () => {
@@ -23,14 +24,14 @@ describe("Connection Manager", () => {
     }
     const emitterId = "emitter-123";
 
-    const manager = new ConnectionManager(deps, fakeSocket);
+    new ConnectionManager(deps, fakeSocket);
 
     // when
     const message: Message<object> = {
       emitterId,
       payload: event
     };
-    await fakeSocket.onAsync(MessageTypes.EVENT, message);
+    const ack: EventReceivedAck = await fakeSocket.onAsync(MessageTypes.EVENT, message);
 
     // then
     td.verify(fakeSubscriber.onEvent(td.matchers.argThat((arg: EventReceivedEvent) =>
@@ -38,6 +39,7 @@ describe("Connection Manager", () => {
       arg.emitterId === emitterId &&
       arg.event === event)));
     td.verify(fakeStore.storeEventAsync(event));
+    should(ack.dateMs).eql(event.info.date.getTime());
   });
 
   it("should forward received events to connected clients but not to the emitter", async () => {
@@ -59,6 +61,7 @@ describe("Connection Manager", () => {
     const event: IEvent = {
       info: new EventInfo(eventType, emitterId1)
     };
+    event.info.date = new Date(2019, 10, 1);
     new ConnectionManager(deps, fakeSocket1);
     new ConnectionManager(deps, fakeSocket2);
 

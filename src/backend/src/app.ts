@@ -23,7 +23,7 @@ class App {
     const IO = io(app);
     IO.on('connection', (socket: SocketIO.Socket) => {
       console.log("New connection");
-      new ConnectionManager({ eventBus: this.eventBus, eventStore: this.eventStore }, new SocketIoSocket(socket));
+      new ConnectionManager({ eventBus: this.eventBus, eventStore: this.eventStore }, new SocketIoSocket(socket), true);
     });
   }
 

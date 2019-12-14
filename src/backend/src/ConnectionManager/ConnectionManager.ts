@@ -3,7 +3,7 @@ import { ISocket } from "../ISocket";
 import { Message, ClientId, MessageTypes } from "../../lib/common/message/Message";
 import { EventBus, IEvent } from "../../lib/common/events";
 import { EventReceivedEvent } from "./EventReceivedEvent";
-import { ICommand, StartReceivingEventsCommand } from "../../lib/common/message";
+import { ICommand, StartReceivingEventsCommand, EventReceivedAck } from "../../lib/common/message";
 import { SubscriptionRecord } from "../../lib/common/events/SubscriptionRecord";
 
 export interface ConnectionManagerDependencies {
@@ -27,15 +27,14 @@ export class ConnectionManager {
     }
   }
 
-  private onAsync = async (messageType: string, message: Message<any>): Promise<void> => {
+  private onAsync = async (messageType: string, message: Message<any>): Promise<any> => {
     this.log(`Received message of type ${messageType}`)
     switch (messageType) {
       case MessageTypes.HANDSHAKE:
         await this.processHandshakeAsync(message);
         break;
       case MessageTypes.EVENT:
-        await this.processInboundEventAsync(message);
-        break;
+        return await this.processInboundEventAsync(message);
       case MessageTypes.COMMAND:
         await this.processCommandAsync(message);
         break;
@@ -70,6 +69,7 @@ export class ConnectionManager {
     this.log(`Starting event reception for client ${this.clientId}`)
     this.receivingEvents = true;
     const eventsToForward = await this.deps.eventStore.getEventsAsync(message.payload.lastReceivedDateMs);
+    this.log(`Found ${eventsToForward.length} events to forward`);
     for (let i = 0; i < eventsToForward.length; i++) {
       await this.forwardEventAsync(eventsToForward[i]);
     }
@@ -86,10 +86,13 @@ export class ConnectionManager {
     await this.socket.sendAsync(MessageTypes.EVENT, message);
   }
 
-  private async processInboundEventAsync(message: Message<IEvent>): Promise<void> {
+  private async processInboundEventAsync(message: Message<IEvent>): Promise<EventReceivedAck> {
     this.log(`Received event from ${this.clientId}: ${JSON.stringify(message)}`);
     await this.deps.eventStore.storeEventAsync(message.payload);
     await this.deps.eventBus.publishAsync(new EventReceivedEvent(message.payload, message.emitterId));
+    return {
+      dateMs: message.payload.info.date.getTime()
+    };
   }
 
   private async processHandshakeAsync(message: Message<any>): Promise<void> {
