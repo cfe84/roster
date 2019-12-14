@@ -13,6 +13,8 @@ import { StoreDeadlinesChangesReactor } from "./deadlines/StoreDeadlinesChangesR
 import { SocketReplicationAdapter } from "./infrastructure/SocketReplicationAdapter";
 import { ReplicationManager, ReplicationManagerDependencies } from "./synchronization/ReplicationManager";
 import { LocalStorageQueue } from "./infrastructure/LocalStorageQueue";
+import { clientIdUtil } from "./utils/clientId";
+import { GUID } from "../lib/common/utils/guid";
 
 const getSocketUrl = () => {
   if (window.location.protocol === "file:") {
@@ -25,8 +27,9 @@ const getSocketUrl = () => {
 class App {
   private eventBus: EventBus;
   private clientId: string;
+  private sessionId: string = GUID.newGuid();
   constructor() {
-    this.clientId = Math.ceil(Math.random() * 10000000000).toString();
+    this.clientId = clientIdUtil.getClientId();
     this.eventBus = new EventBus(this.clientId);
   }
 

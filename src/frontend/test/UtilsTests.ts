@@ -1,6 +1,8 @@
 import should from "should";
 import { dateUtils } from "../src/utils/dateUtils";
 import { objectUtils } from "../src/utils/objectUtils";
+import * as td from "testdouble";
+import { clientIdUtil } from "../src/utils/clientId";
 
 describe("Utils", () => {
   context("Date tools", () => {
@@ -95,4 +97,26 @@ describe("Utils", () => {
         }
       }));
   });
+
+  context("ClientID", () => {
+    it("should create client id and store it", () => {
+      // given
+      const fakeLocalStorage = td.object(["getItem", "setItem", "removeItem"]);
+      // when
+      const id = clientIdUtil.getClientId(fakeLocalStorage);
+      // then
+      td.verify(fakeLocalStorage.setItem("config.clientid", id));
+      should(id.length).be.greaterThan(8);
+    });
+
+    it("should get client id from store", () => {
+      // given
+      const fakeLocalStorage = td.object(["getItem", "setItem", "removeItem"]);
+      td.when(fakeLocalStorage.getItem("config.clientid")).thenReturn("12345");
+      // when
+      const id = clientIdUtil.getClientId(fakeLocalStorage);
+      // then
+      should(id).equal("12345");
+    });
+  })
 });
