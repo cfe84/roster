@@ -10,8 +10,8 @@ describe("Connection Manager", () => {
   it("should forward inbound event to bus", async () => {
     // given
     const eventBus = new EventBus("server");
-    const fakeStore = td.object(["storeEventAsync"]);
-    const fakeSocket = td.object(["onAsync", "sendAsync"])
+    const fakeStore = td.object(["storeEventAsync", "getEventsAsync"]);
+    const fakeSocket = td.object(["onAsync", "sendAsync", "onDisconnectAsync"])
     const fakeSubscriber = td.object(["onEvent"]);
     const eventType = 'sdfsd';
     eventBus.subscribe(EventReceivedEvent.type, fakeSubscriber.onEvent);
@@ -43,9 +43,9 @@ describe("Connection Manager", () => {
   it("should forward received events to connected clients but not to the emitter", async () => {
     // given
     const eventBus = new EventBus("server");
-    const fakeStore = td.object(["storeEventAsync"]);
-    const fakeSocket1 = td.object(["onAsync", "sendAsync"])
-    const fakeSocket2 = td.object(["onAsync", "sendAsync"])
+    const fakeStore = td.object(["storeEventAsync", "getEventsAsync"]);
+    const fakeSocket1 = td.object(["onAsync", "sendAsync", "onDisconnectAsync"])
+    const fakeSocket2 = td.object(["onAsync", "sendAsync", "onDisconnectAsync"])
 
     const eventType = 'received-event-type';
     const event: IEvent = {
@@ -72,4 +72,35 @@ describe("Connection Manager", () => {
       && message.payload === event
     )));
   });
+
+  it("should drop subscriptions on disconnect", async () => {
+    // given
+    const eventBus = new EventBus("server");
+    const fakeStore = td.object(["storeEventAsync", "getEventsAsync"]);
+    const fakeSocket1 = td.object(["onAsync", "sendAsync", "onDisconnectAsync"])
+    const fakeSocket2 = td.object(["onAsync", "sendAsync", "onDisconnectAsync"])
+
+    const eventType = 'received-event-type';
+    const event: IEvent = {
+      info: new EventInfo(eventType)
+    };
+    const deps: ConnectionManagerDependencies = {
+      eventBus,
+      eventStore: fakeStore
+    }
+    const emitterId1 = "emitter-123";
+    const emitterId2 = "emitter-456";
+    new ConnectionManager(deps, fakeSocket1);
+    new ConnectionManager(deps, fakeSocket2);
+
+    // when
+    await fakeSocket1.onAsync(MessageTypes.COMMAND, new Message(emitterId1, new StartReceivingEventsCommand()));
+    await fakeSocket2.onAsync(MessageTypes.COMMAND, new Message(emitterId2, new StartReceivingEventsCommand()));
+    await fakeSocket2.onDisconnectAsync();
+    await eventBus.publishAsync(new EventReceivedEvent(event, emitterId1));
+
+    // then
+    td.verify(fakeSocket1.sendAsync(), { times: 0, ignoreExtraArgs: true });
+    td.verify(fakeSocket2.sendAsync(), { times: 0, ignoreExtraArgs: true });
+  })
 })

@@ -16,12 +16,19 @@ export class ConnectionManager {
   private receiveEventSubscription?: SubscriptionRecord<EventReceivedEvent>;
   private receivingEvents = false;
 
-  constructor(private deps: ConnectionManagerDependencies, private socket: ISocket) {
+  constructor(private deps: ConnectionManagerDependencies, private socket: ISocket, private debug = false) {
     this.socket.onAsync = this.onAsync;
+    this.socket.onDisconnectAsync = this.onDisconnectAsync;
+  }
+
+  log(message: any) {
+    if (this.debug) {
+      console.log(message);
+    }
   }
 
   private onAsync = async (messageType: string, message: Message<any>): Promise<void> => {
-    console.log(`Received message of type ${messageType}`)
+    this.log(`Received message of type ${messageType}`)
     switch (messageType) {
       case MessageTypes.HANDSHAKE:
         await this.processHandshakeAsync(message);
@@ -35,6 +42,13 @@ export class ConnectionManager {
       default:
         throw (Error(`Unknown type: ${messageType}`));
     }
+  }
+
+  private onDisconnectAsync = async (): Promise<void> => {
+    if (this.receiveEventSubscription) {
+      this.receiveEventSubscription.unsubscribe();
+    }
+    this.log(`Client ${this.clientId} disconnected`)
   }
 
   private processCommandAsync = async (message: Message<ICommand>): Promise<void> => {
@@ -53,7 +67,7 @@ export class ConnectionManager {
       throw Error("Already receiving events");
     }
     this.clientId = message.emitterId;
-    console.log(`Starting event reception for client ${this.clientId}`)
+    this.log(`Starting event reception for client ${this.clientId}`)
     this.receivingEvents = true;
     this.receiveEventSubscription = this.deps.eventBus.subscribe(EventReceivedEvent.type, async (event: EventReceivedEvent) => {
       if (this.clientId !== event.emitterId) {
@@ -64,12 +78,12 @@ export class ConnectionManager {
 
   private forwardEventAsync = async (event: EventReceivedEvent): Promise<void> => {
     const message = new Message(event.emitterId, event.event);
-    console.log(`Forwarding event ${JSON.stringify(event)} to client ${this.clientId}`)
+    this.log(`Forwarding event ${JSON.stringify(event)} to client ${this.clientId}`)
     await this.socket.sendAsync(MessageTypes.EVENT, message);
   }
 
   private async processInboundEventAsync(message: Message<IEvent>): Promise<void> {
-    console.log(`Received event from ${this.clientId}: ${JSON.stringify(message)}`);
+    this.log(`Received event from ${this.clientId}: ${JSON.stringify(message)}`);
     await this.deps.eventBus.publishAsync(new EventReceivedEvent(message.payload, message.emitterId));
   }
 
