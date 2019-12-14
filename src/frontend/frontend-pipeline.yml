@@ -11,6 +11,7 @@ trigger:
       - src/frontend/*
       - src/common/*
       - chart/*
+      - src/Frontend.Dockerfile
 
 resources:
   - repo: self

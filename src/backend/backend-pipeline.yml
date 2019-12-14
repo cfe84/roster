@@ -11,6 +11,7 @@ trigger:
       - src/backend/*
       - src/common/*
       - chart/*
+      - src/Backend.Dockerfile
 
 resources:
   - repo: self
