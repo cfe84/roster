@@ -8,11 +8,9 @@ import { PersonId } from "../persons";
 import { DiscussionEditor } from "./DiscussionEditorComponent";
 import { dateUtils } from "../utils/dateUtils";
 import { GUID } from "../../lib/common/utils/guid";
-import { DiscussionCreatedEvent } from "./DiscussionCreatedEvent";
-import { DiscussionUpdatedEvent } from "./DiscussionUpdatedEvent";
+import { DiscussionCreatedEvent, DiscussionUpdatedEvent, DiscussionDeletedEvent } from "./DiscussionEvents";
 import { DiscussionReader, DiscussionReaderComponent } from "./DiscussionReaderComponent";
 import { ConfirmationDialog } from "../baseComponents/ConfirmationDialog";
-import { DiscussionDeletedEvent } from "./DiscussionDeletedEvent";
 
 export interface DiscussionControllerDependencies {
   db: IDiscussionStore,

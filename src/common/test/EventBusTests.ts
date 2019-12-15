@@ -7,8 +7,8 @@ describe("Event bus", () => {
   it("should call subscribers for a given event type", async () => {
     // given
     const eventBus = new EventBus("");
-    const event1: IEvent = { info: new EventInfo("type-1") };
-    const event2: IEvent = { info: new EventInfo("type-2") };
+    const event1: IEvent = { info: new EventInfo("type-1", "", "") };
+    const event2: IEvent = { info: new EventInfo("type-2", "", "") };
     const handlerType1: any = td.object("onEventAsync");
     eventBus.subscribe("type-1", handlerType1.onEventAsync);
     td.when(handlerType1.onEventAsync(event2)).thenThrow(Error("Should not happen"));
@@ -24,7 +24,7 @@ describe("Event bus", () => {
   it("should unsubscribe", async () => {
     // given
     const eventBus = new EventBus("");
-    const event1: IEvent = { info: new EventInfo("type-1") };
+    const event1: IEvent = { info: new EventInfo("type-1", "", "") };
     const handler1: any = td.object("onEventAsync");
     const handler2: any = td.object("onEventAsync");
     const handler3: any = td.object("onEventAsync");
@@ -46,7 +46,7 @@ describe("Event bus", () => {
   it("should callback synchronously or asynchronously", async () => {
     // given
     const eventBus = new EventBus("");
-    const event1: IEvent = { info: new EventInfo("type-1") };
+    const event1: IEvent = { info: new EventInfo("type-1", "", "") };
     let called1 = false, called2 = false;
     const syncHandler = (evt: IEvent) => { called1 = true };
     const asyncHandler = async (evt: IEvent) => { called2 = true };
@@ -64,8 +64,8 @@ describe("Event bus", () => {
   it("should callback catch-alls for all events", async () => {
     // given
     const eventBus = new EventBus("");
-    const event1: IEvent = { info: new EventInfo("type-1") };
-    const event2: IEvent = { info: new EventInfo("type-2") };
+    const event1: IEvent = { info: new EventInfo("type-1", "", "") };
+    const event2: IEvent = { info: new EventInfo("type-2", "", "") };
     const handler1: any = td.object("onEventAsync");
     const handler2: any = td.object("onEventAsync");
     td.when(handler1.onEventAsync(event2)).thenThrow(Error("Should not happen"));
@@ -85,7 +85,7 @@ describe("Event bus", () => {
   it("should add local emitterId if not set", async () => {
     // given
     const eventBus = new EventBus("123");
-    const event1: IEvent = { info: new EventInfo("type-1") };
+    const event1: IEvent = { info: new EventInfo("type-1", "", "") };
     const handler1: any = td.object("onEventAsync");
     eventBus.subscribe("type-1", handler1.onEventAsync);
 
@@ -99,7 +99,7 @@ describe("Event bus", () => {
   it("should preserve remote emitterId if set", async () => {
     // given
     const eventBus = new EventBus("123");
-    const event1: IEvent = { info: new EventInfo("type-1", "456") };
+    const event1: IEvent = { info: new EventInfo("type-1", "", "", "456") };
     const handler1: any = td.object("onEventAsync");
     eventBus.subscribe("type-1", handler1.onEventAsync);
 
@@ -114,8 +114,8 @@ describe("Event bus", () => {
   it("should not forward external to subscribers for local events only", async () => {
     // given
     const eventBus = new EventBus("123");
-    const eventExternal: IEvent = { info: new EventInfo("type-1", "456") };
-    const eventLocal: IEvent = { info: new EventInfo("type-1", "123") };
+    const eventExternal: IEvent = { info: new EventInfo("type-1", "", "", "456") };
+    const eventLocal: IEvent = { info: new EventInfo("type-1", "", "", "123") };
     const handlerLocal: any = td.object("onEventAsync");
     eventBus.subscribeToAllLocal(handlerLocal.onEventAsync);
 

@@ -1,16 +1,14 @@
 import { PersonEditor, PersonList, IPersonStore, PersonOverview } from "./index";
 import { UIContainer, Component, UIElement } from "../html";
 import { EventBus } from "../../lib/common/events/";
-import { PersonCreatedEvent } from "./PersonCreatedEvent";
+import { PersonCreatedEvent, PersonUpdatedEvent, PersonDeletedEvent } from "./PersonEvent";
 import { Person } from "./Person";
-import { PersonUpdatedEvent } from "./PersonUpdatedEvent";
 import { GUID } from "../../lib/common/utils/guid"
 import { NotesController } from "../notes";
 import { PersonListComponent } from "./PersonListComponent";
 import { PersonEditorComponent } from "./PersonEditorComponent";
 import { PersonOverviewComponent } from "./PersonOverviewComponent";
 import { DiscussionController } from "../discussions";
-import { PersonDeletedEvent } from "./PersonDeletedEvent";
 import { ConfirmationDialog } from "../baseComponents/ConfirmationDialog";
 import { DeadlineController } from "../deadlines";
 

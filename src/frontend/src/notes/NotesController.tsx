@@ -6,11 +6,9 @@ import { INotesStore } from "./INotesStore";
 import { NotesList, NotesListComponent } from "./NotesListComponent";
 import { NoteEditor } from "./NoteEditorComponent";
 import { EventBus } from "../../lib/common/events/";
-import { NoteCreatedEvent } from "./NoteCreatedEvent";
-import { NoteUpdatedEvent } from "./NoteUpdatedEvent";
+import { NoteCreatedEvent, NoteUpdatedEvent, NoteDeletedEvent } from "./NoteEvents";
 import { NoteReaderComponent, NoteReader } from "./NoteReaderComponent";
 import { ConfirmationDialogComponent, ConfirmationDialog } from "../baseComponents/ConfirmationDialog";
-import { NoteDeletedEvent } from "./NoteDeletedEvent";
 import { List } from "../baseComponents/ListComponent";
 
 export interface NotesControllerDependencies {

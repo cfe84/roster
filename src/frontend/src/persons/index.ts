@@ -1,7 +1,6 @@
 import { PersonEditor } from "./PersonEditorComponent";
 import { PersonList } from "./PersonListComponent";
-import { PersonCreatedEvent } from "./PersonCreatedEvent";
-import { PersonUpdatedEvent } from "./PersonUpdatedEvent";
+import { PersonCreatedEvent, PersonUpdatedEvent } from "./PersonEvent";
 import { PersonController } from "./PersonController";
 import { IPersonStore } from "./IPersonStore";
 import { StorePeopleChangesReactor } from "./StorePeopleChangesReactor";

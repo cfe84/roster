@@ -8,7 +8,6 @@ import { IEventStore } from "./Storage/IEventStore";
 import { MemoryEventStore } from "./infrastructure/InMemoryEventStore";
 import { SocketConnectionParameters } from "../lib/common/message";
 import { Token } from "../lib/common/authorization";
-import { BufferBasedB64 } from "./infrastructure/BufferBasedB64";
 
 class App {
   private eventBus: EventBus = new EventBus("server");

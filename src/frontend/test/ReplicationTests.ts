@@ -12,9 +12,9 @@ describe("Replication", () => {
   context("Replication to server", () => {
     it("should store local events to a queue", async () => {
       // given
-      const localEvent1: IEvent = { info: new EventInfo("type-1", "local-client-id") };
-      const localEvent2: IEvent = { info: new EventInfo("type-2", "local-client-id") };
-      const remoteEvent: IEvent = { info: new EventInfo("type-2", "external-client-id") };
+      const localEvent1: IEvent = { info: new EventInfo("type-1", "", "", "local-client-id") };
+      const localEvent2: IEvent = { info: new EventInfo("type-2", "", "", "local-client-id") };
+      const remoteEvent: IEvent = { info: new EventInfo("type-2", "", "", "external-client-id") };
       const fakes = createFakes();
       const eventBus = new EventBus("local-client-id");
       new ReplicationManager({ eventBus, adapter: fakes.adapter, queue: fakes.queue });
@@ -32,8 +32,8 @@ describe("Replication", () => {
 
     it("process queue for sending when starting sync", async () => {
       // given
-      const event1 = { info: new EventInfo("type-1"), id: 1 } as IEvent;
-      const event2 = { info: new EventInfo("type-2"), id: 2 } as IEvent;
+      const event1 = { info: new EventInfo("type-1", "", ""), id: 1 } as IEvent;
+      const event2 = { info: new EventInfo("type-2", "", ""), id: 2 } as IEvent;
       const message1 = { data: event1 };
       const message2 = { data: event2 };
 
@@ -61,8 +61,8 @@ describe("Replication", () => {
 
     it("should process its queue immediately when a message comes in", async () => {
       // given
-      const event1 = { info: new EventInfo("type-1"), id: 1 } as IEvent;
-      const event2 = { info: new EventInfo("type-2"), id: 2 } as IEvent;
+      const event1 = { info: new EventInfo("type-1", "", ""), id: 1 } as IEvent;
+      const event2 = { info: new EventInfo("type-2", "", ""), id: 2 } as IEvent;
       const message1 = { data: event1 };
 
       const eventBus = new EventBus("");
@@ -89,7 +89,7 @@ describe("Replication", () => {
 
     it("should retry if a message fails", async () => {
       // given
-      const event1 = { info: new EventInfo("type-1"), id: 1 } as IEvent;
+      const event1 = { info: new EventInfo("type-1", "", ""), id: 1 } as IEvent;
       const message1 = { data: event1 };
 
       const eventBus = new EventBus("");
@@ -117,7 +117,7 @@ describe("Replication", () => {
 
     it("should call onSyncStarted and onSyncFinished", async () => {
       // given
-      const event1 = { info: new EventInfo("type-1"), id: 1 } as IEvent;
+      const event1 = { info: new EventInfo("type-1", "", ""), id: 1 } as IEvent;
       const message1 = { data: event1 };
 
       const eventBus = new EventBus("");
@@ -155,8 +155,8 @@ describe("Replication", () => {
   context("Replication from server", () => {
     it("should forward events from server to the local bus", async () => {
       // given
-      const event1 = { info: new EventInfo("type-1"), id: 1 } as IEvent;
-      const event2 = { info: new EventInfo("type-2"), id: 2 } as IEvent;
+      const event1 = { info: new EventInfo("type-1", "", ""), id: 1 } as IEvent;
+      const event2 = { info: new EventInfo("type-2", "", ""), id: 2 } as IEvent;
 
       const eventBus = new EventBus("");
       const fakes = createFakes();

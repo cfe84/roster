@@ -1,8 +1,6 @@
 import { EventBus, IEvent } from "../../lib/common/events/";
 import { INotesStore } from "./INotesStore";
-import { NoteCreatedEvent } from "./NoteCreatedEvent";
-import { NoteUpdatedEvent } from "./NoteUpdatedEvent";
-import { NoteDeletedEvent } from "./NoteDeletedEvent";
+import { NoteCreatedEvent, NoteUpdatedEvent, NoteDeletedEvent } from "./NoteEvents";
 
 export class StoreNotesChangesReactor {
   constructor(private store: INotesStore) { }

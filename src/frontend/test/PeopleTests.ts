@@ -2,9 +2,8 @@ import should from "should";
 import * as td from "testdouble";
 import { EventBus } from "../lib/common/events";
 import { StorePeopleChangesReactor } from "../src/persons/StorePeopleChangesReactor";
-import { PersonCreatedEvent } from "../src/persons/PersonCreatedEvent";
+import { PersonCreatedEvent, PersonUpdatedEvent } from "../src/persons/PersonEvent";
 import { IPersonStore } from "../src/persons/IPersonStore";
-import { PersonUpdatedEvent } from "../src/persons/PersonUpdatedEvent";
 import { Person } from "../src/persons";
 
 describe("People", () => {

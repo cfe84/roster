@@ -1,6 +1,8 @@
 import { NoteId } from "../notes/Note";
 import { PersonId } from "../persons";
 
+export const DiscussionObjectType = "discussion";
+
 export interface Discussion {
   id: string,
   personId: PersonId,

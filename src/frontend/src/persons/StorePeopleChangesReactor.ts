@@ -1,8 +1,6 @@
 import { IPersonStore } from "./IPersonStore";
 import { EventBus, IEvent } from "../../lib/common/events/";
-import { PersonCreatedEvent } from "./PersonCreatedEvent";
-import { PersonUpdatedEvent } from "./PersonUpdatedEvent";
-import { PersonDeletedEvent } from "./PersonDeletedEvent";
+import { PersonCreatedEvent, PersonUpdatedEvent, PersonDeletedEvent } from "./PersonEvent";
 
 export class StorePeopleChangesReactor {
   constructor(private store: IPersonStore) { }

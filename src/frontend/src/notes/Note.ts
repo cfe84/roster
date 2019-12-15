@@ -1,5 +1,7 @@
 import { PersonId } from "../persons";
 
+export const NoteType = "note";
+
 export type NoteId = string;
 
 export interface Note {

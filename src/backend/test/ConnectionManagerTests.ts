@@ -22,7 +22,7 @@ describe("Connection Manager", () => {
     const fakeSubscriber = td.object(["onEvent"]);
     const eventType = 'sdfsd';
     eventBus.subscribe(EventReceivedEvent.type, fakeSubscriber.onEvent);
-    const event: EventReceivedEvent = new EventReceivedEvent({ info: new EventInfo("1234") }, "emitter-123");
+    const event: EventReceivedEvent = new EventReceivedEvent({ info: new EventInfo("1234", "", "") }, "emitter-123");
     const deps: ConnectionManagerDependencies = {
       eventBus,
       eventStore: fakeStore
@@ -64,7 +64,7 @@ describe("Connection Manager", () => {
     const emitterId1 = "emitter-123";
     const emitterId2 = "emitter-456";
     const event: IEvent = {
-      info: new EventInfo(eventType, emitterId1)
+      info: new EventInfo(eventType, "", "", emitterId1)
     };
     event.info.date = new Date(2019, 10, 1);
     await new ConnectionManager(deps, fakeSocket1, makeConnectionInfo(emitterId1, 1)).startAsync();
@@ -92,7 +92,7 @@ describe("Connection Manager", () => {
 
     const eventType = 'received-event-type';
     const event: IEvent = {
-      info: new EventInfo(eventType)
+      info: new EventInfo(eventType, "", "")
     };
     const deps: ConnectionManagerDependencies = {
       eventBus,
@@ -113,7 +113,7 @@ describe("Connection Manager", () => {
   });
 
   const makeEvent = () => ({
-    info: new EventInfo("does not matter", "does not matter")
+    info: new EventInfo("does not matter", "", "", "does not matter")
   })
 
   it("should send event history on starting reception", async () => {

@@ -1,8 +1,6 @@
 import { EventBus, IEvent } from "../../lib/common/events/";
 import { IDiscussionStore } from "./IDiscussionStore";
-import { DiscussionCreatedEvent } from "./DiscussionCreatedEvent";
-import { DiscussionUpdatedEvent } from "./DiscussionUpdatedEvent";
-import { DiscussionDeletedEvent } from "./DiscussionDeletedEvent";
+import { DiscussionCreatedEvent, DiscussionUpdatedEvent, DiscussionDeletedEvent } from "./DiscussionEvents";
 
 export class StoreDiscussionsChangesReactor {
   constructor(private store: IDiscussionStore) { }
