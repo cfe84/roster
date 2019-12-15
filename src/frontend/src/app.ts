@@ -15,6 +15,7 @@ import { ReplicationManager, ReplicationManagerDependencies } from "./synchroniz
 import { LocalStorageQueue } from "./infrastructure/LocalStorageQueue";
 import { clientIdUtil } from "./utils/clientId";
 import { GUID } from "../lib/common/utils/guid";
+import { Token } from "../lib/common/authorization";
 
 const getSocketUrl = () => {
   if (window.location.protocol === "file:") {
@@ -44,8 +45,9 @@ class App {
       const dbStore = await IndexedDBStore.OpenDbAsync();
       this.loadReactors(dbStore);
       this.loadUI(dbStore);
-      console.log("Loading")
-      const replicationAdapter = new SocketReplicationAdapter(getSocketUrl(), this.clientId.toString());
+      console.log("Loading");
+      const token = new Token();
+      const replicationAdapter = new SocketReplicationAdapter(getSocketUrl(), token, this.clientId.toString());
       const queue = new LocalStorageQueue<IEvent>();
       const replicationManager = new ReplicationManager({
         adapter: replicationAdapter, eventBus: this.eventBus, queue

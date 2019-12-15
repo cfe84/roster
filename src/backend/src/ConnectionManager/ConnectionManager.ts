@@ -11,14 +11,25 @@ export interface ConnectionManagerDependencies {
   eventBus: EventBus
 }
 
+export interface ConnectionInformation {
+  clientId: string,
+  accountId: string,
+  lastReceivedDateMs: number
+}
+
 export class ConnectionManager {
-  private clientId?: ClientId;
   private forwardEventSubscription?: SubscriptionRecord<EventReceivedEvent>;
   private receivingEvents = false;
+  private clientId: string;
 
-  constructor(private deps: ConnectionManagerDependencies, private socket: ISocket, private debug = false) {
+  constructor(private deps: ConnectionManagerDependencies, private socket: ISocket, private connectionInfo: ConnectionInformation, private debug = false) {
     this.socket.onAsync = this.onAsync;
     this.socket.onDisconnectAsync = this.onDisconnectAsync;
+    this.clientId = connectionInfo.clientId;
+  }
+
+  async startAsync(): Promise<void> {
+    await this.startReceivingEventsAsync(this.connectionInfo.lastReceivedDateMs);
   }
 
   log(message: any) {
@@ -30,14 +41,8 @@ export class ConnectionManager {
   private onAsync = async (messageType: string, message: Message<any>): Promise<any> => {
     this.log(`Received message of type ${messageType}`)
     switch (messageType) {
-      case MessageTypes.HANDSHAKE:
-        await this.processHandshakeAsync(message);
-        break;
       case MessageTypes.EVENT:
         return await this.processInboundEventAsync(message);
-      case MessageTypes.COMMAND:
-        await this.processCommandAsync(message);
-        break;
       default:
         throw (Error(`Unknown type: ${messageType}`));
     }
@@ -50,25 +55,13 @@ export class ConnectionManager {
     this.log(`Client ${this.clientId} disconnected`)
   }
 
-  private processCommandAsync = async (message: Message<ICommand>): Promise<void> => {
-    const command = message.payload;
-    switch (command.command) {
-      case StartReceivingEventsCommand.command:
-        await this.startReceivingEventsAsync(message as Message<StartReceivingEventsCommand>);
-        break;
-      default:
-        throw Error(`Unknown command: ${command.command}`);
-    }
-  }
-
-  private startReceivingEventsAsync = async (message: Message<StartReceivingEventsCommand>) => {
+  private startReceivingEventsAsync = async (lastReceivedDateMs: number) => {
     if (this.receivingEvents) {
       throw Error("Already receiving events");
     }
-    this.clientId = message.emitterId;
     this.log(`Starting event reception for client ${this.clientId}`)
     this.receivingEvents = true;
-    const eventsToForward = await this.deps.eventStore.getEventsAsync(message.payload.lastReceivedDateMs);
+    const eventsToForward = await this.deps.eventStore.getEventsAsync(lastReceivedDateMs);
     this.log(`Found ${eventsToForward.length} events to forward`);
     for (let i = 0; i < eventsToForward.length; i++) {
       await this.forwardEventAsync(eventsToForward[i]);
@@ -93,9 +86,5 @@ export class ConnectionManager {
     return {
       dateMs: message.payload.info.date.getTime()
     };
-  }
-
-  private async processHandshakeAsync(message: Message<any>): Promise<void> {
-    this.clientId = message.emitterId;
   }
 }

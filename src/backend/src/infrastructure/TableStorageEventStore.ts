@@ -6,7 +6,6 @@ export class TableStorageEventStore implements IEventStore {
 
   constructor(connectionString: string) {
     const tableService = new TableService(connectionString);
-
   }
 
   storeEventAsync(event: IEvent): Promise<void> {

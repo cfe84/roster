@@ -6,7 +6,7 @@ import { AsyncTimeout } from "../lib/common/utils/AsyncTimeout";
 
 describe("Replication", () => {
   const createFakes = () => ({
-    adapter: td.object(["sendEventAsync", "onEventReceivedAsync", "startReceivingEventsAsync", "stopReceivingEventsAsync"]),
+    adapter: td.object(["sendEventAsync", "onEventReceivedAsync", "connectAsync"]),
     queue: td.object(["pushAsync", "peekAsync", "countAsync", "deleteAsync"])
   })
   context("Replication to server", () => {
@@ -52,6 +52,7 @@ describe("Replication", () => {
       await timeout.sleepAsync(10);
 
       // then
+      td.verify(fakes.adapter.connectAsync());
       td.verify(fakes.adapter.sendEventAsync(event1));
       td.verify(fakes.adapter.sendEventAsync(event2));
       td.verify(fakes.queue.deleteAsync(message1));
@@ -175,13 +176,10 @@ describe("Replication", () => {
       await fakes.adapter.onEventReceivedAsync(event2);
 
       // then
-      td.verify(fakes.adapter.startReceivingEventsAsync(), { times: 1 })
-      td.verify(fakes.adapter.stopReceivingEventsAsync(), { times: 0, ignoreExtraArgs: true })
+      td.verify(fakes.adapter.connectAsync(), { times: 1 })
       td.verify(fakeSubscriber.callback1(event1));
       td.verify(fakeSubscriber.callback2(event2));
       await timeout.sleepAsync(40);
-      td.verify(fakes.adapter.stopReceivingEventsAsync())
-
     });
   })
 });

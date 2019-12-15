@@ -1,16 +1,29 @@
 import { IReplicationAdapter } from "../synchronization/IReplicationAdapter";
 import { IEvent } from "../../lib/common/events";
 import io from "socket.io-client";
-import { Message, MessageTypes, StartReceivingEventsCommand, EventReceivedAck } from "../../lib/common/message/";
+import { Message, MessageTypes, SocketConnectionParameters, EventReceivedAck } from "../../lib/common/message/";
 import { ILocalStorage } from "./LocalStorageQueue";
+import { Token } from "../../lib/common/authorization";
+import { Base64 } from "../../lib/common/utils/Base64";
 
 const LAST_RECEIVED_DATE_KEY = "sync.lastReceivedDate";
 
 export class SocketReplicationAdapter implements IReplicationAdapter {
-  socket: SocketIOClient.Socket;
+  private socket?: SocketIOClient.Socket;
+  private parameters: SocketConnectionParameters;
 
-  constructor(backendUrl: string, private clientId: string, private storage: ILocalStorage = localStorage) {
-    this.socket = io(backendUrl);
+  constructor(private backendUrl: string, private token: Token, private clientId: string, private storage: ILocalStorage = localStorage) {
+    this.parameters = {
+      token: token.serialize(),
+      clientId: clientId,
+      lastReceivedDateMs: this.getLastReceivedDate()
+    }
+  }
+
+  async connectAsync(): Promise<void> {
+    this.socket = io(this.backendUrl, {
+      query: this.parameters
+    });
     this.socket.on(MessageTypes.EVENT,
       (message: Message<IEvent>) => {
         console.log(message);
@@ -33,26 +46,17 @@ export class SocketReplicationAdapter implements IReplicationAdapter {
     const message = new Message(this.clientId, event);
     console.log(`Sending to socket: ${JSON.stringify(message)}`);
     const timeout = setTimeout(() => reject(Error("Timeout forwarding event")), 15000);
-    this.socket.emit(MessageTypes.EVENT, message, (response: EventReceivedAck) => {
-      console.log(`Received ACK for event: ${response.dateMs}`)
-      clearTimeout(timeout);
-      this.setLastReceivedDate(response.dateMs)
-      resolve();
-    });
+    if (this.socket === undefined) {
+      reject(Error("Socket is not connected"))
+    } else {
+      this.socket.emit(MessageTypes.EVENT, message, (response: EventReceivedAck) => {
+        console.log(`Received ACK for event: ${response.dateMs}`)
+        clearTimeout(timeout);
+        this.setLastReceivedDate(response.dateMs)
+        resolve();
+      });
+    }
   });
-
-  startReceivingEventsAsync = (): Promise<void> => new Promise((resolve, reject) => {
-    const lastReceivedDate = this.getLastReceivedDate();
-    console.log(`Synchronizing events from ${lastReceivedDate}`)
-    const command = new StartReceivingEventsCommand(lastReceivedDate);
-    const message = new Message(this.clientId, command);
-    this.socket.emit(MessageTypes.COMMAND, message);
-    resolve();
-  });
-
-  stopReceivingEventsAsync(): Promise<void> {
-    throw new Error("Method not implemented.");
-  }
 
   onEventReceivedAsync = async (event: IEvent): Promise<void> => {
     console.error("Received an event on the fake receiver")

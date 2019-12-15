@@ -74,12 +74,11 @@ export class ReplicationManager {
     this.running = true;
     this.onReplicationStarted();
     this.deps.adapter.onEventReceivedAsync = this.processInboundEventAsync;
-    Promise.resolve(this.deps.adapter.startReceivingEventsAsync()).then();
+    await this.deps.adapter.connectAsync()
     while (this.running) {
       await this.synchronizationRetryLoopAsync();
       await this.timeout.sleepAsync(this.intervalMs);
     }
-    await this.deps.adapter.stopReceivingEventsAsync();
     this.onReplicationFinished();
   }
 

@@ -1,4 +1,4 @@
-import { ConnectionManager, ConnectionManagerDependencies } from "../src/ConnectionManager/ConnectionManager"
+import { ConnectionManager, ConnectionManagerDependencies, ConnectionInformation } from "../src/ConnectionManager/ConnectionManager"
 import { EventBus, IEvent } from "../lib/common/events"
 import * as td from "testdouble";
 import { MessageTypes, Message } from "../lib/common/message/Message";
@@ -8,6 +8,11 @@ import { StartReceivingEventsCommand, EventReceivedAck } from "../lib/common/mes
 import should from "should";
 
 describe("Connection Manager", () => {
+  const makeConnectionInfo = (clientId: string, lastReceivedDateMs = 0, accountId = ""): ConnectionInformation => ({
+    clientId,
+    accountId,
+    lastReceivedDateMs
+  });
   it("should forward inbound event to bus and store them", async () => {
     // given
     const eventBus = new EventBus("server");
@@ -24,7 +29,7 @@ describe("Connection Manager", () => {
     }
     const emitterId = "emitter-123";
 
-    new ConnectionManager(deps, fakeSocket);
+    await new ConnectionManager(deps, fakeSocket, makeConnectionInfo(emitterId)).startAsync();
 
     // when
     const message: Message<object> = {
@@ -62,12 +67,10 @@ describe("Connection Manager", () => {
       info: new EventInfo(eventType, emitterId1)
     };
     event.info.date = new Date(2019, 10, 1);
-    new ConnectionManager(deps, fakeSocket1);
-    new ConnectionManager(deps, fakeSocket2);
+    await new ConnectionManager(deps, fakeSocket1, makeConnectionInfo(emitterId1, 1)).startAsync();
+    await new ConnectionManager(deps, fakeSocket2, makeConnectionInfo(emitterId2, 1)).startAsync();
 
     // when
-    await fakeSocket1.onAsync(MessageTypes.COMMAND, new Message(emitterId1, new StartReceivingEventsCommand(1)));
-    await fakeSocket2.onAsync(MessageTypes.COMMAND, new Message(emitterId2, new StartReceivingEventsCommand(1)));
     await eventBus.publishAsync(new EventReceivedEvent(event, emitterId1));
 
     // then
@@ -97,12 +100,10 @@ describe("Connection Manager", () => {
     }
     const emitterId1 = "emitter-123";
     const emitterId2 = "emitter-456";
-    new ConnectionManager(deps, fakeSocket1);
-    new ConnectionManager(deps, fakeSocket2);
+    await new ConnectionManager(deps, fakeSocket1, makeConnectionInfo(emitterId1, 1)).startAsync();
+    await new ConnectionManager(deps, fakeSocket2, makeConnectionInfo(emitterId2, 1)).startAsync();
 
     // when
-    await fakeSocket1.onAsync(MessageTypes.COMMAND, new Message(emitterId1, new StartReceivingEventsCommand(1)));
-    await fakeSocket2.onAsync(MessageTypes.COMMAND, new Message(emitterId2, new StartReceivingEventsCommand(1)));
     await fakeSocket2.onDisconnectAsync();
     await eventBus.publishAsync(new EventReceivedEvent(event, emitterId1));
 
@@ -127,10 +128,8 @@ describe("Connection Manager", () => {
       eventBus,
       eventStore: fakeStore
     }
-    new ConnectionManager(deps, fakeSocket1);
-
+    await new ConnectionManager(deps, fakeSocket1, makeConnectionInfo("", 2000)).startAsync();
     // when
-    await fakeSocket1.onAsync(MessageTypes.COMMAND, new Message("12345", new StartReceivingEventsCommand(2000)));
 
     // then
     events.forEach((event) => {

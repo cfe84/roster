@@ -1,11 +1,14 @@
 import http from "http";
 import io from "socket.io";
 import fs from "fs";
-import { ConnectionManager } from "./ConnectionManager/ConnectionManager";
+import { ConnectionManager, ConnectionInformation } from "./ConnectionManager/ConnectionManager";
 import { SocketIoSocket } from "./infrastructure/SocketIoSocket";
 import { EventBus } from "../lib/common/events";
 import { IEventStore } from "./Storage/IEventStore";
 import { MemoryEventStore } from "./infrastructure/InMemoryEventStore";
+import { SocketConnectionParameters } from "../lib/common/message";
+import { Token } from "../lib/common/authorization";
+import { BufferBasedB64 } from "./infrastructure/BufferBasedB64";
 
 class App {
   private eventBus: EventBus = new EventBus("server");
@@ -23,7 +26,15 @@ class App {
     const IO = io(app);
     IO.on('connection', (socket: SocketIO.Socket) => {
       console.log("New connection");
-      new ConnectionManager({ eventBus: this.eventBus, eventStore: this.eventStore }, new SocketIoSocket(socket), true);
+      const parameters = socket.handshake.query as SocketConnectionParameters;
+      const token = Token.deserialize(parameters.token);
+      const info: ConnectionInformation = {
+        accountId: token.accountId,
+        clientId: parameters.clientId,
+        lastReceivedDateMs: parameters.lastReceivedDateMs
+      };
+      const manager = new ConnectionManager({ eventBus: this.eventBus, eventStore: this.eventStore }, new SocketIoSocket(socket), info, true);
+      manager.startAsync().then();
     });
   }
 
