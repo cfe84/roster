@@ -5,6 +5,7 @@ import { Message, MessageTypes, SocketConnectionParameters, EventReceivedAck } f
 import { ILocalStorage } from "./LocalStorageQueue";
 import { Token } from "../../lib/common/authorization";
 import { Base64 } from "../../lib/common/utils/Base64";
+import { JsonSerializer } from "../../lib/common/utils/JsonSerializer";
 
 const LAST_RECEIVED_DATE_KEY = "sync.lastReceivedDate";
 
@@ -26,8 +27,12 @@ export class SocketReplicationAdapter implements IReplicationAdapter {
     });
     this.socket.on(MessageTypes.EVENT,
       (message: Message<IEvent>) => {
+        message = JsonSerializer.clean(message);
         console.log(message);
         this.onEventReceivedAsync(message.payload)
+          .then(() => {
+            this.setLastReceivedDate(message.payload.info.date.getTime());
+          })
       });
   }
 
