@@ -7,7 +7,7 @@ COPY common/package.json ./
 COPY common/package-lock.json ./
 RUN npm install
 COPY common .
-RUN npm run test
+# RUN npm run test
 RUN npm run cp
 ###########
 # Frontend
