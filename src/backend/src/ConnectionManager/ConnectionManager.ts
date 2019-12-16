@@ -1,4 +1,4 @@
-import { IEventStore } from "../Storage/IEventStore";
+import { IAccountEventStore } from "../Storage/IAccountEventStore";
 import { ISocket } from "../ISocket";
 import { Message, ClientId, MessageTypes } from "../../lib/common/message/Message";
 import { EventBus, IEvent } from "../../lib/common/events";
@@ -7,7 +7,7 @@ import { ICommand, StartReceivingEventsCommand, EventReceivedAck } from "../../l
 import { SubscriptionRecord } from "../../lib/common/events/SubscriptionRecord";
 
 export interface ConnectionManagerDependencies {
-  eventStore: IEventStore;
+  eventStore: IAccountEventStore;
   eventBus: EventBus
 }
 

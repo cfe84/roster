@@ -1,7 +1,7 @@
-import { IEventStore } from "../Storage/IEventStore";
+import { IAccountEventStore } from "../Storage/IAccountEventStore";
 import { IEvent } from "../../lib/common/events";
 
-export class MemoryEventStore implements IEventStore {
+export class MemoryEventStore implements IAccountEventStore {
   private store: any = {};
   async getEventsAsync(fromDateMs: number): Promise<IEvent[]> {
     const filtered = Object

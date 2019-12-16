@@ -4,14 +4,16 @@ import fs from "fs";
 import { ConnectionManager, ConnectionInformation } from "./ConnectionManager/ConnectionManager";
 import { SocketIoSocket } from "./infrastructure/SocketIoSocket";
 import { EventBus } from "../lib/common/events";
-import { IEventStore } from "./Storage/IEventStore";
+import { IAccountEventStore } from "./Storage/IAccountEventStore";
 import { MemoryEventStore } from "./infrastructure/InMemoryEventStore";
 import { SocketConnectionParameters } from "../lib/common/message";
 import { Token } from "../lib/common/authorization";
+import { IStorageProvider } from "./Storage/IStorageProvider";
+import { StorageFactory } from "./infrastructure/StorageFactory";
 
 class App {
   private eventBus: EventBus = new EventBus("server");
-  private eventStore: IEventStore = new MemoryEventStore();
+  private storageProvider: IStorageProvider = StorageFactory.getStorageProvider();
   constructor(private port = 3501) { }
 
   listener = (req: any, res: http.ServerResponse) => {
@@ -32,8 +34,13 @@ class App {
         clientId: parameters.clientId,
         lastReceivedDateMs: parameters.lastReceivedDateMs
       };
-      const manager = new ConnectionManager({ eventBus: this.eventBus, eventStore: this.eventStore }, new SocketIoSocket(socket), info, true);
-      manager.startAsync().then();
+      this.storageProvider
+        .getAccountEventStoreAsync(token.accountId)
+        .then(storageProvider => new ConnectionManager({
+          eventBus: this.eventBus,
+          eventStore: storageProvider
+        }, new SocketIoSocket(socket), info, true))
+        .then((manager) => manager.startAsync())
     });
   }
 
