@@ -4,7 +4,6 @@ import io from "socket.io-client";
 import { Message, MessageTypes, SocketConnectionParameters, EventReceivedAck } from "../../lib/common/message/";
 import { ILocalStorage } from "./LocalStorageQueue";
 import { Token } from "../../lib/common/authorization";
-import { Base64 } from "../../lib/common/utils/Base64";
 import { JsonSerializer } from "../../lib/common/utils/JsonSerializer";
 
 const LAST_RECEIVED_DATE_KEY = "sync.lastReceivedDate";
