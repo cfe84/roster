@@ -1,15 +1,13 @@
-import { JsonSerializer } from "../utils/JsonSerializer";
-import { base64 } from "../utils/base64";
-
-
+import { JsonSerializer } from "../../lib/common/utils/JsonSerializer";
+import { base64 } from "../../lib/common/utils/Base64";
 
 export class Token {
-  constructor(public accountId: string = "9ee23e8b-b8b2-492b-bccf-ebf56f53c35d") { }
+  constructor(public accountId: string, public expiryDate: Date) { }
 
   static deserialize(serializedToken: string): Token {
     const jsonSerialized = base64.atob(serializedToken);
     const parsed = JsonSerializer.deserialize(jsonSerialized) as Token;
-    return new Token(parsed.accountId);
+    return new Token(parsed.accountId, parsed.expiryDate);
   }
 
   serialize(): string {
