@@ -29,7 +29,7 @@ class App {
   private eventBus: EventBus;
   private clientId: string;
   private sessionId: string = GUID.newGuid();
-  constructor() {
+  constructor(private isElectron = false) {
     this.clientId = clientIdUtil.getClientId();
     this.eventBus = new EventBus(this.clientId);
   }
@@ -45,17 +45,25 @@ class App {
       const dbStore = await IndexedDBStore.OpenDbAsync();
       this.loadReactors(dbStore);
       this.loadUI(dbStore);
-      console.log("Loading");
-      const token = new Token();
+      await this.loadReplicationManager();
+    }
+    catch (error) {
+      console.error(error);
+    }
+  }
+
+  private async loadReplicationManager() {
+    console.log("Loading");
+    const token = new Token();
+    if (!this.isElectron) {
+
       const replicationAdapter = new SocketReplicationAdapter(getSocketUrl(), token, this.clientId.toString());
       const queue = new LocalStorageQueue<IEvent>();
       const replicationManager = new ReplicationManager({
         adapter: replicationAdapter, eventBus: this.eventBus, queue
       }, true);
       await replicationManager.startSyncingAsync();
-    }
-    catch (error) {
-      console.error(error);
+
     }
   }
 
@@ -91,7 +99,8 @@ class App {
 }
 
 window.onload = () => {
-  const app = new App();
+  const isElectron = window.location.search.indexOf("electron=") >= 0;
+  const app = new App(isElectron);
   FontAwesomeLoader.loadFontAwesome();
   app.loadAsync().then(() => { });
 }
