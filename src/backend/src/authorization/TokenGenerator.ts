@@ -1,4 +1,4 @@
-import { Token } from "../authorization";
+import { Token } from "../authorization/Token";
 import { AES } from "crypto-js"
 import CryptoJS from "crypto-js";
 

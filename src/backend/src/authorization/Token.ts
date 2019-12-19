@@ -1,5 +1,5 @@
 import { JsonSerializer } from "../../lib/common/utils/JsonSerializer";
-import { base64 } from "../../lib/common/utils/base64";
+import { base64 } from "../../lib/common/utils/Base64";
 
 export class Token {
   constructor(public accountId: string, public expiryDate: Date) { }

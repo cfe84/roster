@@ -1,4 +1,4 @@
-import { Token } from "../src/authorization"
+import { Token } from "../src/authorization/Token"
 import should from "should";
 import { TokenGenerator } from "../src/authorization/TokenGenerator";
 import { EnvironmentCredentialsProvider } from "../src/infrastructure/EnvironmentCredentialsProvider";
