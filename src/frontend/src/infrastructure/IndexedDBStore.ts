@@ -1,11 +1,8 @@
-import { IPersonStore, Person } from "../persons";
-import { INotesStore } from "../notes/INotesStore";
+import { Person } from "../persons";
 import { Note } from "../notes";
 import { Discussion } from "../discussions";
-import { IStore } from "../storage/IStore";
-import { IDiscussionStore } from "../discussions/IDiscussionStore";
-import { IDeadlineStore } from "../deadlines/IDeadlineStore";
 import { Deadline } from "../deadlines";
+import { IWholeStore } from "./IWholeStore";
 
 const DB_NAME: string = "rosterdb";
 const DB_VERSION: number = 5;
@@ -98,7 +95,7 @@ class AsyncIndexedDB {
     });
 }
 
-export class IndexedDBStore implements IPersonStore, INotesStore, IDiscussionStore, IDeadlineStore {
+export class IndexedDBStore implements IWholeStore {
 
 
   private static createObjectStore(db: IDBDatabase, storeName: string, parameters: IDBObjectStoreParameters): IDBObjectStore | null {

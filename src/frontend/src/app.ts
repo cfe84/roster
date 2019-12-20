@@ -99,8 +99,9 @@ class App {
 }
 
 window.onload = () => {
-  const isElectron = window.location.search.indexOf("electron=") >= 0;
-  const app = new App(isElectron);
+  const noSync = window.location.search.indexOf("noSync=") >= 0;
+  const store = window.location.search.indexOf("store=") >= 0;
+  const app = new App(noSync);
   FontAwesomeLoader.loadFontAwesome();
   app.loadAsync().then(() => { });
 }
