@@ -3,9 +3,12 @@ const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 
 module.exports = {
   entry: './src/app.ts',
+  // target: "electron-renderer",
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'app.bundle.js'
+    filename: 'app.bundle.js',
+    library: "App",
+
   },
   module: {
     rules: [
@@ -28,4 +31,7 @@ module.exports = {
       localesToKeep: ['en'],
     }),
   ],
+  // node: {
+  //   fs: "empty"
+  // }
 };

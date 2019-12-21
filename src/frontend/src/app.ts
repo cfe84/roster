@@ -11,11 +11,13 @@ import { StoreDiscussionsChangesReactor } from "./discussions/StoreDiscussionsCh
 import { DeadlineController } from "./deadlines";
 import { StoreDeadlinesChangesReactor } from "./deadlines/StoreDeadlinesChangesReactor";
 import { SocketReplicationAdapter } from "./infrastructure/SocketReplicationAdapter";
-import { ReplicationManager, ReplicationManagerDependencies } from "./synchronization/ReplicationManager";
+import { ReplicationManager } from "./synchronization/ReplicationManager";
 import { LocalStorageQueue } from "./infrastructure/LocalStorageQueue";
 import { clientIdUtil } from "./utils/clientId";
 import { GUID } from "../lib/common/utils/guid";
 import { Token } from "../lib/common/authorization";
+import { IWholeStore } from "./infrastructure/IWholeStore";
+import { FsStore } from "./infrastructure/FsStore";
 
 const getSocketUrl = () => {
   if (window.location.protocol === "file:") {
@@ -25,11 +27,26 @@ const getSocketUrl = () => {
   }
 }
 
-class App {
+export interface AppParams {
+  store?: string,
+  sync?: string,
+  debug?: string,
+  file?: string,
+}
+
+export class App {
   private eventBus: EventBus;
   private clientId: string;
   private sessionId: string = GUID.newGuid();
-  constructor(private isElectron = false) {
+  private storeType: string;
+  private file: string;
+  private debug: boolean;
+  private sync: boolean;
+  constructor({ store, sync, debug, file }: AppParams) {
+    this.storeType = store || "IndexedDB";
+    this.sync = sync !== "false";
+    this.debug = debug === "true";
+    this.file = file || "";
     this.clientId = clientIdUtil.getClientId();
     this.eventBus = new EventBus(this.clientId);
   }
@@ -42,7 +59,7 @@ class App {
 
   async loadAsync(): Promise<void> {
     try {
-      const dbStore = await IndexedDBStore.OpenDbAsync();
+      const dbStore = await this.loadDbAsync();
       this.loadReactors(dbStore);
       this.loadUI(dbStore);
       await this.loadReplicationManager();
@@ -52,22 +69,30 @@ class App {
     }
   }
 
-  private async loadReplicationManager() {
-    console.log("Loading");
-    const token = new Token();
-    if (!this.isElectron) {
+  private async loadDbAsync(): Promise<IWholeStore> {
+    switch (this.storeType) {
+      case "fs":
+      // return await FsStore.loadAsync(this.file);
+      case "IndexedDb":
+      default:
+        return await IndexedDBStore.OpenDbAsync();
+    }
+  }
 
+  private async loadReplicationManager() {
+    if (this.sync) {
+      console.log("Loading replication manager");
+      const token = new Token();
       const replicationAdapter = new SocketReplicationAdapter(getSocketUrl(), token, this.clientId.toString());
       const queue = new LocalStorageQueue<IEvent>();
       const replicationManager = new ReplicationManager({
         adapter: replicationAdapter, eventBus: this.eventBus, queue
       }, true);
       await replicationManager.startSyncingAsync();
-
     }
   }
 
-  private loadUI(dbStore: IndexedDBStore) {
+  private loadUI(dbStore: IWholeStore) {
     const displayAdapter = new BrowserDisplayAdapter();
     const mainContainer = displayAdapter.getElementFromDom("container-main");
     const uiContainer = new UIContainer({
@@ -86,7 +111,7 @@ class App {
     this.dashboardController.displayDashboard();
   }
 
-  private loadReactors(dbStore: IndexedDBStore) {
+  private loadReactors(dbStore: IWholeStore) {
     const peopleReactor = new StorePeopleChangesReactor(dbStore);
     peopleReactor.registerReactors(this.eventBus);
     const notesReactor = new StoreNotesChangesReactor(dbStore);
@@ -98,9 +123,32 @@ class App {
   }
 }
 
+class QueryParams {
+  [name: string]: string
+}
+const parseQueryParams = (params: string): QueryParams => {
+  if (!params) return {};
+  const result: QueryParams = {};
+  if (params.startsWith("?")) {
+    params = params.substring(1, params.length);
+  }
+  const splits = params.split("&").map((param) => param.split("="));
+  splits.forEach((split) => result[split[0]] = split[1]);
+  return result;
+}
+
+export function test() {
+  console.log("toto")
+}
+
 window.onload = () => {
-  const isElectron = window.location.search.indexOf("electron=") >= 0;
-  const app = new App(isElectron);
+  const params = parseQueryParams(window.location.search);
+  console.log(params);
+  const app = new App(params);
   FontAwesomeLoader.loadFontAwesome();
   app.loadAsync().then(() => { });
+}
+
+export {
+  IWholeStore,
 }

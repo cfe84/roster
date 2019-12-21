@@ -8,7 +8,9 @@ class Main {
     });
     window.loadFile("./dist/frontend/index.html", {
       query: {
-        electron: "true"
+        sync: "false",
+        store: "fs",
+        file: "/Users/fevalc/roster.json"
       }
     });
   }
