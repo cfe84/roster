@@ -5,9 +5,11 @@
   "main": "dist/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "mkdir -p ./dist/frontend/ && cp -r ../frontend/dist/* ./dist/frontend && tsc",
+    "pack": "mkdir -p ./dist/frontend/ && cp -r ../frontend/dist/* ./dist/frontend && tsc",
     "bnr": "npm run build && npm run start",
-    "start": "electron ."
+    "start": "electron .",
+    "frontend": "npm run --prefix ../frontend build-for-electron",
+    "build": "npm run frontend && npm run pack"
   },
   "author": "Charles Feval",
   "license": "MIT",

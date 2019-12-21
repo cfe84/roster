@@ -21,8 +21,8 @@ class Main {
   loadFile = (file?: string) => {
     const oldWindow = this.window;
     this.window = new BrowserWindow({
-      width: 800,
-      height: 800,
+      width: 1200,
+      height: 1000,
       webPreferences: {
         nodeIntegration: true
       },
