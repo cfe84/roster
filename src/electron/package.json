@@ -11,7 +11,7 @@
     "frontend": "npm run --prefix ../frontend build-for-electron",
     "build": "npm run frontend && npm run pack",
     "package-win64": "electron-packager dist/ roster --platform=win32 --arch=x64 --overwrite",
-    "package-mac64": "electron-packager dist/ roster --platform=darwin --arch=x64 --overwrite"
+    "package-mac64": "electron-packager dist roster --platform=darwin --arch=x64 --overwrite"
   },
   "author": "Charles Feval",
   "license": "MIT",

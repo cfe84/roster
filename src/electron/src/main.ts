@@ -61,6 +61,7 @@ class Main {
           isMac ? { role: 'close' } : { role: 'quit' }
         ]
       },
+      { role: "editMenu" },
       { role: "viewMenu" }
     ])
     Menu.setApplicationMenu(menu);
