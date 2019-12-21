@@ -2,7 +2,7 @@ import { Person } from "../persons";
 import { Note } from "../notes";
 import { Discussion } from "../discussions";
 import { Deadline } from "../deadlines";
-import { IWholeStore } from "./IWholeStore";
+import { IWholeStore } from "../storage/IWholeStore";
 
 const DB_NAME: string = "rosterdb";
 const DB_VERSION: number = 5;

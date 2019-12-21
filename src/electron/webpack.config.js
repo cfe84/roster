@@ -3,7 +3,7 @@ const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 
 module.exports = {
   entry: './src/app.ts',
-  target: "electron-renderer",
+  // target: "electron-renderer",
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'app.bundle.js',
@@ -31,7 +31,7 @@ module.exports = {
       localesToKeep: ['en'],
     }),
   ],
-  node: {
-    fs: true
-  }
+  // node: {
+  //   fs: "empty"
+  // }
 };

@@ -2,10 +2,8 @@ import { Person } from "../persons";
 import { Note } from "../notes";
 import { Discussion } from "../discussions";
 import { Deadline } from "../deadlines";
-import { IWholeStore } from "./IWholeStore";
+import { IWholeStore } from "../storage/IWholeStore";
 import { promises as fsAsync, default as fs } from "fs";
-import { JsonSerializer } from "../../lib/common/utils/JsonSerializer";
-
 
 class MyArray<T> {
   [index: string]: T
@@ -17,10 +15,10 @@ class Db {
   discussions = new MyArray<Discussion>();
   deadlines = new MyArray<Deadline>();
   toString(): string {
-    return JsonSerializer.serialize(this);
+    return JSON.stringify(this);
   }
   public static deserialize(serializedStore: string): Db {
-    const deserializedDb = JsonSerializer.deserialize(serializedStore) as Db;
+    const deserializedDb = JSON.parse(serializedStore) as Db;
     Object.setPrototypeOf(deserializedDb, new Db());
     return deserializedDb;
   }
@@ -32,7 +30,7 @@ class ArrayManager<T> {
   constructor(private array: MyArray<T>, private keyFinder: KeyFinder<T>, private store: FsStore) { }
   addAsync = async (entity: T) => {
     const key: string = this.keyFinder(entity);
-    if (this.array[key] !== undefined) {
+    if (this.array[key] === undefined) {
       this.array[key] = entity;
       await this.store.commitChangesAsync();
     } else {
@@ -64,18 +62,15 @@ class ArrayManager<T> {
 export class FsStore implements IWholeStore {
 
   public static async loadAsync(file: string): Promise<FsStore> {
-    let handle: fsAsync.FileHandle;
     let db: Db;
     const fileExists = fs.existsSync(file);
     if (fileExists) {
-      handle = await fsAsync.open(file, "rw");
-      const serializedJson = await fsAsync.readFile(handle).toString();
+      const serializedJson = (await fsAsync.readFile(file)).toString();
       db = Db.deserialize(serializedJson);
     } else {
-      handle = await fsAsync.open(file, "rw");
       db = new Db();
     }
-    return new FsStore(handle, db);
+    return new FsStore(file, db);
   }
 
   persons: ArrayManager<Person>;
@@ -83,7 +78,7 @@ export class FsStore implements IWholeStore {
   discussions: ArrayManager<Discussion>;
   deadlines: ArrayManager<Deadline>;
 
-  private constructor(private handle: fsAsync.FileHandle, private db: Db) {
+  private constructor(private file: string, private db: Db) {
     this.persons = new ArrayManager(db.persons, (person: Person) => person.id, this);
     this.notes = new ArrayManager(db.notes, (note: Note) => note.id, this);
     this.discussions = new ArrayManager(db.discussions, (discussion: Discussion) => discussion.id, this);
@@ -92,7 +87,7 @@ export class FsStore implements IWholeStore {
 
   commitChangesAsync = async () => {
     const serialized = this.db.toString();
-    await fsAsync.write(this.handle, serialized);
+    await fsAsync.writeFile(this.file, serialized);
   }
 
   getPeopleAsync = (): Promise<Person[]> => this.persons.getAsync()

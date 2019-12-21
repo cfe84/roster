@@ -15,23 +15,18 @@ import { ReplicationManager } from "./synchronization/ReplicationManager";
 import { LocalStorageQueue } from "./infrastructure/LocalStorageQueue";
 import { clientIdUtil } from "./utils/clientId";
 import { GUID } from "../lib/common/utils/guid";
-import { Token } from "../lib/common/authorization";
-import { IWholeStore } from "./infrastructure/IWholeStore";
+import { IWholeStore } from "./storage/IWholeStore";
 import { FsStore } from "./infrastructure/FsStore";
 
-const getSocketUrl = () => {
-  if (window.location.protocol === "file:") {
-    return "http://localhost:3501";
-  } else {
-    return window.location.href;
-  }
-}
+const LAST_OPENED_FILE_KEY = "config.lastOpenedFile";
+const DEFAULT_FILE_NAME = "roster.json";
 
 export interface AppParams {
   store?: string,
   sync?: string,
   debug?: string,
   file?: string,
+  showNavbar?: string
 }
 
 export class App {
@@ -41,11 +36,13 @@ export class App {
   private storeType: string;
   private file: string;
   private debug: boolean;
+  private showNavbar: boolean;
   private sync: boolean;
-  constructor({ store, sync, debug, file }: AppParams) {
+  constructor({ store, sync, debug, file, showNavbar: showNavbar }: AppParams) {
     this.storeType = store || "IndexedDB";
     this.sync = sync !== "false";
     this.debug = debug === "true";
+    this.showNavbar = showNavbar !== "false";
     this.file = file || "";
     this.clientId = clientIdUtil.getClientId();
     this.eventBus = new EventBus(this.clientId);
@@ -59,6 +56,8 @@ export class App {
 
   async loadAsync(): Promise<void> {
     try {
+      FontAwesomeLoader.loadFontAwesome();
+      this.handleNavbar();
       const dbStore = await this.loadDbAsync();
       this.loadReactors(dbStore);
       this.loadUI(dbStore);
@@ -69,21 +68,52 @@ export class App {
     }
   }
 
+  private handleNavbar() {
+    if (!this.showNavbar) {
+      const element = document.getElementById("navbar");
+      if (element) {
+        element.outerHTML = "";
+      }
+    }
+  }
+
   private async loadDbAsync(): Promise<IWholeStore> {
     switch (this.storeType) {
       case "fs":
-      // return await FsStore.loadAsync(this.file);
+        return await this.openFileAsync();
       case "IndexedDb":
       default:
         return await IndexedDBStore.OpenDbAsync();
     }
   }
 
+  private openFileAsync = async (): Promise<FsStore> => {
+    if (!this.file) {
+      this.loadLastOpenedFile();
+    }
+    this.saveLastOpenedFile();
+    return await FsStore.loadAsync(this.file);
+  }
+
+  private saveLastOpenedFile() {
+    localStorage.setItem(LAST_OPENED_FILE_KEY, this.file);
+  }
+
+  private loadLastOpenedFile() {
+    this.file = localStorage.getItem(LAST_OPENED_FILE_KEY) || DEFAULT_FILE_NAME;
+  }
+
   private async loadReplicationManager() {
     if (this.sync) {
+      const getSocketUrl = () => {
+        if (window.location.protocol === "file:") {
+          return "http://localhost:3501";
+        } else {
+          return window.location.href;
+        }
+      }
       console.log("Loading replication manager");
-      const token = new Token();
-      const replicationAdapter = new SocketReplicationAdapter(getSocketUrl(), token, this.clientId.toString());
+      const replicationAdapter = new SocketReplicationAdapter(getSocketUrl(), "token", this.clientId.toString());
       const queue = new LocalStorageQueue<IEvent>();
       const replicationManager = new ReplicationManager({
         adapter: replicationAdapter, eventBus: this.eventBus, queue
@@ -123,9 +153,14 @@ export class App {
   }
 }
 
-class QueryParams {
-  [name: string]: string
+export {
+  IWholeStore
 }
+
+class QueryParams {
+  [index: string]: string
+}
+
 const parseQueryParams = (params: string): QueryParams => {
   if (!params) return {};
   const result: QueryParams = {};
@@ -133,22 +168,12 @@ const parseQueryParams = (params: string): QueryParams => {
     params = params.substring(1, params.length);
   }
   const splits = params.split("&").map((param) => param.split("="));
-  splits.forEach((split) => result[split[0]] = split[1]);
+  splits.forEach((split) => result[decodeURIComponent(split[0])] = decodeURIComponent(split[1]));
   return result;
-}
-
-export function test() {
-  console.log("toto")
 }
 
 window.onload = () => {
   const params = parseQueryParams(window.location.search);
-  console.log(params);
   const app = new App(params);
-  FontAwesomeLoader.loadFontAwesome();
   app.loadAsync().then(() => { });
-}
-
-export {
-  IWholeStore,
 }

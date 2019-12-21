@@ -3,7 +3,6 @@ import { IEvent } from "../../lib/common/events";
 import io from "socket.io-client";
 import { Message, MessageTypes, SocketConnectionParameters, EventReceivedAck } from "../../lib/common/message/";
 import { ILocalStorage } from "./LocalStorageQueue";
-import { Token } from "../../lib/common/authorization";
 import { JsonSerializer } from "../../lib/common/utils/JsonSerializer";
 
 const LAST_RECEIVED_DATE_KEY = "sync.lastReceivedDate";
@@ -12,9 +11,9 @@ export class SocketReplicationAdapter implements IReplicationAdapter {
   private socket?: SocketIOClient.Socket;
   private parameters: SocketConnectionParameters;
 
-  constructor(private backendUrl: string, private token: Token, private clientId: string, private storage: ILocalStorage = localStorage) {
+  constructor(private backendUrl: string, private token: string, private clientId: string, private storage: ILocalStorage = localStorage) {
     this.parameters = {
-      token: token.serialize(),
+      token: token,
       clientId: clientId,
       lastReceivedDateMs: this.getLastReceivedDate()
     }
