@@ -9,12 +9,15 @@
     "bnr": "npm run build && npm run start",
     "start": "electron .",
     "frontend": "npm run --prefix ../frontend build-for-electron",
-    "build": "npm run frontend && npm run pack"
+    "build": "npm run frontend && npm run pack",
+    "package-win64": "electron-packager dist/ roster --platform=win32 --arch=x64 --overwrite",
+    "package-mac64": "electron-packager dist/ roster --platform=darwin --arch=x64 --overwrite"
   },
   "author": "Charles Feval",
   "license": "MIT",
   "devDependencies": {
     "electron": "^7.1.5",
+    "electron-packager": "^14.1.1",
     "typescript": "^3.7.3"
   }
 }
