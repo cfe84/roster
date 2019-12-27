@@ -17,6 +17,8 @@ import { clientIdUtil } from "./utils/clientId";
 import { GUID } from "../lib/common/utils/guid";
 import { IWholeStore } from "./storage/IWholeStore";
 import { FsStore } from "./infrastructure/FsStore";
+import path from "path";
+import { FsEventSink } from "./infrastructure/FsEventSink";
 
 const LAST_OPENED_FILE_KEY = "config.lastOpenedFile";
 const DEFAULT_FILE_NAME = "roster.json";
@@ -26,7 +28,8 @@ export interface AppParams {
   sync?: string,
   debug?: string,
   file?: string,
-  showNavbar?: string
+  showNavbar?: string,
+  logEvents?: string
 }
 
 export class App {
@@ -38,7 +41,8 @@ export class App {
   private debug: boolean;
   private showNavbar: boolean;
   private sync: boolean;
-  constructor({ store, sync, debug, file, showNavbar: showNavbar }: AppParams) {
+  private logEvents: boolean;
+  constructor({ store, sync, debug, file, showNavbar, logEvents }: AppParams) {
     this.storeType = store || "IndexedDB";
     this.sync = sync !== "false";
     this.debug = debug === "true";
@@ -46,6 +50,7 @@ export class App {
     this.file = file || "";
     this.clientId = clientIdUtil.getClientId();
     this.eventBus = new EventBus(this.clientId);
+    this.logEvents = logEvents === "true"
   }
 
   notesController?: NotesController;
@@ -62,6 +67,9 @@ export class App {
       this.loadReactors(dbStore);
       this.loadUI(dbStore);
       await this.loadReplicationManager();
+      if (this.logEvents) {
+        this.loadEventSink(this.eventBus);
+      }
     }
     catch (error) {
       console.error(error);
@@ -103,6 +111,14 @@ export class App {
     this.file = localStorage.getItem(LAST_OPENED_FILE_KEY) || DEFAULT_FILE_NAME;
   }
 
+  private loadEventSink(eventBus: EventBus) {
+    const ext = path.extname(this.file);
+    const filename = path.basename(this.file);
+    const fileroot = filename.replace(ext, "");
+    const eventSinkPath = `${path.dirname(this.file)}/${fileroot}`;
+    const eventSink = new FsEventSink(eventSinkPath, eventBus);
+  }
+
   private async loadReplicationManager() {
     if (this.sync) {
       const getSocketUrl = () => {
@@ -112,7 +128,6 @@ export class App {
           return window.location.href;
         }
       }
-      console.log("Loading replication manager");
       const replicationAdapter = new SocketReplicationAdapter(getSocketUrl(), "token", this.clientId.toString());
       const queue = new LocalStorageQueue<IEvent>();
       const replicationManager = new ReplicationManager({

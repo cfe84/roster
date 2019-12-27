@@ -34,7 +34,8 @@ class Main {
         sync: "false",
         store: "fs",
         file: file || "",
-        showNavbar: "false"
+        showNavbar: "false",
+        logEvents: "true"
       }
     });
     if (oldWindow) {

@@ -2,9 +2,10 @@ import { UIElement, Component } from "../html/index";
 import { Deadline } from "./Deadline";
 import { MarkdownInput, TextInput, DateInput, Button, PageTitle } from "../baseComponents";
 import { objectUtils } from "../utils/objectUtils";
+import { ActionType } from "../baseComponents/ActionType";
 
 interface DeadlineEditorProps {
-  actionName?: string,
+  actionName: ActionType,
   deadline: Deadline,
   onValidate: ((deadline: Deadline) => void),
   onCancel: (() => void)
@@ -17,6 +18,7 @@ export class DeadlineEditorComponent extends Component {
   public render = (): UIElement => {
     const deadline: Deadline = objectUtils.clone(this.props.deadline);
     const saveButtonCaption = `${this.props.actionName || "Create"} deadline`
+    const draftId = this.props.actionName === "Create" ? "new-" + this.props.deadline.personId : this.props.deadline.id;
     const title = `${this.props.actionName || "New deadline"} ${deadline.description}`;
     return <div>
       <PageTitle title={title} icon="calendar-day" onBack={this.props.onCancel} />
@@ -25,7 +27,7 @@ export class DeadlineEditorComponent extends Component {
           <TextInput class="col" caption="Title" object={deadline} field="description" />
           <DateInput class="col-sm" caption="Date" object={deadline} field="deadline" />
         </div>
-        <MarkdownInput caption="Meeting notes" object={deadline} field="notes" />
+        <MarkdownInput caption="Meeting notes" object={deadline} field="notes" noteId={draftId} />
         <Button class="mr-2" onclick={() => { this.props.onValidate(deadline) }} icon="save" text={saveButtonCaption} />
         <Button type="secondary" onclick={this.props.onCancel} icon="times" text="Cancel" />
       </div>

@@ -2,6 +2,7 @@ namespace JSX {
   export interface IntrinsicElements {
     div: any,
     p: any,
+    a: any,
     span: any,
     form: any,
     label: any,
