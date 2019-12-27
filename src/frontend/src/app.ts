@@ -19,6 +19,8 @@ import { IWholeStore } from "./storage/IWholeStore";
 import { FsStore } from "./infrastructure/FsStore";
 import path from "path";
 import { FsEventSink } from "./infrastructure/FsEventSink";
+import { ILogger } from "./log/ILogger";
+import { NullLogger } from "./log/NullLogger";
 
 const LAST_OPENED_FILE_KEY = "config.lastOpenedFile";
 const DEFAULT_FILE_NAME = "roster.json";
@@ -33,24 +35,24 @@ export interface AppParams {
 }
 
 export class App {
+  private logger: ILogger;
   private eventBus: EventBus;
   private clientId: string;
-  private sessionId: string = GUID.newGuid();
   private storeType: string;
   private file: string;
-  private debug: boolean;
   private showNavbar: boolean;
   private sync: boolean;
   private logEvents: boolean;
-  constructor({ store, sync, debug, file, showNavbar, logEvents }: AppParams) {
-    this.storeType = store || "IndexedDB";
-    this.sync = sync !== "false";
-    this.debug = debug === "true";
-    this.showNavbar = showNavbar !== "false";
-    this.file = file || "";
+  constructor(params: AppParams) {
+    this.logger = this.loadLogger(params.debug);
+    this.logger.log(`Loading app with parameters: ${JSON.stringify(params, null, 2)}`);
+    this.storeType = params.store || "IndexedDB";
+    this.sync = params.sync !== "false";
+    this.showNavbar = params.showNavbar !== "false";
+    this.file = params.file || "";
     this.clientId = clientIdUtil.getClientId();
-    this.eventBus = new EventBus(this.clientId);
-    this.logEvents = logEvents === "true"
+    this.eventBus = new EventBus(this.clientId, params.debug === "true");
+    this.logEvents = params.logEvents === "true"
   }
 
   notesController?: NotesController;
@@ -58,6 +60,15 @@ export class App {
   deadlineController?: DeadlineController;
   personController?: PersonController;
   dashboardController?: DashboardController;
+
+  private loadLogger(debug?: string): ILogger {
+    if (debug === "true") {
+      return console;
+    }
+    else {
+      return new NullLogger();
+    }
+  }
 
   async loadAsync(): Promise<void> {
     try {
@@ -67,9 +78,7 @@ export class App {
       this.loadReactors(dbStore);
       this.loadUI(dbStore);
       await this.loadReplicationManager();
-      if (this.logEvents) {
-        this.loadEventSink(this.eventBus);
-      }
+      this.loadEventSink(this.eventBus);
     }
     catch (error) {
       console.error(error);
@@ -86,6 +95,7 @@ export class App {
   }
 
   private async loadDbAsync(): Promise<IWholeStore> {
+    this.logger.log(`Loading db: ${this.storeType}`);
     switch (this.storeType) {
       case "fs":
         return await this.openFileAsync();
@@ -96,10 +106,13 @@ export class App {
   }
 
   private openFileAsync = async (): Promise<FsStore> => {
+    this.logger.log(`Loading from file`);
     if (!this.file) {
+      this.logger.log(`No file specified, loading last opened file`);
       this.loadLastOpenedFile();
     }
     this.saveLastOpenedFile();
+    this.logger.log(`Opening ${this.file}`);
     return await FsStore.loadAsync(this.file);
   }
 
@@ -112,28 +125,30 @@ export class App {
   }
 
   private loadEventSink(eventBus: EventBus) {
-    const ext = path.extname(this.file);
-    const filename = path.basename(this.file);
-    const fileroot = filename.replace(ext, "");
-    const eventSinkPath = `${path.dirname(this.file)}/${fileroot}`;
-    const eventSink = new FsEventSink(eventSinkPath, eventBus);
+    if (this.logEvents) {
+      const ext = path.extname(this.file);
+      const filename = path.basename(this.file);
+      const fileroot = filename.replace(ext, "");
+      const eventSinkPath = `${path.dirname(this.file)}/${fileroot}`;
+      this.logger.log(`Loading event sink to ${eventSinkPath}`);
+      const eventSink = new FsEventSink(eventSinkPath, eventBus);
+    } else {
+      this.logger.log(`Event sink is disabled`);
+    }
   }
 
   private async loadReplicationManager() {
     if (this.sync) {
-      const getSocketUrl = () => {
-        if (window.location.protocol === "file:") {
-          return "http://localhost:3501";
-        } else {
-          return window.location.href;
-        }
-      }
-      const replicationAdapter = new SocketReplicationAdapter(getSocketUrl(), "token", this.clientId.toString());
+      const socketUrl = (window.location.protocol === "file:") ? "http://localhost:3501" : window.location.href;
+      this.logger.log(`Loading replication manager to ${socketUrl}`)
+      const replicationAdapter = new SocketReplicationAdapter(socketUrl, "token", this.clientId.toString());
       const queue = new LocalStorageQueue<IEvent>();
       const replicationManager = new ReplicationManager({
         adapter: replicationAdapter, eventBus: this.eventBus, queue
       }, true);
       await replicationManager.startSyncingAsync();
+    } else {
+      this.logger.log(`Replication manager is disabled`)
     }
   }
 
@@ -147,7 +162,10 @@ export class App {
     this.notesController = new NotesController({ uiContainer, db: dbStore, eventBus: this.eventBus });
     this.discussionController = new DiscussionController({ db: dbStore, eventBus: this.eventBus, uiContainer });
     this.deadlineController = new DeadlineController({ db: dbStore, eventBus: this.eventBus, uiContainer });
-    this.personController = new PersonController(this.eventBus, uiContainer, dbStore, this.notesController, this.discussionController, this.deadlineController);
+    this.personController = new PersonController({
+      eventBus: this.eventBus, uiContainer, db: dbStore,
+      notesController: this.notesController, discussionController: this.discussionController, deadlineController: this.deadlineController
+    });
     this.dashboardController = new DashboardController({
       container: uiContainer,
       deadlineController: this.deadlineController,
