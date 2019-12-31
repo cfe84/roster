@@ -1,6 +1,6 @@
 import { UIElement, Component } from "../html/index";
 import { Deadline } from "./Deadline";
-import { MarkdownInput, TextInput, DateInput, Button, PageTitle } from "../baseComponents";
+import { MarkdownInput, TextInput, DateInput, Button, PageTitle, MarkdownInputComponent } from "../baseComponents";
 import { objectUtils } from "../utils/objectUtils";
 import { ActionType } from "../baseComponents/ActionType";
 
@@ -20,6 +20,11 @@ export class DeadlineEditorComponent extends Component {
     const saveButtonCaption = `${this.props.actionName || "Create"} deadline`
     const draftId = this.props.actionName === "Create" ? "new-" + this.props.deadline.personId : this.props.deadline.id;
     const title = `${this.props.actionName || "New deadline"} ${deadline.description}`;
+    const editor: MarkdownInputComponent = <MarkdownInput caption="Meeting notes" object={deadline} field="notes" noteId={draftId} />
+    const onSave = () => {
+      this.props.onValidate(deadline);
+      editor.clearDraft();
+    };
     return <div>
       <PageTitle title={title} icon="calendar-day" onBack={this.props.onCancel} />
       <div class="form-create-element">
@@ -27,8 +32,8 @@ export class DeadlineEditorComponent extends Component {
           <TextInput class="col" caption="Title" object={deadline} field="description" />
           <DateInput class="col-sm" caption="Date" object={deadline} field="deadline" />
         </div>
-        <MarkdownInput caption="Meeting notes" object={deadline} field="notes" noteId={draftId} />
-        <Button class="mr-2" onclick={() => { this.props.onValidate(deadline) }} icon="save" text={saveButtonCaption} />
+        {editor}
+        <Button class="mr-2" onclick={onSave} icon="save" text={saveButtonCaption} />
         <Button type="secondary" onclick={this.props.onCancel} icon="times" text="Cancel" />
       </div>
     </div>;

@@ -15,15 +15,18 @@ export interface MarkdownInputProps {
   noteId?: string
 }
 
-type onChangeDelegate = (val: string) => void;
+type onTextChangeDelegate = (val: string) => void;
+type onEventDelegate = (val: Event) => void;
 
 const BASE_KEY = "markdown.draft-";
 
 export class MarkdownInputComponent extends Component {
   draftKey: string;
+  private onchange: onEventDelegate;
   constructor(private props: MarkdownInputProps, private ls: ILocalStorage = localStorage) {
     super();
     this.draftKey = props.noteId ? BASE_KEY + props.noteId : "";
+    this.onchange = this.getOnChange(this.props.onchange, this.props.object, this.props.field);
   }
 
   clearDraft = () => {
@@ -41,10 +44,11 @@ export class MarkdownInputComponent extends Component {
     const content = this.ls.getItem(this.draftKey);
     if (component && content) {
       component.innerHTML = content;
+      this.onchange({ target: component } as any);
     }
   }
 
-  getOnChange = (onchange?: onChangeDelegate, object?: object, field?: string): onChangeDelegate => {
+  private getOnChange = (onchange?: onTextChangeDelegate, object?: object, field?: string): onEventDelegate => {
     if (onchange && object && field) {
       return (evt: any) => {
         const val = evt.target.value;
@@ -69,7 +73,7 @@ export class MarkdownInputComponent extends Component {
     }
   }
 
-  removeDraftLink = (linkId: string) => {
+  private removeDraftLink = (linkId: string) => {
     const component = document.getElementById(linkId);
     if (component) {
       component.innerHTML = "";
@@ -79,24 +83,23 @@ export class MarkdownInputComponent extends Component {
   render = (): UIElement => {
     const value = this.props.value || ((this.props.object && this.props.field) ? (this.props.object as any)[this.props.field] : "");
     const componentId = this.props.id || `input-${GUID.newGuid()}`;
-    const onchange = this.getOnChange(this.props.onchange, this.props.object, this.props.field);
     const caption = this.props.caption ? <Caption caption={this.props.caption} /> : "";
     const draft = this.draftExists();
     const linkId = GUID.newGuid();
     const openDraft = () => {
-      this.removeDraftLink(linkId)
       this.openDraft(componentId);
+      this.removeDraftLink(linkId);
     }
     const removeLink = () => {
-      this.removeDraftLink(linkId)
       this.clearDraft();
+      this.removeDraftLink(linkId)
     }
     const draftLink = (draft && this.draftKey) ? <span id={linkId}>A draft exists. <a href="#" onclick={openDraft}>Click here to load it</a> and <a href="#" onclick={removeLink}>here to discard it.</a></span> : ""
     const component = <div class={this.props.class || ""}>
       {caption}
       <textarea class="form-control mb-3 input-markdown"
-        onkeyup={onchange}
-        onchange={onchange}
+        onkeyup={this.onchange}
+        onchange={this.onchange}
         id={componentId}
         placeholder={this.props.placeholder || this.props.caption || ""}
       >{value}</textarea>

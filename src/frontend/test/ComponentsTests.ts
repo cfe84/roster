@@ -11,11 +11,7 @@ import { TextDisplayComponent, TextDisplayProps, TextDisplay } from "../src/base
 import { MarkdownInputProps, MarkdownInput } from "../src/baseComponents/MarkdownInputComponent";
 import { ListComponent, ListProps } from "../src/baseComponents/ListComponent";
 import { ILocalStorage } from "../src/storage/ILocalStorage";
-
-const findChildByType = (element: UIElement, type: any) =>
-  element.props.children.find((child: UIElement) => child.type === type)
-const findChildrenByType = (element: UIElement, type: string) =>
-  element.props.children.filter((child: UIElement) => child.type === type)
+import { findChildByType, findChildrenByType } from "./ComponentsTestsUtils";
 
 describe("Common components", () => {
   const getTextInputElements = (element: UIElement): any => {
@@ -297,7 +293,7 @@ describe("Common components", () => {
       should(div.type).equal("div");
       should(caption).be.undefined();
       should(textArea).not.be.undefined();
-    })
+    });
   });
 
   context("List", () => {
