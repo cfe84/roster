@@ -1,6 +1,7 @@
 import * as td from "testdouble";
-import { LocalStorageQueue, ILocalStorage } from "../src/infrastructure/LocalStorageQueue";
+import { LocalStorageQueue } from "../src/infrastructure/LocalStorageQueue";
 import should from "should";
+import { ILocalStorage } from "../src/storage/ILocalStorage";
 
 class FakeLocalStorage implements ILocalStorage {
   private store: any = {}

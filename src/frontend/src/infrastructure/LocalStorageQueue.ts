@@ -1,12 +1,6 @@
 import { IQueue, IQueueMessage } from "../synchronization/IQueue";
-import { IEvent } from "../../lib/common/events";
 import { JsonSerializer } from "../../lib/common/utils/JsonSerializer";
-
-export interface ILocalStorage {
-  getItem(key: string): string | null;
-  setItem(key: string, value: string): void;
-  removeItem(key: string): void;
-}
+import { ILocalStorage } from "../storage/ILocalStorage";
 
 class LocalStorageQueueMessage<T> implements IQueueMessage<T> {
   constructor(public data: T,

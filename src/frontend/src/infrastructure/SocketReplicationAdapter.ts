@@ -2,8 +2,8 @@ import { IReplicationAdapter } from "../synchronization/IReplicationAdapter";
 import { IEvent } from "../../lib/common/events";
 import io from "socket.io-client";
 import { Message, MessageTypes, SocketConnectionParameters, EventReceivedAck } from "../../lib/common/message/";
-import { ILocalStorage } from "./LocalStorageQueue";
 import { JsonSerializer } from "../../lib/common/utils/JsonSerializer";
+import { ILocalStorage } from "../storage/ILocalStorage";
 
 const LAST_RECEIVED_DATE_KEY = "sync.lastReceivedDate";
 

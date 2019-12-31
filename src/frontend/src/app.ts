@@ -21,6 +21,8 @@ import path from "path";
 import { FsEventSink } from "./infrastructure/FsEventSink";
 import { ILogger } from "./log/ILogger";
 import { NullLogger } from "./log/NullLogger";
+import { IFakeGenerator } from "./storage/IFakeGenerator";
+import { FakePersonGenerator } from "./persons/FakePersonGenerator";
 
 const LAST_OPENED_FILE_KEY = "config.lastOpenedFile";
 const DEFAULT_FILE_NAME = "roster.json";
@@ -43,8 +45,10 @@ export class App {
   private showNavbar: boolean;
   private sync: boolean;
   private logEvents: boolean;
+  private debug: boolean;
   constructor(params: AppParams) {
-    this.logger = this.loadLogger(params.debug);
+    this.debug = params.debug === "true";
+    this.logger = this.loadLogger(this.debug);
     this.logger.log(`Loading app with parameters: ${JSON.stringify(params, null, 2)}`);
     this.storeType = params.store || "IndexedDB";
     this.sync = params.sync !== "false";
@@ -61,8 +65,8 @@ export class App {
   personController?: PersonController;
   dashboardController?: DashboardController;
 
-  private loadLogger(debug?: string): ILogger {
-    if (debug === "true") {
+  private loadLogger(debug: boolean): ILogger {
+    if (debug) {
       return console;
     }
     else {
@@ -152,6 +156,10 @@ export class App {
     }
   }
 
+  private createFakeGenerator(): IFakeGenerator {
+    return new FakePersonGenerator();
+  }
+
   private loadUI(dbStore: IWholeStore) {
     const displayAdapter = new BrowserDisplayAdapter();
     const mainContainer = displayAdapter.getElementFromDom("container-main");
@@ -169,7 +177,10 @@ export class App {
     this.dashboardController = new DashboardController({
       container: uiContainer,
       deadlineController: this.deadlineController,
-      personController: this.personController
+      personController: this.personController,
+      debug: this.debug,
+      eventBus: this.eventBus,
+      fakeGenerator: this.createFakeGenerator()
     });
     this.dashboardController.displayDashboard();
   }

@@ -1,5 +1,5 @@
-import { ILocalStorage } from "../infrastructure/LocalStorageQueue";
 import { GUID } from "../../lib/common/utils/guid";
+import { ILocalStorage } from "../storage/ILocalStorage";
 
 const CLIENT_ID_KEY = "config.clientid";
 

@@ -5,7 +5,9 @@ import { DeadlineController } from "../deadlines";
 
 interface DashboardProps {
   personController: PersonController,
-  deadlineController: DeadlineController
+  deadlineController: DeadlineController,
+  onGenerateFakeData?: () => void,
+  debug?: boolean
 }
 
 export class DashboardComponent extends Component {
@@ -23,7 +25,18 @@ export class DashboardComponent extends Component {
       </div>
     </div>;
 
-    return component;
+    if (this.props.debug) {
+      return <div>
+        {component}
+        <div class="row mt-5">
+          <div class="col-sm">
+            <button class="btn btn-info" onclick={this.props.onGenerateFakeData}>Generate fake data</button>
+          </div>
+          <div class="col-sm"></div>
+        </div>
+      </div>
+    } else
+      return component;
   }
 }
 

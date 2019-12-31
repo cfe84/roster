@@ -1,6 +1,7 @@
 import { UIElement } from "./UIElement";
 import { Component } from ".";
 import { IDisplay, IElement, IDisplayAdapter } from "./IDisplayAdapter";
+import { AsyncTimeout } from "../../lib/common/utils/AsyncTimeout";
 
 export class UIContainer {
   private container: IElement;
@@ -22,6 +23,7 @@ export class UIContainer {
 
   renderAsync = async (): Promise<void> => {
     this.container.clear();
+    await new AsyncTimeout().sleepAsync(1);
     if (this.currentElement === null) {
       throw Error("Can't render: no element is mounted");
     }

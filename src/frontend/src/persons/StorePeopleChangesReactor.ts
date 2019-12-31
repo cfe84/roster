@@ -1,8 +1,9 @@
 import { IPersonStore } from "./IPersonStore";
 import { EventBus, IEvent } from "../../lib/common/events/";
 import { PersonCreatedEvent, PersonUpdatedEvent, PersonDeletedEvent } from "./PersonEvent";
+import { IReactor } from "../storage/IReactor";
 
-export class StorePeopleChangesReactor {
+export class StorePeopleChangesReactor implements IReactor {
   constructor(private store: IPersonStore) { }
 
   registerReactors(eventBus: EventBus) {

@@ -1,0 +1,1 @@
+export const pick = (array: string[] | string) => array[Math.floor(Math.random() * array.length)]; 

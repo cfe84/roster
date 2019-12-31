@@ -1,6 +1,7 @@
 import { Component, UIElement } from "../html";
 import { GUID } from "../../lib/common/utils/guid";
 import { Caption } from ".";
+import { ILocalStorage } from "../storage/ILocalStorage";
 
 export interface MarkdownInputProps {
   caption?: string,
@@ -20,24 +21,24 @@ const BASE_KEY = "markdown.draft-";
 
 export class MarkdownInputComponent extends Component {
   draftKey: string;
-  constructor(private props: MarkdownInputProps) {
+  constructor(private props: MarkdownInputProps, private ls: ILocalStorage = localStorage) {
     super();
     this.draftKey = props.noteId ? BASE_KEY + props.noteId : "";
   }
 
   clearDraft = () => {
-    localStorage.removeItem(this.draftKey);
+    this.ls.removeItem(this.draftKey);
   }
 
   saveDraft = (value: string) => {
-    localStorage.setItem(this.draftKey, value);
+    this.ls.setItem(this.draftKey, value);
   }
 
-  draftExists = (): boolean => !!localStorage.getItem(this.draftKey);
+  draftExists = (): boolean => !!this.ls.getItem(this.draftKey);
 
   openDraft = (componentId: string) => {
     const component = document.getElementById(componentId);
-    const content = localStorage.getItem(this.draftKey);
+    const content = this.ls.getItem(this.draftKey);
     if (component && content) {
       component.innerHTML = content;
     }

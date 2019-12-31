@@ -40,7 +40,7 @@
   },
   "scripts": {
     "clean": "rm -r dist/",
-    "test": "mocha --require ts-node/register ./src/html/IntrinsicElements.ts ./test/**/*.ts",
+    "test": "mocha --require ts-node/register --require mock-local-storage ./src/html/IntrinsicElements.ts ./test/**/*.ts",
     "sass": "sass style/style.sass dist/style.css",
     "static": "mkdir -p dist && cp -r static/* dist/",
     "webpack": "npx webpack",
@@ -73,6 +73,7 @@
     "@types/socket.io-client": "^1.4.32",
     "bootstrap": "^4.4.0",
     "mocha": "^6.2.2",
+    "mock-local-storage": "^1.1.11",
     "moment-locales-webpack-plugin": "^1.1.2",
     "npm-watch": "^0.6.0",
     "sass": "^1.23.7",

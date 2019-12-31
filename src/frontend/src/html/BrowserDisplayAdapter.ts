@@ -39,7 +39,8 @@ class BrowserHtmlElement implements IElement, IBrowserNode {
   }
 
   public clear(): void {
-    this.element.innerHTML = "";
+    const children = this.element.childNodes;
+    children.forEach((child) => this.element.removeChild(child));
   }
 
   public appendChild(child: INode) {

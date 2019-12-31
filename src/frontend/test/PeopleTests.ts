@@ -5,6 +5,7 @@ import { StorePeopleChangesReactor } from "../src/persons/StorePeopleChangesReac
 import { PersonCreatedEvent, PersonUpdatedEvent } from "../src/persons/PersonEvent";
 import { IPersonStore } from "../src/persons/IPersonStore";
 import { Person } from "../src/persons";
+import { FakePersonGenerator } from "../src/persons/FakePersonGenerator";
 
 describe("People", () => {
   it("should save people on people created", async () => {
@@ -38,4 +39,17 @@ describe("People", () => {
     // then
     td.verify(store.updatePersonAsync(person));
   });
+
+  it("should create fake persons", async () => {
+    // given
+    const bus = new EventBus("", false);
+    const sub = td.object(["newPersonCreated"]);
+    bus.subscribe(PersonCreatedEvent.type, sub.newPersonCreated);
+    // when
+    const fakePersonGenerator = new FakePersonGenerator();
+    await fakePersonGenerator.generateAsync(bus);
+
+    // then
+    td.verify(sub.newPersonCreated(), { ignoreExtraArgs: true });
+  })
 })

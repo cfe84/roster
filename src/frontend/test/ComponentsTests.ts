@@ -10,6 +10,7 @@ import { ButtonProps, Button, ButtonComponent } from "../src/baseComponents/Butt
 import { TextDisplayComponent, TextDisplayProps, TextDisplay } from "../src/baseComponents/TextDisplayComponent";
 import { MarkdownInputProps, MarkdownInput } from "../src/baseComponents/MarkdownInputComponent";
 import { ListComponent, ListProps } from "../src/baseComponents/ListComponent";
+import { ILocalStorage } from "../src/storage/ILocalStorage";
 
 const findChildByType = (element: UIElement, type: any) =>
   element.props.children.find((child: UIElement) => child.type === type)
@@ -355,9 +356,8 @@ describe("Common components", () => {
       const div = rendered;
       const titleComponent = findChildByType(div, "h3");
 
-
       // then
       should(titleComponent).be.undefined();
-    })
+    });
   })
 });
