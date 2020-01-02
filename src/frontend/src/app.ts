@@ -23,6 +23,7 @@ import { ILogger } from "./log/ILogger";
 import { NullLogger } from "./log/NullLogger";
 import { IFakeGenerator } from "./storage/IFakeGenerator";
 import { FakePersonGenerator } from "./persons/FakePersonGenerator";
+import { ActionController } from "./actions";
 
 const LAST_OPENED_FILE_KEY = "config.lastOpenedFile";
 const DEFAULT_FILE_NAME = "roster.json";
@@ -60,6 +61,7 @@ export class App {
   }
 
   notesController?: NotesController;
+  actionController?: ActionController;
   discussionController?: DiscussionController;
   deadlineController?: DeadlineController;
   personController?: PersonController;
@@ -169,14 +171,17 @@ export class App {
     });
     this.notesController = new NotesController({ uiContainer, db: dbStore, eventBus: this.eventBus });
     this.discussionController = new DiscussionController({ db: dbStore, eventBus: this.eventBus, uiContainer });
+    this.actionController = new ActionController({ db: dbStore, eventBus: this.eventBus, uiContainer });
     this.deadlineController = new DeadlineController({ db: dbStore, eventBus: this.eventBus, uiContainer });
     this.personController = new PersonController({
       eventBus: this.eventBus, uiContainer, db: dbStore,
-      notesController: this.notesController, discussionController: this.discussionController, deadlineController: this.deadlineController
+      notesController: this.notesController, discussionController: this.discussionController, deadlineController: this.deadlineController,
+      actionController: this.actionController
     });
     this.dashboardController = new DashboardController({
       container: uiContainer,
       deadlineController: this.deadlineController,
+      actionController: this.actionController,
       personController: this.personController,
       debug: this.debug,
       eventBus: this.eventBus,

@@ -16,9 +16,9 @@ class PersonListItem extends Component {
       class="w-100 d-flex align-items-center list-group-item list-group-item-action btn"
       onclick={this.props.onPersonClicked}>
       <div class="">{this.props.person.name}</div>
-      <div class="ml-auto">
+      {/* <div class="ml-auto">
         <Button icon="pen" class="align-right" onclick={this.props.onEditClicked} text="Edit"></Button>
-      </div>
+      </div> */}
     </li>
 }
 

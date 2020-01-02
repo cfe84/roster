@@ -11,11 +11,13 @@ import { PersonOverviewComponent } from "./PersonOverviewComponent";
 import { DiscussionController } from "../discussions";
 import { ConfirmationDialog } from "../baseComponents/ConfirmationDialog";
 import { DeadlineController } from "../deadlines";
+import { ActionController } from "../actions";
 
 export interface PersonControllerDeps {
   eventBus: EventBus, uiContainer: UIContainer,
   db: IPersonStore, notesController: NotesController, discussionController: DiscussionController,
-  deadlineController: DeadlineController
+  deadlineController: DeadlineController,
+  actionController: ActionController
 }
 
 export class PersonController {
@@ -54,6 +56,7 @@ export class PersonController {
       notesController={this.deps.notesController}
       discussionController={this.deps.discussionController}
       deadlineController={this.deps.deadlineController}
+      actionController={this.deps.actionController}
       onEditClicked={this.displayEditPerson}
       onExitClicked={this.deps.uiContainer.unmountCurrent}
     ></PersonOverview>;

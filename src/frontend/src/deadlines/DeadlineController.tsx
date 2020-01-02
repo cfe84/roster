@@ -28,7 +28,7 @@ export class DeadlineController {
       .sort((a, b) => a.deadline > b.deadline ? 1 : -1);
     const elementDisplay = (deadline: Deadline) =>
       <span><i class="fa fa-map-marker"></i> {dateUtils.format(deadline.deadline)} <i>({dateUtils.timeSpan(deadline.deadline)})</i>: <b>{deadline.description}</b></span>;
-    const component = <List
+    const listComponent: ListComponent<Deadline> = <List
       title="Deadlines"
       titleIcon="calendar-day"
       elements={deadlines}
@@ -37,7 +37,18 @@ export class DeadlineController {
       onClicked={(deadline: Deadline) => { this.loadReadDeadline(deadline) }}
       elementDisplay={elementDisplay}
     > </List>;
-    return component;
+
+    const deadlineCreatedSubscription = this.deps.eventBus.subscribe(DeadlineCreatedEvent.type, (evt: DeadlineCreatedEvent) => listComponent.addItemAsync(evt.deadline));
+    const deadlineDeletedSubscription = this.deps.eventBus.subscribe(DeadlineDeletedEvent.type, (evt: DeadlineDeletedEvent) => listComponent.removeItemAsync(evt.deadline));
+    const deadlineUpdatedSubscription = this.deps.eventBus.subscribe(DeadlineUpdatedEvent.type, (evt: DeadlineUpdatedEvent) => listComponent.updateItemsAsync());
+
+    listComponent.ondispose = () => {
+      deadlineUpdatedSubscription.unsubscribe();
+      deadlineCreatedSubscription.unsubscribe();
+      deadlineDeletedSubscription.unsubscribe();
+    }
+
+    return listComponent;
   }
 
   public loadCreateDeadline = (personId: PersonId, name: string = "Deadline") => {
