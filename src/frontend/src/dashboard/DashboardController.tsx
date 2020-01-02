@@ -32,14 +32,14 @@ export class DashboardController {
 
     const reload = () => this.deps.container.rerenderIfCurrent(component);
 
-    const subscription1 = this.deps.eventBus.subscribe(PersonCreatedEvent.type, async (evt: IEvent) => { await reload(); });
-    const subscription2 = this.deps.eventBus.subscribe(PersonUpdatedEvent.type, async (evt: IEvent) => { await reload(); });
-    const subscription3 = this.deps.eventBus.subscribe(DeadlineCreatedEvent.type, async (evt: IEvent) => { await reload(); });
-    const subscription4 = this.deps.eventBus.subscribe(DeadlineUpdatedEvent.type, async (evt: IEvent) => { await reload(); });
-    const subscription5 = this.deps.eventBus.subscribe(NoteCreatedEvent.type, async (evt: IEvent) => { await reload(); });
-    const subscription6 = this.deps.eventBus.subscribe(NoteUpdatedEvent.type, async (evt: IEvent) => { await reload(); });
-    const subscription7 = this.deps.eventBus.subscribe(DiscussionUpdatedEvent.type, async (evt: IEvent) => { await reload(); });
-    const subscription8 = this.deps.eventBus.subscribe(DiscussionCreatedEvent.type, async (evt: IEvent) => { await reload(); });
+    // const subscription1 = this.deps.eventBus.subscribe(PersonCreatedEvent.type, async (evt: IEvent) => { await reload(); });
+    // const subscription2 = this.deps.eventBus.subscribe(PersonUpdatedEvent.type, async (evt: IEvent) => { await reload(); });
+    // const subscription3 = this.deps.eventBus.subscribe(DeadlineCreatedEvent.type, async (evt: IEvent) => { await reload(); });
+    // const subscription4 = this.deps.eventBus.subscribe(DeadlineUpdatedEvent.type, async (evt: IEvent) => { await reload(); });
+    // const subscription5 = this.deps.eventBus.subscribe(NoteCreatedEvent.type, async (evt: IEvent) => { await reload(); });
+    // const subscription6 = this.deps.eventBus.subscribe(NoteUpdatedEvent.type, async (evt: IEvent) => { await reload(); });
+    // const subscription7 = this.deps.eventBus.subscribe(DiscussionUpdatedEvent.type, async (evt: IEvent) => { await reload(); });
+    // const subscription8 = this.deps.eventBus.subscribe(DiscussionCreatedEvent.type, async (evt: IEvent) => { await reload(); });
   }
 
   private generateFakeData = () => {

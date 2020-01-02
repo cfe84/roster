@@ -4,6 +4,7 @@ import { Discussion } from "../discussions";
 import { Deadline } from "../deadlines";
 import { IWholeStore } from "../storage/IWholeStore";
 import { promises as fsAsync, default as fs } from "fs";
+import { Action } from "../actions";
 
 class MyArray<T> {
   [index: string]: T
@@ -14,6 +15,7 @@ class Db {
   notes = new MyArray<Note>();
   discussions = new MyArray<Discussion>();
   deadlines = new MyArray<Deadline>();
+  actions = new MyArray<Action>();
   toString(): string {
     return JSON.stringify(this);
   }
@@ -77,12 +79,14 @@ export class FsStore implements IWholeStore {
   notes: ArrayManager<Note>;
   discussions: ArrayManager<Discussion>;
   deadlines: ArrayManager<Deadline>;
+  actions: ArrayManager<Action>;
 
   private constructor(private file: string, private db: Db) {
     this.persons = new ArrayManager(db.persons, (person: Person) => person.id, this);
     this.notes = new ArrayManager(db.notes, (note: Note) => note.id, this);
     this.discussions = new ArrayManager(db.discussions, (discussion: Discussion) => discussion.id, this);
     this.deadlines = new ArrayManager(db.deadlines, (deadline: Deadline) => deadline.id, this);
+    this.actions = new ArrayManager(db.actions, (action: Action) => action.id, this);
   }
 
   commitChangesAsync = async () => {
@@ -108,4 +112,9 @@ export class FsStore implements IWholeStore {
   createDeadlineAsync = (deadline: Deadline): Promise<void> => this.deadlines.addAsync(deadline);
   updateDeadlineAsync = (deadline: Deadline): Promise<void> => this.deadlines.updateAsync(deadline);
   deleteDeadlineAsync = (deadline: Deadline): Promise<void> => this.deadlines.deleteAsync(deadline);
+  getActionsAsync = (): Promise<Action[]> => this.actions.getAsync()
+  createActionAsync = (action: Action): Promise<void> => this.actions.addAsync(action);
+  updateActionAsync = (action: Action): Promise<void> => this.actions.updateAsync(action);
+  deleteActionAsync = (action: Action): Promise<void> => this.actions.deleteAsync(action);
+
 }

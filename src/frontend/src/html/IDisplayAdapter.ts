@@ -1,6 +1,7 @@
 
 export interface INode {
   appendChild(child: INode): void;
+  removeChild(child: INode): void;
 }
 
 export interface IElement extends INode {
@@ -9,7 +10,9 @@ export interface IElement extends INode {
   clear(): void;
 }
 
-export interface ITextNode extends INode { }
+export interface ITextNode extends INode {
+  setText(text: string): void;
+}
 
 export interface IDisplayAdapter {
   createTextNode(text: string): ITextNode;

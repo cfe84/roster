@@ -47,6 +47,10 @@ class BrowserHtmlElement implements IElement, IBrowserNode {
     this.element.appendChild((child as IBrowserNode).getNode());
   }
 
+  public removeChild(child: INode) {
+    this.element.removeChild((child as IBrowserNode).getNode());
+  }
+
   public getNode = (): Node => this.element;
 }
 
@@ -58,8 +62,13 @@ class BrowserTextNode implements ITextNode, IBrowserNode {
   public appendChild(child: INode) {
     this.node.appendChild((child as IBrowserNode).getNode());
   }
+  public removeChild(child: INode) {
+    this.node.removeChild((child as IBrowserNode).getNode());
+  }
   public getNode = (): Node => this.node;
-
+  public setText(text: string): void {
+    this.node.textContent = text;
+  }
 }
 
 export class BrowserDisplayAdapter implements IDisplayAdapter {

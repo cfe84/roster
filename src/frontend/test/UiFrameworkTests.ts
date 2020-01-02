@@ -184,6 +184,55 @@ describe("UI Framework", () => {
         td.verify(fakeElement.setAttribute("id", "id-1"));
         td.verify(fakeElement.setProperty("onstuff", handler));
       });
+
+      it.only("should update rendered DOM objects", async () => {
+        // given
+        const type = "div";
+        const textChild = new UIElement("TEXT", { "text": "text-content" });
+        const elementChild = new UIElement("element", { "id": "id-child-element" });
+        const childToRemove = new UIElement("remove", {});
+        const props = {
+          id: "id-root",
+          name: "name-root",
+          children: [textChild, elementChild, childToRemove]
+        };
+        const fakeDisplayAdapter = td.object(["createTextNode", "createElement"]) as IDisplayAdapter;
+        const fakeElement = td.object(["setAttribute", "appendChild", "removeChild"]);
+        const fakeInnerElement = td.object(["setAttribute"]);
+        const fakeElementToAdd = td.object(["setAttribute"]);
+        const fakeElementToRemove = {};
+        const fakeTextNode = td.object(["setText"]);
+        td.when(fakeDisplayAdapter.createTextNode("text-content")).thenReturn(fakeTextNode);
+        td.when(fakeDisplayAdapter.createElement("element")).thenReturn(fakeInnerElement);
+        td.when(fakeDisplayAdapter.createElement("add")).thenReturn(fakeElementToAdd);
+        td.when(fakeDisplayAdapter.createElement("remove")).thenReturn(fakeElementToRemove);
+        td.when(fakeDisplayAdapter.createElement(type)).thenReturn(fakeElement);
+        const element = new UIElement(type, props);
+
+        // when
+        const dom = await element.createNodeAsync(fakeDisplayAdapter);
+        props.name = "name-root-modified";
+        textChild.props["text"] = "text-content-updated";
+        elementChild.props["id"] = "id-child-element-updated";
+        props.children.splice(2, 1);
+        props.children.push(new UIElement("add", { "id": "id-add" }))
+        await element.updateNodeAsync();
+
+        // then
+        should(dom).equal(fakeElement);
+        td.verify(fakeElement.setAttribute("id", "id-root"));
+        td.verify(fakeElement.setAttribute("name", "name-root"));
+        td.verify(fakeElement.setAttribute("name", "name-root-modified"));
+        td.verify(fakeElement.appendChild(fakeTextNode));
+        td.verify(fakeElement.appendChild(fakeInnerElement));
+        td.verify(fakeElement.appendChild(fakeElementToRemove));
+        td.verify(fakeElement.appendChild(fakeElementToAdd));
+        td.verify(fakeElement.removeChild(fakeElementToRemove));
+        td.verify(fakeInnerElement.setAttribute("id", "id-child-element"));
+        td.verify(fakeInnerElement.setAttribute("id", "id-child-element-updated"));
+        td.verify(fakeElementToAdd.setAttribute("id", "id-add"));
+        td.verify(fakeTextNode.setText("text-content-updated"));
+      });
     })
   })
 })

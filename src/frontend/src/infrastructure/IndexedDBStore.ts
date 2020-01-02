@@ -3,13 +3,15 @@ import { Note } from "../notes";
 import { Discussion } from "../discussions";
 import { Deadline } from "../deadlines";
 import { IWholeStore } from "../storage/IWholeStore";
+import { Action } from "../actions";
 
 const DB_NAME: string = "rosterdb";
-const DB_VERSION: number = 5;
+const DB_VERSION: number = 6;
 const OBJECTSTORE_PEOPLE: string = "people";
 const OBJECTSTORE_NOTES: string = "notes";
 const OBJECTSTORE_DISCUSSIONS: string = "discussions";
 const OBJECTSTORE_DEADLINES: string = "deadlines";
+const OBJECTSTORE_ACTIONS: string = "actions";
 
 const getTarget = <T>(evt: any): T => (evt.target as T)
 
@@ -114,6 +116,7 @@ export class IndexedDBStore implements IWholeStore {
       { name: OBJECTSTORE_NOTES, key: "id", index: "personid" },
       { name: OBJECTSTORE_DISCUSSIONS, key: "id", index: "personid" },
       { name: OBJECTSTORE_DEADLINES, key: "id", index: "personid" },
+      { name: OBJECTSTORE_ACTIONS, key: "id", index: "personid" },
     ];
     stores.forEach((storeInfo) => {
       const store = IndexedDBStore.createObjectStore(db, storeInfo.name, { keyPath: storeInfo.key });
@@ -189,5 +192,18 @@ export class IndexedDBStore implements IWholeStore {
   }
   public deleteDeadlineAsync = async (element: Deadline): Promise<void> => {
     await this.db.deleteEntityAsync(OBJECTSTORE_DEADLINES, element.id);
+  }
+
+  public getActionsAsync = async (): Promise<Action[]> =>
+    (await this.db.getAllAsync<Action>(OBJECTSTORE_ACTIONS));
+
+  public createActionAsync = async (element: Action): Promise<void> => {
+    await this.db.createEntityAsync(OBJECTSTORE_ACTIONS, element);
+  }
+  public updateActionAsync = async (element: Action): Promise<void> => {
+    await this.db.putEntityAsync(OBJECTSTORE_ACTIONS, element);
+  }
+  public deleteActionAsync = async (element: Action): Promise<void> => {
+    await this.db.deleteEntityAsync(OBJECTSTORE_ACTIONS, element.id);
   }
 }

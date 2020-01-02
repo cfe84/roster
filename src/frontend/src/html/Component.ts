@@ -1,5 +1,5 @@
 import { UIElement } from ".";
-import { CHILDREN_PROPS_MEMBER, TEXT_TYPE } from "./UIElement";
+import { CHILDREN_PROPS_MEMBER, TEXT_NODE_TYPE } from "./UIElement";
 
 type UIElementConstructor = (a: any) => Component;
 
@@ -25,7 +25,7 @@ export abstract class Component {
   }
 
   private static createText(text: string) {
-    return new UIElement(TEXT_TYPE, { text: (text !== null && text !== undefined) ? text : "" });
+    return new UIElement(TEXT_NODE_TYPE, { text: (text !== null && text !== undefined) ? text : "" });
   }
 
   public ondispose() { }
