@@ -15,12 +15,12 @@ export class PersonListComponent extends Component {
     super();
   }
 
-  public addPerson(person: Person) {
+  public async addPersonAsync(person: Person): Promise<void> {
     if (this.list) {
       console.log("Adding person")
-      person.name = "dsfsdf" + person.name;
       const personItem = this.mapPersonToListItem(person);
       this.list.props.children.push(personItem);
+      await this.list.updateNodeAsync();
     }
   }
 

@@ -38,7 +38,7 @@ export class PersonController {
       this.deps.uiContainer.rerenderIfCurrent(component);
     }
 
-    const subscription1 = this.deps.eventBus.subscribe(PersonCreatedEvent.type, async (evt: PersonCreatedEvent) => { component.addPerson(evt.person); });
+    const subscription1 = this.deps.eventBus.subscribe(PersonCreatedEvent.type, async (evt: PersonCreatedEvent) => await component.addPersonAsync(evt.person));
     const subscription2 = this.deps.eventBus.subscribe(PersonUpdatedEvent.type, async (evt: PersonUpdatedEvent) => { await reload(); });
     component.ondispose = () => {
       this.deps.eventBus.unsubscribe(subscription1);
