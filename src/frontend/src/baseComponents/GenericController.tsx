@@ -78,10 +78,13 @@ export class GenericController<EntityType extends IEntity>{
   }
 
   public getEditComponent(entity: EntityType) {
-    return this.deps.componentFactory.createEditComponent(entity, () => this.deps.uiContainer.unmountCurrent(), (entity) => {
+    const component = this.deps.componentFactory.createEditComponent(entity, () => this.deps.uiContainer.unmountCurrent(), (entity) => {
       const event = this.deps.eventFactory.createUpdatedEvent(entity);
       this.deps.eventBus.publishAsync(event).then(() => this.deps.uiContainer.unmountCurrent());
     }, (entity) => this.mountDelete(entity));
+    const deletedSubscription = this.deps.eventBus.subscribe(this.deps.eventFactory.deletedEventType, () => this.deps.uiContainer.unmountCurrent());
+    component.ondispose = deletedSubscription.unsubscribe
+    return component;
   }
 
   public mountEdit = (entity: EntityType) => {

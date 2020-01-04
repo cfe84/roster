@@ -13,7 +13,11 @@ interface ActionEditorProps {
 
 export class ActionEditorComponent extends Component {
 
-  constructor(private props: ActionEditorProps) { super() }
+  private wasCompleted: boolean;
+  constructor(private props: ActionEditorProps) {
+    super()
+    this.wasCompleted = props.action.completed;
+  }
 
   public render = (): UIElement => {
     const action: Action = objectUtils.clone(this.props.action);
@@ -22,6 +26,9 @@ export class ActionEditorComponent extends Component {
     const title = `${this.props.actionName || "New action"} ${action.summary}`;
     const editor: MarkdownInputComponent = <MarkdownInput caption="Description" object={action} field="details" noteId={draftId} />
     const onSave = () => {
+      if (this.props.action.completed && !this.wasCompleted) {
+        this.props.action.completionDate = new Date();
+      }
       this.props.onValidate(action);
       editor.clearDraft();
     };
@@ -33,7 +40,7 @@ export class ActionEditorComponent extends Component {
       </div>
       <div class="row">
         <Select class="col" caption="Responsibility" object={action} field="responsibility" values={["mine", "theirs"]} />
-        <Checkbox class="col" caption="Done" object={action} field="done" />
+        <Checkbox class="col" caption="Completed" object={action} field="completed" />
       </div>
       {editor}
       <Button class="mr-2" onclick={onSave} icon="save" text={saveButtonCaption} />

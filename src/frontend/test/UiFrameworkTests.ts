@@ -185,7 +185,7 @@ describe("UI Framework", () => {
         td.verify(fakeElement.setProperty("onstuff", handler));
       });
 
-      it.only("should update rendered DOM objects", async () => {
+      it("should update rendered DOM objects", async () => {
         // given
         const type = "div";
         const textChild = new UIElement("TEXT", { "text": "text-content" });

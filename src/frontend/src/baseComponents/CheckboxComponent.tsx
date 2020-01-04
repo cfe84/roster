@@ -26,13 +26,13 @@ export class CheckboxComponent extends Component {
       }
     }
     if (this.getValue()) {
-      component = <input type="checkbox" onclick={onclick} checked="true">{this.props.caption}</input>;
+      component = <input type="checkbox" onclick={onclick} checked="true" />;
     } else {
-      component = <input type="checkbox" onclick={onclick}>{this.props.caption}</input>;
+      component = <input type="checkbox" onclick={onclick} />;
     }
     return <div class={this.props.class || ""}>
       {caption}
-      <p class="mb-3">{component}</p>
+      <p class="mb-3">{component} {this.props.caption}</p>
     </div>;
   }
 }

@@ -1,6 +1,6 @@
 import { UIElement, Component } from "../html/index";
 import { MarkdownDisplay } from "../baseComponents/MarkdownDisplayComponent";
-import { Button, PageTitle, DateDisplay, TextDisplay } from "../baseComponents";
+import { Button, PageTitle, DateDisplay, TextDisplay, CheckboxDisplay } from "../baseComponents";
 import { Action } from ".";
 
 interface ActionReaderProps {
@@ -21,13 +21,12 @@ export class ActionReaderComponent extends Component {
       value={action.details}
     ></MarkdownDisplay>;
     return <div class="flex-column">
+      <PageTitle title={action.summary} icon="tasks" onBack={this.props.onBack} />
       <div class="row">
-        <PageTitle title={action.summary} icon="tasks" onBack={this.props.onBack} />
-        <DateDisplay caption="Due date" object={this.props.action} field="dueDate" includeTimespan={true} />
-      </div>
-      <div class="row">
-        <TextDisplay caption="Responsibility" object={this.props.action} field="responsibility" />
-        <TextDisplay caption="Done" object={this.props.action} field="done" />
+        <TextDisplay class="col" caption="Responsibility" object={this.props.action} field="responsibility" />
+        <DateDisplay class="col" caption="Due date" object={this.props.action} field="dueDate" includeTimespan={true} />
+        <CheckboxDisplay class="col" caption="Completed" object={this.props.action} field="completed" />
+        <DateDisplay class="col" caption="Completion date" object={this.props.action} field="completionDate" />
       </div>
       {notes.render()}
       <span class="d-flex">

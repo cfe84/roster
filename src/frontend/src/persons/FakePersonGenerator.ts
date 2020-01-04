@@ -6,6 +6,7 @@ import { pick } from "../utils/pick";
 import { FakeNoteGenerator } from "../notes/FakeNoteGenerator";
 import { FakeDiscussionGenerator } from "../discussions/FakeDiscussionGenerator";
 import { FakeDeadlineGenerator } from "../deadlines/FakeDeadlineGenerator";
+import { FakeActionGenerator } from "../actions/FakeActionGenerator";
 
 
 export class FakePersonGenerator implements IFakeGenerator {
@@ -59,6 +60,12 @@ export class FakePersonGenerator implements IFakeGenerator {
     const fakeDeadlineGenerator = new FakeDeadlineGenerator(person);
     for (let i = 0; i < deadlines; i++) {
       await fakeDeadlineGenerator.generateAsync(eventBus);
+    }
+
+    const actions = Math.random() * 5;
+    const fakeActionGenerator = new FakeActionGenerator(person);
+    for (let i = 0; i < actions; i++) {
+      await fakeActionGenerator.generateAsync(eventBus);
     }
   }
 

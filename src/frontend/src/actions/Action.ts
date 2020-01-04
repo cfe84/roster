@@ -11,11 +11,14 @@ export class Action implements IEntity {
   details: string = "";
   createdDate: Date = new Date();
   dueDate: Date;
-  done: boolean = false;
+  completed: boolean = false;
+  completionDate?: Date;
   responsibility: ActionResponsibilityType = "theirs";
 
   constructor(public personId: string) {
     this.dueDate = new Date();
     this.dueDate.setDate(this.dueDate.getDate() + 7);
   }
+
+  toString = () => this.summary;
 }

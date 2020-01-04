@@ -12,6 +12,8 @@ import { MarkdownInputProps, MarkdownInput } from "../src/baseComponents/Markdow
 import { ListComponent, ListProps } from "../src/baseComponents/ListComponent";
 import { ILocalStorage } from "../src/storage/ILocalStorage";
 import { findChildByType, findChildrenByType } from "./ComponentsTestsUtils";
+import { IEntity } from "../lib/common/entities";
+import { GUID } from "../lib/common/utils/guid";
 
 describe("Common components", () => {
   const getTextInputElements = (element: UIElement): any => {
@@ -297,7 +299,12 @@ describe("Common components", () => {
   });
 
   context("List", () => {
-    class FakeClass { }
+    class FakeClass implements IEntity {
+      toString(): string {
+        throw new Error("Method not implemented.");
+      }
+      id: string = GUID.newGuid();
+    }
     context("Base rendering", () => {
       // given
       const fake = td.object(["display", "addClicked", "clicked", "editClicked"]);

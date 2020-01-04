@@ -3,6 +3,7 @@ namespace JSX {
     div: any,
     p: any,
     a: any,
+    s: any,
     span: any,
     form: any,
     label: any,

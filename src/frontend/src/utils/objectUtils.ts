@@ -1,9 +1,10 @@
 export class objectUtils {
-  static clone(obj: any): any {
+  static clone(obj: any, skipFunctions: boolean = false): any {
     let copy: any;
 
     // Handle the 3 simple types, and null or undefined
     if (null == obj || "object" != typeof obj) return obj;
+
 
     if (obj instanceof Date) {
       copy = new Date();
@@ -22,7 +23,9 @@ export class objectUtils {
     if (obj instanceof Object) {
       copy = {};
       for (var attr in obj) {
-        if (obj.hasOwnProperty(attr)) copy[attr] = objectUtils.clone(obj[attr]);
+        if (obj.hasOwnProperty(attr) && (!skipFunctions || !(obj[attr] instanceof Function))) {
+          copy[attr] = objectUtils.clone(obj[attr]);
+        }
       }
       return copy;
     }

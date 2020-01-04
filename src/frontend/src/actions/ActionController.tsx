@@ -37,10 +37,13 @@ export class ActionController {
 
   private getActionListComponentAsync = async (filter: ActionFilter, personId?: string) => {
     const sort = (a: Action, b: Action) => a.dueDate > b.dueDate ? 1 : -1;
+    const aWeekAgo = new Date();
+    aWeekAgo.setDate(aWeekAgo.getDate() - 7);
+    const refinedFilter = (action: Action) => (!action.completed || action.completionDate as Date > aWeekAgo) && filter(action)
     const generator = personId ? (() => new Action(personId)) : undefined;
     return await this.controller.getListAsync({
       entityGenerator: generator,
-      filter,
+      filter: refinedFilter,
       sort,
       icon: "tasks",
       title: "Actions"

@@ -4,6 +4,7 @@ import { Discussion } from "../discussions";
 import { Deadline } from "../deadlines";
 import { IWholeStore } from "../storage/IWholeStore";
 import { Action } from "../actions";
+import { objectUtils } from "../utils/objectUtils";
 
 const DB_NAME: string = "rosterdb";
 const DB_VERSION: number = 6;
@@ -71,6 +72,7 @@ class AsyncIndexedDB {
 
   public createEntityAsync = <T>(storeName: string, entity: T): Promise<void> =>
     new Promise((resolve, reject) => {
+      entity = objectUtils.clone(entity, true);
       const objectStore = this.createDbTransaction(storeName, "readwrite");
       const request = objectStore.add(entity);
       AsyncIndexedDB.addEventHandlersToRequest(request,
@@ -81,6 +83,7 @@ class AsyncIndexedDB {
   public putEntityAsync = <T>(storeName: string, entity: T): Promise<T[]> =>
     new Promise((resolve, reject) => {
       const objectStore = this.createDbTransaction(storeName, "readwrite");
+      entity = objectUtils.clone(entity, true);
       const request = objectStore.put(entity);
       AsyncIndexedDB.addEventHandlersToRequest(request,
         (request: IDBRequest<IDBValidKey>) => resolve(),

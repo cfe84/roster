@@ -2,8 +2,9 @@ import { UIElement } from "../html/index";
 import { Component } from "../html/Component";
 import { ListItemComponent } from "./ListItemComponent";
 import { Button } from ".";
+import { IEntity } from "../../lib/common/entities";
 
-export interface ListProps<T> {
+export interface ListProps<T extends IEntity> {
   elements: T[],
   title?: string,
   titleIcon?: string,
@@ -13,12 +14,12 @@ export interface ListProps<T> {
   onEditClicked?: ((element: T) => void)
 }
 
-interface ListItemReference<T> {
+interface ListItemReference<T extends IEntity> {
   value: T,
   component: ListItemComponent<T>;
 }
 
-export class ListComponent<T> extends Component {
+export class ListComponent<T extends IEntity> extends Component {
   constructor(private props: ListProps<T>) { super() }
 
   private listComponent?: UIElement;
@@ -40,7 +41,7 @@ export class ListComponent<T> extends Component {
     } else {
       this.props.elements.splice(index, 1);
       if (this.listComponent && this.listItems) {
-        const listItemComponent = this.listItems.find((reference) => reference.value === item);
+        const listItemComponent = this.listItems.find((reference) => reference.value.id === item.id);
         const indexOfComponent = this.listComponent.props["children"].findIndex(listItemComponent);
         if (indexOfComponent < 0) {
           throw Error("Component not found in list");
@@ -89,5 +90,5 @@ export class ListComponent<T> extends Component {
   }
 }
 
-export function List<T>(props: ListProps<T>) { return new ListComponent(props) }
+export function List<T extends IEntity>(props: ListProps<T>) { return new ListComponent(props) }
 

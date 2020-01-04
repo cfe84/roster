@@ -77,7 +77,7 @@ describe("Utils", () => {
   context("Object utils", () => {
 
     const testObjects = [
-      { name: "complex objects", object: { id: 1, date: new Date(2018, 12, 1), child: { a: "123", b: null, c: undefined }, obj: "13", num: 1332.1 } },
+      { name: "complex objects", object: { id: 1, date: new Date(2018, 12, 1), child: { a: "123", b: null, c: undefined }, obj: "13", num: 1332.1, func: () => { } } },
       { name: "trees", object: { a: { b: { c: [2, 3] } } } },
       { name: "arrays", object: { a: [123, 456], b: [], c: [{ a: 123, b: "bcd" }, { c: 134234, d: undefined }, null] } },
       { name: "null", object: null },
@@ -96,6 +96,21 @@ describe("Utils", () => {
           should(clonedObject).not.be.exactly(objectToClone);
         }
       }));
+
+    it("should skip functions if necessary", () => {
+      // given
+      const input = {
+        a: '123',
+        func: () => { }
+      };
+
+      // when
+      const cloned = objectUtils.clone(input, true);
+
+      // then
+      should(cloned.a).equal('123');
+      should(cloned.func).be.undefined();
+    })
   });
 
   context("ClientID", () => {

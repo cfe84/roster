@@ -9,10 +9,12 @@ import { DateDisplayComponent, DateDisplay } from "./DateDisplayComponent";
 import { PageTitleComponent, PageTitle } from "./PageTitleComponent";
 import { SelectComponent, Select } from "./SelectComponent";
 import { CheckboxComponent, Checkbox } from "./CheckboxComponent";
+import { CheckboxDisplayComponent, CheckboxDisplay } from "./CheckboxDisplayComponent";
 
 export {
   TextInput, TextInputComponent,
   Checkbox, CheckboxComponent,
+  CheckboxDisplay, CheckboxDisplayComponent,
   DateInput, DateInputComponent,
   Button, ButtonComponent,
   TextDisplay, TextDisplayComponent,
