@@ -1,7 +1,10 @@
 import { IActionStore, Action } from ".";
 import { EventBus } from "../../lib/common/events";
-import { UIContainer, Component } from "../html";
-import { ListComponent, List } from "../baseComponents/ListComponent";
+import { UIContainer } from "../html";
+import { GenericController, GenericControllerDependencies } from "../baseComponents/GenericController";
+import { ActionComponentFactory } from "./ActionComponentFactory";
+import { ActionEventFactory } from "./ActionEventFactory";
+import { ActionStoreAdapter } from "./IActionStore";
 
 export interface ActionControllerDependencies {
   db: IActionStore,
@@ -12,26 +15,35 @@ export interface ActionControllerDependencies {
 type ActionFilter = (action: Action) => boolean;
 
 export class ActionController {
-  constructor(private deps: ActionControllerDependencies) { }
+  private controller: GenericController<Action>;
+  constructor(private deps: ActionControllerDependencies) {
+    const genericControllerDependencies: GenericControllerDependencies<Action> = {
+      componentFactory: new ActionComponentFactory(),
+      eventFactory: new ActionEventFactory(),
+      db: new ActionStoreAdapter(deps.db),
+      eventBus: deps.eventBus,
+      uiContainer: deps.uiContainer,
+    }
+    this.controller = new GenericController(genericControllerDependencies);
+  }
 
-  public getActionListAsync = async (filter: ActionFilter) => {
-    const actions = (await this.deps.db.getActionsAsync())
-      .filter(filter)
-      .sort((a, b) => a.dueDate > b.dueDate ? 1 : -1);
-    const elementDisplay = (action: Action) =>
-      <span>{action.name} ({action.responsibility})</span>;
-    const listComponent: ListComponent<Action> = <List
-      title="Actions"
-      titleIcon="tasks"
-      elements={actions}
-      onAddClicked={undefined}
-      onEditClicked={() => { }}
-      onClicked={() => { }}
-      elementDisplay={elementDisplay}
-    />
+  public getMyActionsListComponentAsync = async () => {
+    return await this.getActionListComponentAsync((action: Action) => action.responsibility === "mine", undefined);
+  }
 
-    // const createdSub = this.deps.eventBus.subscribe(Action)
+  public getPersonListComponentAsync = async (personId: string) => {
+    return await this.getActionListComponentAsync((action: Action) => action.personId === personId, personId);
+  }
 
-    return listComponent;
+  private getActionListComponentAsync = async (filter: ActionFilter, personId?: string) => {
+    const sort = (a: Action, b: Action) => a.dueDate > b.dueDate ? 1 : -1;
+    const generator = personId ? (() => new Action(personId)) : undefined;
+    return await this.controller.getListAsync({
+      entityGenerator: generator,
+      filter,
+      sort,
+      icon: "tasks",
+      title: "Actions"
+    });
   }
 }

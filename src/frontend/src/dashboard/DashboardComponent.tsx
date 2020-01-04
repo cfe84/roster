@@ -18,7 +18,7 @@ export class DashboardComponent extends Component {
   public render = async (): Promise<UIElement> => {
     const peopleList = await this.props.personController.loadPeopleListAsync();
     const actions = await this.props.actionController
-      .getActionListAsync((action) => action.responsibility === "mine");
+      .getMyActionsListComponentAsync();
     const deadlines = await this.props.deadlineController.getDeadlineListAsync();
     const component: UIElement = <div class="row">
       <div class="col-sm">

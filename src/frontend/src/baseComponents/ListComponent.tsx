@@ -7,7 +7,7 @@ export interface ListProps<T> {
   elements: T[],
   title?: string,
   titleIcon?: string,
-  elementDisplay: ((element: T) => UIElement),
+  elementDisplay: ((element: T) => UIElement | Component),
   onClicked?: ((element: T) => void),
   onAddClicked?: (() => void),
   onEditClicked?: ((element: T) => void)

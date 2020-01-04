@@ -24,6 +24,8 @@ import { NullLogger } from "./log/NullLogger";
 import { IFakeGenerator } from "./storage/IFakeGenerator";
 import { FakePersonGenerator } from "./persons/FakePersonGenerator";
 import { ActionController } from "./actions";
+import { AlertController } from "./alerts/AlertController";
+import { ActionStorageReactors } from "./actions/ActionStorageReactors";
 
 const LAST_OPENED_FILE_KEY = "config.lastOpenedFile";
 const DEFAULT_FILE_NAME = "roster.json";
@@ -199,6 +201,27 @@ export class App {
     discussionReactor.registerReactors(this.eventBus);
     const deadlineReactor = new StoreDeadlinesChangesReactor(dbStore);
     deadlineReactor.registerReactors(this.eventBus);
+    const actionReactor = new ActionStorageReactors(dbStore);
+    actionReactor.registerReactors(this.eventBus);
+  }
+
+  public handleError = () => {
+    const displayAdapter = new BrowserDisplayAdapter();
+    const container = displayAdapter.getElementFromDom("container-alerts");
+    const uiContainer = new UIContainer({
+      displayAdapter,
+      container: container
+    });
+    const controller = new AlertController({ container: uiContainer, debug: this.debug })
+    return (error: string | Event) => {
+      switch (typeof error) {
+        case "string":
+          controller.showAlert(error);
+          break;
+        default:
+          controller.showAlert(`${error}`);
+      }
+    }
   }
 }
 
@@ -224,5 +247,6 @@ const parseQueryParams = (params: string): QueryParams => {
 window.onload = () => {
   const params = parseQueryParams(window.location.search);
   const app = new App(params);
+  window.onerror = app.handleError();
   app.loadAsync().then(() => { });
 }

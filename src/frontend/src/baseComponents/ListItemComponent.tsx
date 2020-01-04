@@ -1,7 +1,7 @@
 import { UIElement, Component } from "../html/index";
 
 export interface ListItemProps<T> {
-  elementDisplay: UIElement
+  elementDisplay: UIElement | Component
   onClicked: (() => void)
   onEditClicked: (() => void),
 }

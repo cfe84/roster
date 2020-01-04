@@ -26,7 +26,7 @@ export class PersonOverviewComponent extends Component {
     const person = this.props.person;
     const notesList = await this.props.notesController.getNotesListAsync(person.id);
     const discussionList = await this.props.discussionController.getDiscussionListAsync(person.id);
-    const actionList = await this.props.actionController.getActionListAsync((action) => action.personId === person.id);
+    const actionList = await this.props.actionController.getPersonListComponentAsync(person.id);
     const deadlinesList = await this.props.deadlineController.getDeadlineListAsync(person.id);
     return <div>
       <PageTitle title={person.name} icon="user" onBack={this.props.onExitClicked}></PageTitle>
