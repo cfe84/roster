@@ -78,11 +78,10 @@ export class GenericController<EntityType extends IEntity>{
   }
 
   public getEditComponent(entity: EntityType) {
-    return this.deps.componentFactory.createCreateComponent(entity, () => this.deps.uiContainer.unmountCurrent(), (entity) => {
+    return this.deps.componentFactory.createEditComponent(entity, () => this.deps.uiContainer.unmountCurrent(), (entity) => {
       const event = this.deps.eventFactory.createUpdatedEvent(entity);
-      this.deps.eventBus.publishAsync(event)
-        .then(() => this.deps.uiContainer.unmountCurrent());
-    });
+      this.deps.eventBus.publishAsync(event).then(() => this.deps.uiContainer.unmountCurrent());
+    }, (entity) => this.mountDelete(entity));
   }
 
   public mountEdit = (entity: EntityType) => {
@@ -94,7 +93,7 @@ export class GenericController<EntityType extends IEntity>{
     const component = this.deps.componentFactory.createReadComponent(entity,
       () => this.deps.uiContainer.unmountCurrent(),
       (action) => this.mountEdit(action),
-      (action) => this.loadDelete(action));
+      (action) => this.mountDelete(action));
     const updateSubscription = this.deps.eventBus.subscribe(this.deps.eventFactory.updatedEventType, (evt: ITypedEvent<EntityType>) => {
       if (evt.entity.id === entity.id) {
         this.deps.uiContainer.rerenderIfCurrent(component);
@@ -111,7 +110,7 @@ export class GenericController<EntityType extends IEntity>{
     this.deps.uiContainer.mount(component);
   }
 
-  private loadDelete = (entity: EntityType): void => {
+  public mountDelete = (entity: EntityType): void => {
     const deleteNote = () => {
       this.deps.eventBus.publishAsync(this.deps.eventFactory.createDeletedEvent(entity))
         .then(() => this.deps.uiContainer.unmountCurrent());

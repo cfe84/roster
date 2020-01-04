@@ -7,9 +7,12 @@ import { CaptionComponent, Caption } from "./CaptionComponent";
 import { ListItem, ListItemComponent } from "./ListItemComponent";
 import { DateDisplayComponent, DateDisplay } from "./DateDisplayComponent";
 import { PageTitleComponent, PageTitle } from "./PageTitleComponent";
+import { SelectComponent, Select } from "./SelectComponent";
+import { CheckboxComponent, Checkbox } from "./CheckboxComponent";
 
 export {
   TextInput, TextInputComponent,
+  Checkbox, CheckboxComponent,
   DateInput, DateInputComponent,
   Button, ButtonComponent,
   TextDisplay, TextDisplayComponent,
@@ -17,5 +20,6 @@ export {
   Caption, CaptionComponent,
   ListItem, ListItemComponent,
   DateDisplay, DateDisplayComponent,
-  PageTitle, PageTitleComponent
+  PageTitle, PageTitleComponent,
+  Select, SelectComponent
 }

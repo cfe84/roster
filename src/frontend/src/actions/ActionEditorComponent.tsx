@@ -1,5 +1,5 @@
 import { UIElement, Component } from "../html/index";
-import { MarkdownInput, TextInput, DateInput, Button, PageTitle, MarkdownInputComponent } from "../baseComponents";
+import { MarkdownInput, TextInput, DateInput, Button, PageTitle, MarkdownInputComponent, Select, Checkbox } from "../baseComponents";
 import { objectUtils } from "../utils/objectUtils";
 import { ActionType } from "../baseComponents/ActionType";
 import { Action } from ".";
@@ -29,10 +29,11 @@ export class ActionEditorComponent extends Component {
       <PageTitle title={title} icon="tasks" onBack={this.props.onCancel} />
       <div class="row">
         <TextInput class="col" caption="Summary" object={action} field="summary" />
-        <DateInput class="col-sm" caption="Date" object={action} field="dueDate" />
+        <DateInput class="col" caption="Date" object={action} field="dueDate" />
       </div>
       <div class="row">
-
+        <Select class="col" caption="Responsibility" object={action} field="responsibility" values={["mine", "theirs"]} />
+        <Checkbox class="col" caption="Done" object={action} field="done" />
       </div>
       {editor}
       <Button class="mr-2" onclick={onSave} icon="save" text={saveButtonCaption} />
