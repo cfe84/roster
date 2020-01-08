@@ -26,7 +26,7 @@ export class PersonController {
   rootComponent?: PersonListComponent;
 
   public loadPeopleListAsync = async (): Promise<PersonListComponent> => {
-    const people = await this.deps.db.getPeopleAsync();
+    const people = (await this.deps.db.getPeopleAsync()).sort((p1, p2) => p1.name > p2.name ? 1 : -1);
     const component: PersonListComponent = <PersonList
       people={people}
       onPersonClicked={this.displayPersonOverview}

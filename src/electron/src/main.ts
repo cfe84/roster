@@ -59,7 +59,7 @@ class Main {
             accelerator: "ctrl+N",
             click: () => { this.createFileDialog() }
           },
-          isMac ? { role: 'close' } : { role: 'quit' }
+          { role: 'quit' }
         ]
       },
       { role: "editMenu" },
