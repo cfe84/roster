@@ -27,7 +27,7 @@ import { ActionController } from "./actions";
 import { AlertController } from "./alerts/AlertController";
 import { ActionStorageReactors } from "./actions/ActionStorageReactors";
 
-const LAST_OPENED_FILE_KEY = "config.lastOpenedFile";
+const LAST_OPENED_FILE_KEY = "roster.config.lastOpenedFile";
 const DEFAULT_FILE_NAME = "roster.json";
 
 export interface AppParams {
