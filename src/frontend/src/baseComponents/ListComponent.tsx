@@ -53,6 +53,17 @@ export class ListComponent<T extends IEntity> extends Component {
     }
   }
 
+  public setItemVisibilityAsync = async (item: T, visibile: boolean) => {
+    if (this.listItems) {
+      const reference = this.listItems.find((itemInList) => itemInList.value === item);
+      if (!reference) {
+        throw Error("Item not found: " + JSON.stringify(item));
+      } else {
+        await reference.component.setVisibilityAsync(visibile);
+      }
+    }
+  }
+
   public updateItemsAsync = async (): Promise<void> => {
     await this.listComponent?.updateNodeAsync();
   }

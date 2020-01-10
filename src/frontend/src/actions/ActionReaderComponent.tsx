@@ -1,10 +1,11 @@
 import { UIElement, Component } from "../html/index";
 import { MarkdownDisplay } from "../baseComponents/MarkdownDisplayComponent";
-import { Button, PageTitle, DateDisplay, TextDisplay, CheckboxDisplay } from "../baseComponents";
+import { Button, PageTitle, DateDisplay, TextDisplay, CheckboxDisplay, Checkbox } from "../baseComponents";
 import { Action } from ".";
 
 interface ActionReaderProps {
   action: Action,
+  onCompleteChanged: (value: boolean) => void,
   onEdit: ((action: Action) => void),
   onDelete: (() => void),
   onBack: (() => void)
@@ -25,7 +26,7 @@ export class ActionReaderComponent extends Component {
       <div class="row">
         <TextDisplay class="col" caption="Responsibility" object={this.props.action} field="responsibility" />
         <DateDisplay class="col" caption="Due date" object={this.props.action} field="dueDate" includeTimespan={true} />
-        <CheckboxDisplay class="col" caption="Completed" object={this.props.action} field="completed" />
+        <Checkbox class="col" caption="Completed" object={this.props.action} field="completed" onchange={this.props.onCompleteChanged} />
         <DateDisplay class="col" caption="Completion date" object={this.props.action} field="completionDate" />
       </div>
       {notes.render()}

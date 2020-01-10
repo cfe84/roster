@@ -18,7 +18,7 @@ export class ActionController {
   private controller: GenericController<Action>;
   constructor(private deps: ActionControllerDependencies) {
     const genericControllerDependencies: GenericControllerDependencies<Action> = {
-      componentFactory: new ActionComponentFactory(),
+      componentFactory: new ActionComponentFactory({ eventBus: this.deps.eventBus }),
       eventFactory: new ActionEventFactory(),
       db: new ActionStoreAdapter(deps.db),
       eventBus: deps.eventBus,

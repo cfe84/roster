@@ -5,7 +5,7 @@ import { EventBus, IEventFactory } from "../../lib/common/events";
 import { ConfirmationDialog } from "./ConfirmationDialog";
 import { ITypedEvent } from "../../lib/common/events";
 import { IEntity } from "../../lib/common/entities/IEntity";
-import { IComponentFactory } from "./IComponentFactory";
+import { IComponentFactory, IListComponent } from "./IComponentFactory";
 
 export interface GenericControllerDependencies<T> {
   db: IStore<T>,
@@ -15,8 +15,8 @@ export interface GenericControllerDependencies<T> {
   eventFactory: IEventFactory<T>;
 }
 
-type FilterFunction<T> = (element: T) => boolean;
-type SortFunction<T> = (element1: T, element2: T) => 0 | 1 | -1;
+export type FilterFunction<T> = (element: T) => boolean;
+export type SortFunction<T> = (element1: T, element2: T) => 0 | 1 | -1;
 type EntityGenerator<T> = () => T;
 interface GetListOptions<T> {
   filter?: FilterFunction<T>;
@@ -30,25 +30,37 @@ export class GenericController<EntityType extends IEntity>{
 
   constructor(private deps: GenericControllerDependencies<EntityType>) { }
 
-  public getListAsync = async (options: GetListOptions<EntityType>): Promise<ListComponent<EntityType>> => {
+  public getListAsync = async (options: GetListOptions<EntityType>): Promise<IListComponent<EntityType>> => {
     let elements = (await this.deps.db.getAsync());
-    if (options.filter) {
-      elements = elements.filter(options.filter);
-    }
+    let filter = options.filter ?? (() => true);
+    elements = elements.filter(filter);
     if (options.sort) {
       elements = elements.sort(options.sort);
     }
-    const listComponent: ListComponent<EntityType> = <List
-      title={options.title}
-      titleIcon={options.icon}
-      elements={elements}
-      onAddClicked={options.entityGenerator ? (() => { this.mountCreate(options.entityGenerator as EntityGenerator<EntityType>) }) : undefined}
-      onEditClicked={this.mountEdit}
-      onClicked={(entity: EntityType) => { this.mountView(entity) }}
-      elementDisplay={this.deps.componentFactory.createListItemComponent}
-    > </List>;
+    const onAdd = options.entityGenerator ? (() => { this.mountCreate(options.entityGenerator as EntityGenerator<EntityType>) }) : undefined;
+    let listComponent: IListComponent<EntityType>;
+    if (this.deps.componentFactory.createListItemComponent) {
+      listComponent = <List
+        title={options.title}
+        titleIcon={options.icon}
+        elements={elements}
+        onAddClicked={onAdd}
+        onEditClicked={this.mountEdit}
+        onClicked={(entity: EntityType) => { this.mountView(entity) }}
+        elementDisplay={this.deps.componentFactory.createListItemComponent}
+      > </List>;
+      // } else if (this.deps.componentFactory.createListComponent) {
+      //   listComponent = this.deps.componentFactory.createListComponent(elements,
+      //     onAdd,
+      //     onEdit,
+      //     onClicked
+      //   )
+    } else {
+      throw Error("No list specified")
+    }
 
-    const createdSubscription = this.deps.eventBus.subscribe(this.deps.eventFactory.createdEventType, (evt: ITypedEvent<EntityType>) => listComponent.addItemAsync(evt.entity));
+    const createdSubscription = this.deps.eventBus.subscribe(this.deps.eventFactory.createdEventType,
+      (evt: ITypedEvent<EntityType>) => { if (filter(evt.entity)) { listComponent.addItemAsync(evt.entity) } });
     const deletedSubscription = this.deps.eventBus.subscribe(this.deps.eventFactory.deletedEventType, (evt: ITypedEvent<EntityType>) => listComponent.removeItemAsync(evt.entity));
     const updatedSubscription = this.deps.eventBus.subscribe(this.deps.eventFactory.updatedEventType, (evt: any) => listComponent.updateItemsAsync());
 
@@ -58,7 +70,22 @@ export class GenericController<EntityType extends IEntity>{
       updatedSubscription.unsubscribe();
     }
 
-    return listComponent;
+    let resultComponent = listComponent;
+    if (this.deps.componentFactory.createListFilterComponent) {
+      const onFilterChange = (filter: FilterFunction<EntityType>) => {
+        Promise.all(
+          elements.map(
+            (element) => listComponent.setItemVisibilityAsync(element, filter(element))))
+          .then(() => { })
+      }
+      const filterComponent = this.deps.componentFactory.createListFilterComponent(onFilterChange);
+      resultComponent = <div>
+        {filterComponent}
+        {resultComponent}
+      </div>
+    }
+
+    return resultComponent;
   }
 
   public getCreateComponent = (entityGenerator: EntityGenerator<EntityType>): Component => {

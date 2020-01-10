@@ -7,6 +7,7 @@ export interface CheckboxComponentProps {
   field?: string,
   class?: string,
   value?: boolean,
+  onchange?: (value: boolean) => void
 }
 
 export class CheckboxComponent extends Component {
@@ -23,6 +24,9 @@ export class CheckboxComponent extends Component {
       this.props.value = !this.getValue();
       if (this.props.object && this.props.field) {
         (this.props.object as any)[this.props.field] = this.props.value;
+      }
+      if (this.props.onchange) {
+        this.props.onchange(this.props.value);
       }
     }
     if (this.getValue()) {

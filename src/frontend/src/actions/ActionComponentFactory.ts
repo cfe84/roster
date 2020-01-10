@@ -4,8 +4,17 @@ import { Component } from "../html";
 import { ActionEditor } from "./ActionEditorComponent";
 import { ActionListItem } from "./ActionListItemComponent";
 import { ActionReader } from "./ActionReaderComponent";
+import { EventBus } from "../../lib/common/events";
+import { ActionUpdatedEvent } from "./ActionEvents";
+
+interface ActionComponentFactoryProps {
+  eventBus: EventBus
+}
 
 export class ActionComponentFactory implements IComponentFactory<Action> {
+  constructor(private props: ActionComponentFactoryProps) { }
+
+
   createListItemComponent(element: Action): Component {
     return ActionListItem({
       action: element
@@ -24,7 +33,8 @@ export class ActionComponentFactory implements IComponentFactory<Action> {
       action: element,
       onBack,
       onDelete: () => onDelete(element),
-      onEdit: () => onEdit(element)
+      onEdit: () => onEdit(element),
+      onCompleteChanged: () => this.props.eventBus.publishAsync(new ActionUpdatedEvent(element)).then(() => { })
     });
   }
   createCreateComponent(element: Action, onCancel: () => void, onValidate: (entity: Action) => void): Component {
