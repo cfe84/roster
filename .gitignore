@@ -3,7 +3,8 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
-src/electron/roster-*
+src/electron/package/cache
+src/electron/package/bin
 
 # User-specific files
 *.rsuser
@@ -15,6 +16,7 @@ dist
 obj
 lib
 node_modules
+.DS_Store
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
