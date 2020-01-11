@@ -3,6 +3,7 @@ import { Caption } from ".";
 
 export interface CheckboxComponentProps {
   caption?: string,
+  text?: string,
   object?: object,
   field?: string,
   class?: string,
@@ -18,7 +19,7 @@ export class CheckboxComponent extends Component {
     this.props.value || ((this.props.object && this.props.field) ? (this.props.object as any)[this.props.field] : "");
 
   render = (): UIElement => {
-    const caption = <Caption caption={this.props.caption} />;
+    const caption = this.props.caption ? <Caption caption={this.props.caption} /> : "";
     let component: UIElement;
     const onclick = () => {
       this.props.value = !this.getValue();
@@ -34,9 +35,10 @@ export class CheckboxComponent extends Component {
     } else {
       component = <input type="checkbox" onclick={onclick} />;
     }
+    const text = this.props.text || this.props.caption || "";
     return <div class={this.props.class || ""}>
       {caption}
-      <p class="mb-3">{component} {this.props.caption}</p>
+      <p class="mb-3">{component} {text}</p>
     </div>;
   }
 }

@@ -24,6 +24,7 @@ interface GetListOptions<T> {
   title?: string;
   icon?: string;
   entityGenerator?: EntityGenerator<T>;
+  filterComponentOptions?: any;
 }
 
 export class GenericController<EntityType extends IEntity>{
@@ -47,12 +48,6 @@ export class GenericController<EntityType extends IEntity>{
         onClicked={(entity: EntityType) => { this.mountView(entity) }}
         elementDisplay={this.deps.componentFactory.createListItemComponent}
       > </List>;
-      // } else if (this.deps.componentFactory.createListComponent) {
-      //   listComponent = this.deps.componentFactory.createListComponent(elements,
-      //     onAdd,
-      //     onEdit,
-      //     onClicked
-      //   )
     } else {
       throw Error("No list specified")
     }
@@ -76,7 +71,7 @@ export class GenericController<EntityType extends IEntity>{
             (element) => listComponent.setItemVisibilityAsync(element, filter(element))))
           .then(() => { })
       }
-      const filterComponent = this.deps.componentFactory.createListFilterComponent(onFilterChange);
+      const filterComponent = this.deps.componentFactory.createListFilterComponent(onFilterChange, options.filterComponentOptions);
       const titleIconClass = `fa fa-${options.icon}`;
       const titleIconComponent = options.icon ? <i class={titleIconClass}></i> : "";
       const titleComponent = options.title ? <h3 class="text-center">{titleIconComponent} {options.title}</h3> : "";

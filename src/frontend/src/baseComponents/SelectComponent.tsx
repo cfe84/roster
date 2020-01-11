@@ -18,7 +18,7 @@ class OptionComponent extends Component {
 
   private element?: UIElement;
 
-  private getClass = () => "btn mr-1 " + (this.selected ? "btn-dark" : "btn-light");
+  private getClass = () => "btn mr-1 " + (this.selected ? "btn-outline-dark" : "btn-outline-light");
 
   updateAsync = async (selected: boolean) => {
     this.selected = selected;

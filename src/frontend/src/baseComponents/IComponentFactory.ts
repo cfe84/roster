@@ -9,7 +9,7 @@ export interface IListComponent<T> extends Component {
 }
 
 export interface IComponentFactory<T> {
-  createListFilterComponent?(onFilterChange: (filter: FilterFunction<T>) => void): Component;
+  createListFilterComponent?(onFilterChange: (filter: FilterFunction<T>) => void, filterComponentOptions?: any): Component;
   createListSortComponent?(onSortChange: (sort: SortFunction<T>) => void): Component;
   createListItemComponent?(element: T): Component;
   createListComponent?(elements: T[], onAdd: () => void, onEdit: (entity: T) => void, onClicked: (entity: T) => void): IListComponent<T>;

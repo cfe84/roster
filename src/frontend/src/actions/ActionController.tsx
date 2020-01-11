@@ -2,7 +2,7 @@ import { IActionStore, Action } from ".";
 import { EventBus } from "../../lib/common/events";
 import { UIContainer } from "../html";
 import { GenericController, GenericControllerDependencies } from "../baseComponents/GenericController";
-import { ActionComponentFactory } from "./ActionComponentFactory";
+import { ActionComponentFactory, ActionListFilterComponentOptions } from "./ActionComponentFactory";
 import { ActionEventFactory } from "./ActionEventFactory";
 import { ActionStoreAdapter } from "./IActionStore";
 
@@ -40,12 +40,17 @@ export class ActionController {
     const aWeekAgo = new Date();
     aWeekAgo.setDate(aWeekAgo.getDate() - 7);
     const generator = personId ? (() => new Action(personId)) : undefined;
+    const filterComponentOptions: ActionListFilterComponentOptions = {
+      initialResponsibility: personId ? "theirs" : "mine",
+      initialShowCompleted: false
+    }
     return await this.controller.getListAsync({
       entityGenerator: generator,
       filter,
       sort,
       icon: "tasks",
-      title: "Actions"
+      title: "Actions",
+      filterComponentOptions
     });
   }
 }
