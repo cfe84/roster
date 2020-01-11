@@ -5,6 +5,11 @@ const templateFolder = "./template/templates";
 const srcFolder = "./src";
 const entityName = process.argv[2];
 
+if (!entityName) {
+  console.error("Missing entity name")
+  process.exit(1);
+}
+
 function camelize(str) {
   return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
     return index == 0 ? word.toLowerCase() : word.toUpperCase();

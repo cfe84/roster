@@ -5,7 +5,6 @@ import { Template } from ".";
 
 interface TemplateReaderProps {
   template: Template,
-  onCompleteChanged: (value: boolean) => void,
   onEdit: ((template: Template) => void),
   onDelete: (() => void),
   onBack: (() => void)
@@ -24,10 +23,7 @@ export class TemplateReaderComponent extends Component {
     return <div class="flex-column">
       <PageTitle title={template.title} icon="tasks" onBack={this.props.onBack} />
       <div class="row">
-        <TextDisplay class="col" caption="Responsibility" object={this.props.template} field="responsibility" />
-        <DateDisplay class="col" caption="Due date" object={this.props.template} field="dueDate" includeTimespan={true} />
-        <Checkbox class="col" caption="Completed" object={this.props.template} field="completed" onchange={this.props.onCompleteChanged} />
-        <DateDisplay class="col" caption="Completion date" object={this.props.template} field="completionDate" />
+        <DateDisplay class="col" caption="Date" object={this.props.template} field="date" includeTimespan={true} />
       </div>
       {notes.render()}
       <span class="d-flex">
