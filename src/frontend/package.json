@@ -39,6 +39,7 @@
     }
   },
   "scripts": {
+    "create-entity": "node template/createEntity.js",
     "clean": "rm -r dist/",
     "test": "mocha --require ts-node/register --require mock-local-storage ./src/html/IntrinsicElements.ts ./test/**/*.ts",
     "sass": "sass style/style.sass dist/style.css",
