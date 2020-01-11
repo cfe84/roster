@@ -41,8 +41,6 @@ export class GenericController<EntityType extends IEntity>{
     let listComponent: IListComponent<EntityType>;
     if (this.deps.componentFactory.createListItemComponent) {
       listComponent = <List
-        title={options.title}
-        titleIcon={options.icon}
         elements={elements}
         onAddClicked={onAdd}
         onEditClicked={this.mountEdit}
@@ -79,7 +77,11 @@ export class GenericController<EntityType extends IEntity>{
           .then(() => { })
       }
       const filterComponent = this.deps.componentFactory.createListFilterComponent(onFilterChange);
+      const titleIconClass = `fa fa-${options.icon}`;
+      const titleIconComponent = options.icon ? <i class={titleIconClass}></i> : "";
+      const titleComponent = options.title ? <h3 class="text-center">{titleIconComponent} {options.title}</h3> : "";
       resultComponent = <div>
+        {titleComponent}
         {filterComponent}
         {resultComponent}
       </div>

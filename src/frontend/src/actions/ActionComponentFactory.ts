@@ -6,6 +6,8 @@ import { ActionListItem } from "./ActionListItemComponent";
 import { ActionReader } from "./ActionReaderComponent";
 import { EventBus } from "../../lib/common/events";
 import { ActionUpdatedEvent } from "./ActionEvents";
+import { ActionListFilter } from "./ActionListFilterComponent";
+import { FilterFunction } from "../baseComponents/GenericController";
 
 interface ActionComponentFactoryProps {
   eventBus: EventBus
@@ -19,6 +21,9 @@ export class ActionComponentFactory implements IComponentFactory<Action> {
     return ActionListItem({
       action: element
     });
+  }
+  createListFilterComponent(onFilterChange: (filter: FilterFunction<Action>) => void) {
+    return ActionListFilter({ onFilterChanged: onFilterChange, initialResponsibility: "all", initialShowCompleted: false });
   }
   createEditComponent(element: Action, onCancel: () => void, onValidate: (entity: Action) => void, onDelete: (entity: Action) => void): Component {
     return ActionEditor({
