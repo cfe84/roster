@@ -4,6 +4,7 @@ import { Caption, Button } from ".";
 export interface PageTitleProps {
   title: string,
   icon?: string,
+  iconRegular?: boolean,
   onBack?: () => void
 }
 
@@ -13,7 +14,7 @@ export class PageTitleComponent extends Component {
   }
 
   render = (): UIElement => {
-    const iconClass = `fa fa-${this.props.icon}`
+    const iconClass = `fa${this.props.iconRegular ? "r" : ""} fa-${this.props.icon}`
     const iconComponent = this.props.icon ? <i class={iconClass}></i> : "";
     const backButton = this.props.onBack ? <Button type="secondary" onclick={this.props.onBack} icon="arrow-left" text="Back" /> : ""
     const component = <div>

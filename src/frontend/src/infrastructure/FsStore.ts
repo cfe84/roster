@@ -5,6 +5,7 @@ import { Deadline } from "../deadlines";
 import { IWholeStore } from "../storage/IWholeStore";
 import { promises as fsAsync, default as fs } from "fs";
 import { Action } from "../actions";
+import { Period } from "../period";
 
 class MyArray<T> {
   [index: string]: T
@@ -16,6 +17,7 @@ class Db {
   discussions = new MyArray<Discussion>();
   deadlines = new MyArray<Deadline>();
   actions = new MyArray<Action>();
+  periods = new MyArray<Period>();
   toString(): string {
     return JSON.stringify(this);
   }
@@ -80,6 +82,7 @@ export class FsStore implements IWholeStore {
   discussions: ArrayManager<Discussion>;
   deadlines: ArrayManager<Deadline>;
   actions: ArrayManager<Action>;
+  periods: ArrayManager<Period>;
 
   private constructor(private file: string, private db: Db) {
     this.persons = new ArrayManager(db.persons, (person: Person) => person.id, this);
@@ -87,6 +90,7 @@ export class FsStore implements IWholeStore {
     this.discussions = new ArrayManager(db.discussions, (discussion: Discussion) => discussion.id, this);
     this.deadlines = new ArrayManager(db.deadlines, (deadline: Deadline) => deadline.id, this);
     this.actions = new ArrayManager(db.actions, (action: Action) => action.id, this);
+    this.periods = new ArrayManager(db.periods, (period: Period) => period.id, this);
   }
 
   commitChangesAsync = async () => {
@@ -104,17 +108,24 @@ export class FsStore implements IWholeStore {
   createNoteAsync = (note: Note): Promise<void> => this.notes.addAsync(note);
   updateNoteAsync = (note: Note): Promise<void> => this.notes.updateAsync(note);
   deleteNoteAsync = (note: Note): Promise<void> => this.notes.deleteAsync(note);
+
   getDiscussionsAsync = (): Promise<Discussion[]> => this.discussions.getAsync()
   createDiscussionAsync = (discussion: Discussion): Promise<void> => this.discussions.addAsync(discussion);
   updateDiscussionAsync = (discussion: Discussion): Promise<void> => this.discussions.updateAsync(discussion);
   deleteDiscussionAsync = (discussion: Discussion): Promise<void> => this.discussions.deleteAsync(discussion);
+
   getDeadlinesAsync = (): Promise<Deadline[]> => this.deadlines.getAsync()
   createDeadlineAsync = (deadline: Deadline): Promise<void> => this.deadlines.addAsync(deadline);
   updateDeadlineAsync = (deadline: Deadline): Promise<void> => this.deadlines.updateAsync(deadline);
   deleteDeadlineAsync = (deadline: Deadline): Promise<void> => this.deadlines.deleteAsync(deadline);
+
   getActionsAsync = (): Promise<Action[]> => this.actions.getAsync()
   createActionAsync = (action: Action): Promise<void> => this.actions.addAsync(action);
   updateActionAsync = (action: Action): Promise<void> => this.actions.updateAsync(action);
   deleteActionAsync = (action: Action): Promise<void> => this.actions.deleteAsync(action);
 
+  getPeriodsAsync = (): Promise<Period[]> => this.periods.getAsync()
+  createPeriodAsync = (period: Period): Promise<void> => this.periods.addAsync(period);
+  updatePeriodAsync = (period: Period): Promise<void> => this.periods.updateAsync(period);
+  deletePeriodAsync = (period: Period): Promise<void> => this.periods.deleteAsync(period);
 }

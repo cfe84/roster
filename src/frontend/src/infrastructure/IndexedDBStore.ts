@@ -5,14 +5,26 @@ import { Deadline } from "../deadlines";
 import { IWholeStore } from "../storage/IWholeStore";
 import { Action } from "../actions";
 import { objectUtils } from "../utils/objectUtils";
+import { Period } from "../period";
 
 const DB_NAME: string = "rosterdb";
-const DB_VERSION: number = 6;
+const DB_VERSION: number = 7;
 const OBJECTSTORE_PEOPLE: string = "people";
 const OBJECTSTORE_NOTES: string = "notes";
 const OBJECTSTORE_DISCUSSIONS: string = "discussions";
 const OBJECTSTORE_DEADLINES: string = "deadlines";
 const OBJECTSTORE_ACTIONS: string = "actions";
+const OBJECTSTORE_PERIODS: string = "periods";
+
+
+const stores = [
+  { name: OBJECTSTORE_PEOPLE, key: "id", index: "name" },
+  { name: OBJECTSTORE_NOTES, key: "id", index: "personid" },
+  { name: OBJECTSTORE_DISCUSSIONS, key: "id", index: "personid" },
+  { name: OBJECTSTORE_DEADLINES, key: "id", index: "personid" },
+  { name: OBJECTSTORE_ACTIONS, key: "id", index: "personid" },
+  { name: OBJECTSTORE_PERIODS, key: "id", index: "personid" },
+];
 
 const getTarget = <T>(evt: any): T => (evt.target as T)
 
@@ -114,13 +126,6 @@ export class IndexedDBStore implements IWholeStore {
   }
   private static updateDatabase(db: IDBDatabase) {
     console.log(`Creating db in version ${DB_VERSION}`);
-    const stores = [
-      { name: OBJECTSTORE_PEOPLE, key: "id", index: "name" },
-      { name: OBJECTSTORE_NOTES, key: "id", index: "personid" },
-      { name: OBJECTSTORE_DISCUSSIONS, key: "id", index: "personid" },
-      { name: OBJECTSTORE_DEADLINES, key: "id", index: "personid" },
-      { name: OBJECTSTORE_ACTIONS, key: "id", index: "personid" },
-    ];
     stores.forEach((storeInfo) => {
       const store = IndexedDBStore.createObjectStore(db, storeInfo.name, { keyPath: storeInfo.key });
       if (store)
@@ -208,5 +213,18 @@ export class IndexedDBStore implements IWholeStore {
   }
   public deleteActionAsync = async (element: Action): Promise<void> => {
     await this.db.deleteEntityAsync(OBJECTSTORE_ACTIONS, element.id);
+  }
+
+  public getPeriodsAsync = async (): Promise<Period[]> =>
+    (await this.db.getAllAsync<Period>(OBJECTSTORE_PERIODS));
+
+  public createPeriodAsync = async (element: Period): Promise<void> => {
+    await this.db.createEntityAsync(OBJECTSTORE_PERIODS, element);
+  }
+  public updatePeriodAsync = async (element: Period): Promise<void> => {
+    await this.db.putEntityAsync(OBJECTSTORE_PERIODS, element);
+  }
+  public deletePeriodAsync = async (element: Period): Promise<void> => {
+    await this.db.deleteEntityAsync(OBJECTSTORE_PERIODS, element.id);
   }
 }

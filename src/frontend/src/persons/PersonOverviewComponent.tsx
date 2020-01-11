@@ -7,6 +7,7 @@ import { DiscussionController } from "../discussions";
 import { DeadlineController } from "../deadlines";
 import { PageTitle } from "../baseComponents/PageTitleComponent";
 import { ActionController } from "../actions";
+import { PeriodController } from "../period";
 
 interface PersonOverviewProps {
   person: Person,
@@ -14,6 +15,7 @@ interface PersonOverviewProps {
   discussionController: DiscussionController,
   deadlineController: DeadlineController,
   actionController: ActionController,
+  periodController: PeriodController,
   onEditClicked: ((person: Person) => void)
   onExitClicked: (() => void)
 }
@@ -28,6 +30,8 @@ export class PersonOverviewComponent extends Component {
     const discussionList = await this.props.discussionController.getDiscussionListAsync(person.id);
     const actionList = await this.props.actionController.getPersonListComponentAsync(person.id);
     const deadlinesList = await this.props.deadlineController.getDeadlineListAsync(person.id);
+    const periodList = await this.props.periodController.getPersonListComponentAsync(person.id);
+
     return <div>
       <PageTitle title={person.name} icon="user" onBack={this.props.onExitClicked}></PageTitle>
       <div class="row">
@@ -42,12 +46,12 @@ export class PersonOverviewComponent extends Component {
             <TextDisplay class="col-4" caption="Role in team" value={person.role}></TextDisplay>
             <DateDisplay class="col" caption="Joined team" value={person.inTeamSince} includeTimespan={true} />
           </div>
-
           <div class="d-flex">
             <Button icon="pen" class="w-5 mr-2" type="primary" onclick={() => this.props.onEditClicked(person)} text="Edit"></Button>
           </div>
           {actionList}
           {deadlinesList}
+          {periodList}
         </div>
         <div class="col-sm">
           {discussionList}

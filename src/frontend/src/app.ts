@@ -26,6 +26,8 @@ import { FakePersonGenerator } from "./persons/FakePersonGenerator";
 import { ActionController } from "./actions";
 import { AlertController } from "./alerts/AlertController";
 import { ActionStorageReactors } from "./actions/ActionStorageReactors";
+import { PeriodController } from "./period";
+import { PeriodStorageReactors } from "./period/PeriodStorageReactors";
 
 const LAST_OPENED_FILE_KEY = "roster.config.lastOpenedFile";
 const DEFAULT_FILE_NAME = "roster.json";
@@ -68,6 +70,7 @@ export class App {
   deadlineController?: DeadlineController;
   personController?: PersonController;
   dashboardController?: DashboardController;
+  periodController?: PeriodController;
 
   private loadLogger(debug: boolean): ILogger {
     if (debug) {
@@ -175,10 +178,11 @@ export class App {
     this.discussionController = new DiscussionController({ db: dbStore, eventBus: this.eventBus, uiContainer });
     this.actionController = new ActionController({ db: dbStore, eventBus: this.eventBus, uiContainer });
     this.deadlineController = new DeadlineController({ db: dbStore, eventBus: this.eventBus, uiContainer });
+    this.periodController = new PeriodController({ db: dbStore, eventBus: this.eventBus, uiContainer });
     this.personController = new PersonController({
       eventBus: this.eventBus, uiContainer, db: dbStore,
       notesController: this.notesController, discussionController: this.discussionController, deadlineController: this.deadlineController,
-      actionController: this.actionController
+      actionController: this.actionController, periodController: this.periodController
     });
     this.dashboardController = new DashboardController({
       container: uiContainer,
@@ -203,6 +207,8 @@ export class App {
     deadlineReactor.registerReactors(this.eventBus);
     const actionReactor = new ActionStorageReactors(dbStore);
     actionReactor.registerReactors(this.eventBus);
+    const periodReactor = new PeriodStorageReactors(dbStore);
+    periodReactor.registerReactors(this.eventBus);
   }
 
   public handleError = () => {

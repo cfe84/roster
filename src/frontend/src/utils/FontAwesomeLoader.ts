@@ -6,13 +6,13 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import {
-  faCheckSquare, faSquare
+  faCheckSquare, faSquare, faCalendarAlt
 } from "@fortawesome/free-regular-svg-icons"
 
 export class FontAwesomeLoader {
   static loadFontAwesome() {
     library.add(faUser, faPen, faStickyNote, faArrowLeft, faTimes, faSave, faPlus, faComments, faTrash, faCheck, faCalendarDay
-      , faMapMarker, faInfoCircle, faTasks, faCheckSquare, faSquare);
+      , faMapMarker, faInfoCircle, faTasks, faCheckSquare, faSquare, faCalendarAlt);
     dom.watch();
   }
 }

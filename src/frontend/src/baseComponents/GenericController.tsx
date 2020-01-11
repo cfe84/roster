@@ -23,6 +23,7 @@ interface GetListOptions<T> {
   sort?: SortFunction<T>;
   title?: string;
   icon?: string;
+  iconClass?: string;
   entityGenerator?: EntityGenerator<T>;
   filterComponentOptions?: any;
 }
@@ -72,7 +73,7 @@ export class GenericController<EntityType extends IEntity>{
           .then(() => { })
       }
       const filterComponent = this.deps.componentFactory.createListFilterComponent(onFilterChange, options.filterComponentOptions);
-      const titleIconClass = `fa fa-${options.icon}`;
+      const titleIconClass = `fa${options.iconClass || ""} fa-${options.icon}`;
       const titleIconComponent = options.icon ? <i class={titleIconClass}></i> : "";
       const titleComponent = options.title ? <h3 class="text-center">{titleIconComponent} {options.title}</h3> : "";
       resultComponent = <div>
