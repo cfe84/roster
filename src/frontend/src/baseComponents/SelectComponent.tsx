@@ -18,7 +18,7 @@ class OptionComponent extends Component {
 
   private element?: UIElement;
 
-  private getClass = () => "btn mr-1 " + (this.selected ? "btn-outline-dark" : "btn-outline-light");
+  private getClass = () => "btn " + (this.selected ? "btn-outline-dark" : "btn-outline-light");
 
   updateAsync = async (selected: boolean) => {
     this.selected = selected;
@@ -64,7 +64,7 @@ export class SelectComponent extends Component {
     const caption = <Caption caption={this.props.caption} />;
     const component = <div class={this.props.class || ""}>
       {caption.render()}
-      <p class="mb-3">{options}</p>
+      <div class="btn-group-sm">{options}</div>
     </div>
     return component;
   }
