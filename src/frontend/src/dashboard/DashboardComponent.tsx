@@ -3,12 +3,14 @@ import { PersonController } from "../persons";
 import { IDisplayAdapter } from "../html/IDisplayAdapter";
 import { DeadlineController } from "../deadlines";
 import { ActionController } from "../actions";
+import { Button } from "../baseComponents";
 
 interface DashboardProps {
   personController: PersonController,
   deadlineController: DeadlineController,
   actionController: ActionController,
   onGenerateFakeData?: () => void,
+  onConfigurationClicked: () => void,
   debug?: boolean
 }
 
@@ -23,6 +25,9 @@ export class DashboardComponent extends Component {
     const component: UIElement = <div class="row">
       <div class="col-sm">
         {peopleList}
+        <div class="mt-5">
+          <Button icon="cog" text="Open configuration" onclick={this.props.onConfigurationClicked}></Button>
+        </div>
       </div>
       <div class="col-sm">
         {actions}

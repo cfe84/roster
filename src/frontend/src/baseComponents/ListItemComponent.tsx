@@ -28,10 +28,10 @@ export class ListItemComponent<T> extends Component {
       {this.props.elementDisplay}
       <div class="ml-auto">
         <button
-          class="btn btn-primary align-right"
+          class="btn btn-outline-secondary align-right"
           onclick={(event: MouseEvent) => { this.props.onEditClicked(); event.stopPropagation() }}>
-          <i class="fa fa-pen"></i> Edit
-      </button>
+          <i class="fa fa-pen"></i>
+        </button>
       </div>
     </li>
     this.element = component;

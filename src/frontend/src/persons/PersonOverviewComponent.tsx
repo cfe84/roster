@@ -49,13 +49,13 @@ export class PersonOverviewComponent extends Component {
           <div class="d-flex">
             <Button icon="pen" class="w-5 mr-2" type="primary" onclick={() => this.props.onEditClicked(person)} text="Edit"></Button>
           </div>
-          {actionList}
-          {deadlinesList}
-          {periodList}
+          <div class="mb-5">{periodList}</div>
+          <div class="mb-5">{discussionList}</div>
         </div>
         <div class="col-sm">
-          {discussionList}
-          {notesList}
+          <div class="mb-5">{actionList}</div>
+          <div class="mb-5">{deadlinesList}</div>
+          <div class="mb-5">{notesList}</div>
         </div>
       </div>
       <br />

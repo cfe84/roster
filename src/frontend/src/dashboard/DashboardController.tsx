@@ -8,6 +8,7 @@ import { DeadlineCreatedEvent, DeadlineUpdatedEvent } from "../deadlines/Deadlin
 import { NoteCreatedEvent, NoteUpdatedEvent } from "../notes/NoteEvents";
 import { DiscussionUpdatedEvent, DiscussionCreatedEvent } from "../discussions/DiscussionEvents";
 import { ActionController } from "../actions";
+import { ConfigurationComponent, Configuration } from "./ConfigurationComponent";
 
 export interface DashboardControllerDependencies {
   container: UIContainer;
@@ -30,7 +31,16 @@ export class DashboardController {
       actionController={this.deps.actionController}
       debug={this.deps.debug}
       onGenerateFakeData={this.generateFakeData}
+      onConfigurationClicked={() => this.displayConfiguration()}
     ></Dashboard>
+    this.deps.container.mount(component);
+  }
+
+  public displayConfiguration() {
+    const component: ConfigurationComponent = <Configuration
+      onBack={() => this.deps.container.unmountCurrent()}
+      debug={this.deps.debug}
+    />
     this.deps.container.mount(component);
   }
 
