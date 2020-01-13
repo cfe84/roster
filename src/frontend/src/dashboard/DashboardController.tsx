@@ -9,14 +9,14 @@ import { NoteCreatedEvent, NoteUpdatedEvent } from "../notes/NoteEvents";
 import { DiscussionUpdatedEvent, DiscussionCreatedEvent } from "../discussions/DiscussionEvents";
 import { ActionController } from "../actions";
 import { ConfigurationComponent, Configuration } from "./ConfigurationComponent";
-import { RatingCriteriaController } from "../ratingCriteria";
+import { EvaluationCriteriaController } from "../evaluationCriteria";
 
 export interface DashboardControllerDependencies {
   container: UIContainer;
   personController: PersonController;
   deadlineController: DeadlineController;
   actionController: ActionController;
-  ratingCriteriaController: RatingCriteriaController;
+  evaluationCriteriaController: EvaluationCriteriaController;
   fakeGenerator: IFakeGenerator;
   eventBus: EventBus;
   debug: boolean;
@@ -40,7 +40,7 @@ export class DashboardController {
 
   public displayConfiguration() {
     const component: ConfigurationComponent = <Configuration
-      ratingCriteriaController={this.deps.ratingCriteriaController}
+      evaluationCriteriaController={this.deps.evaluationCriteriaController}
       onBack={() => this.deps.container.unmountCurrent()}
       debug={this.deps.debug}
     />

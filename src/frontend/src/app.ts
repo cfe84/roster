@@ -28,8 +28,8 @@ import { AlertController } from "./alerts/AlertController";
 import { ActionStorageReactors } from "./actions/ActionStorageReactors";
 import { PeriodController } from "./period";
 import { PeriodStorageReactors } from "./period/PeriodStorageReactors";
-import { RatingCriteriaController } from "./ratingCriteria";
-import { RatingCriteriaStorageReactors } from "./ratingCriteria/RatingCriteriaStorageReactors";
+import { EvaluationCriteriaController } from "./evaluationCriteria";
+import { EvaluationCriteriaStorageReactors } from "./evaluationCriteria/EvaluationCriteriaStorageReactors";
 
 const LAST_OPENED_FILE_KEY = "roster.config.lastOpenedFile";
 const DEFAULT_FILE_NAME = "roster.json";
@@ -73,7 +73,7 @@ export class App {
   personController?: PersonController;
   dashboardController?: DashboardController;
   periodController?: PeriodController;
-  ratingCriteriaController?: RatingCriteriaController;
+  evaluationCriteriaController?: EvaluationCriteriaController;
 
   private loadLogger(debug: boolean): ILogger {
     if (debug) {
@@ -182,7 +182,7 @@ export class App {
     this.actionController = new ActionController({ db: dbStore, eventBus: this.eventBus, uiContainer });
     this.deadlineController = new DeadlineController({ db: dbStore, eventBus: this.eventBus, uiContainer });
     this.periodController = new PeriodController({ db: dbStore, eventBus: this.eventBus, uiContainer });
-    this.ratingCriteriaController = new RatingCriteriaController({ db: dbStore, eventBus: this.eventBus, uiContainer });
+    this.evaluationCriteriaController = new EvaluationCriteriaController({ db: dbStore, eventBus: this.eventBus, uiContainer });
     this.personController = new PersonController({
       eventBus: this.eventBus, uiContainer, db: dbStore,
       notesController: this.notesController, discussionController: this.discussionController, deadlineController: this.deadlineController,
@@ -193,7 +193,7 @@ export class App {
       deadlineController: this.deadlineController,
       actionController: this.actionController,
       personController: this.personController,
-      ratingCriteriaController: this.ratingCriteriaController,
+      evaluationCriteriaController: this.evaluationCriteriaController,
       debug: this.debug,
       eventBus: this.eventBus,
       fakeGenerator: this.createFakeGenerator()
@@ -214,8 +214,8 @@ export class App {
     actionReactor.registerReactors(this.eventBus);
     const periodReactor = new PeriodStorageReactors(dbStore);
     periodReactor.registerReactors(this.eventBus);
-    const ratingCriteriaReactor = new RatingCriteriaStorageReactors(dbStore);
-    ratingCriteriaReactor.registerReactors(this.eventBus);
+    const evaluationCriteriaReactor = new EvaluationCriteriaStorageReactors(dbStore);
+    evaluationCriteriaReactor.registerReactors(this.eventBus);
   }
 
   public handleError = () => {

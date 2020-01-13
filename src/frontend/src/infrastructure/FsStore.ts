@@ -6,7 +6,7 @@ import { IWholeStore } from "../storage/IWholeStore";
 import { promises as fsAsync, default as fs } from "fs";
 import { Action } from "../actions";
 import { Period } from "../period";
-import { RatingCriteria } from "../ratingCriteria";
+import { EvaluationCriteria } from "../evaluationCriteria";
 
 class MyArray<T> {
   [index: string]: T
@@ -21,7 +21,7 @@ class Db {
   deadlines = new MyArray<Deadline>();
   actions = new MyArray<Action>();
   periods = new MyArray<Period>();
-  ratingCriterias = new MyArray<RatingCriteria>();
+  evaluationCriterias = new MyArray<EvaluationCriteria>();
 
   toString(): string {
     return JSON.stringify(this);
@@ -30,8 +30,8 @@ class Db {
   private migrateToV2() {
     if (!this.version || this.version < 2) {
       console.log(`Upgrading db to version 2`);
-      if (!this.ratingCriterias) {
-        this.ratingCriterias = new MyArray<RatingCriteria>();
+      if (!this.evaluationCriterias) {
+        this.evaluationCriterias = new MyArray<EvaluationCriteria>();
       }
       if (!this.periods) {
         this.periods = new MyArray<Period>();
@@ -107,7 +107,7 @@ export class FsStore implements IWholeStore {
   deadlines: ArrayManager<Deadline>;
   actions: ArrayManager<Action>;
   periods: ArrayManager<Period>;
-  ratingCriterias: ArrayManager<RatingCriteria>;
+  evaluationCriterias: ArrayManager<EvaluationCriteria>;
 
   private constructor(private file: string, private db: Db) {
     this.persons = new ArrayManager(db.persons, (person: Person) => person.id, this);
@@ -116,7 +116,7 @@ export class FsStore implements IWholeStore {
     this.deadlines = new ArrayManager(db.deadlines, (deadline: Deadline) => deadline.id, this);
     this.actions = new ArrayManager(db.actions, (action: Action) => action.id, this);
     this.periods = new ArrayManager(db.periods, (period: Period) => period.id, this);
-    this.ratingCriterias = new ArrayManager(db.ratingCriterias, (ratingCriteria: RatingCriteria) => ratingCriteria.id, this);
+    this.evaluationCriterias = new ArrayManager(db.evaluationCriterias, (evaluationCriteria: EvaluationCriteria) => evaluationCriteria.id, this);
   }
 
   commitChangesAsync = async () => {
@@ -155,8 +155,8 @@ export class FsStore implements IWholeStore {
   updatePeriodAsync = (period: Period): Promise<void> => this.periods.updateAsync(period);
   deletePeriodAsync = (period: Period): Promise<void> => this.periods.deleteAsync(period);
 
-  getRatingCriteriasAsync = (): Promise<RatingCriteria[]> => this.ratingCriterias.getAsync()
-  createRatingCriteriaAsync = (ratingCriteria: RatingCriteria): Promise<void> => this.ratingCriterias.addAsync(ratingCriteria);
-  updateRatingCriteriaAsync = (ratingCriteria: RatingCriteria): Promise<void> => this.ratingCriterias.updateAsync(ratingCriteria);
-  deleteRatingCriteriaAsync = (ratingCriteria: RatingCriteria): Promise<void> => this.ratingCriterias.deleteAsync(ratingCriteria);
+  getEvaluationCriteriasAsync = (): Promise<EvaluationCriteria[]> => this.evaluationCriterias.getAsync()
+  createEvaluationCriteriaAsync = (evaluationCriteria: EvaluationCriteria): Promise<void> => this.evaluationCriterias.addAsync(evaluationCriteria);
+  updateEvaluationCriteriaAsync = (evaluationCriteria: EvaluationCriteria): Promise<void> => this.evaluationCriterias.updateAsync(evaluationCriteria);
+  deleteEvaluationCriteriaAsync = (evaluationCriteria: EvaluationCriteria): Promise<void> => this.evaluationCriterias.deleteAsync(evaluationCriteria);
 }

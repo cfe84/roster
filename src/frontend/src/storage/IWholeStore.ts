@@ -4,8 +4,8 @@ import { IDeadlineStore } from "../deadlines/IDeadlineStore";
 import { IPersonStore } from "../persons";
 import { IActionStore } from "../actions";
 import { IPeriodStore } from "../period";
-import { IRatingCriteriaStore } from "../ratingCriteria";
+import { IEvaluationCriteriaStore } from "../evaluationCriteria";
 
-export interface IWholeStore extends IPersonStore, INotesStore, IDiscussionStore, IDeadlineStore, IActionStore, IPeriodStore, IRatingCriteriaStore {
+export interface IWholeStore extends IPersonStore, INotesStore, IDiscussionStore, IDeadlineStore, IActionStore, IPeriodStore, IEvaluationCriteriaStore {
 
 }

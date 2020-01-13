@@ -1,9 +1,9 @@
 import { UIElement, Component, UIContainer } from "../html/index";
 import { PageTitle } from "../baseComponents";
-import { RatingCriteriaController } from "../ratingCriteria";
+import { EvaluationCriteriaController } from "../evaluationCriteria";
 
 interface ConfigurationProps {
-  ratingCriteriaController: RatingCriteriaController,
+  evaluationCriteriaController: EvaluationCriteriaController,
   onGenerateFakeData?: () => void,
   onBack: () => void,
   debug?: boolean
@@ -13,12 +13,12 @@ export class ConfigurationComponent extends Component {
   constructor(public props: ConfigurationProps) { super() }
 
   public render = async (): Promise<UIElement> => {
-    const ratingCriteriaList = await this.props.ratingCriteriaController.getRatingCriteriaListComponentAsync();
+    const evaluationCriteriaList = await this.props.evaluationCriteriaController.getEvaluationCriteriaListComponentAsync();
     const component: UIElement = <div>
       <PageTitle title="Configuration" icon="cog" onBack={this.props.onBack} />
       <div class="row">
         <div class="col-sm">
-          {ratingCriteriaList}
+          {evaluationCriteriaList}
         </div>
         <div class="col-sm">
         </div>
