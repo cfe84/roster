@@ -1,0 +1,24 @@
+Increase version number!
+
+Add name:
+
+const OBJECTSTORE_TEMPLATE: string = "ratingCriterias";
+
+Add record:
+
+  { name: OBJECTSTORE_TEMPLATE, key: "id", index: "personid" },
+
+Add operations:
+
+  public getTemplatesAsync = async (): Promise<Template[]> =>
+    (await this.db.getAllAsync<Template>(OBJECTSTORE_PERIODS));
+
+  public createTemplateAsync = async (element: Template): Promise<void> => {
+    await this.db.createEntityAsync(OBJECTSTORE_PERIODS, element);
+  }
+  public updateTemplateAsync = async (element: Template): Promise<void> => {
+    await this.db.putEntityAsync(OBJECTSTORE_PERIODS, element);
+  }
+  public deleteTemplateAsync = async (element: Template): Promise<void> => {
+    await this.db.deleteEntityAsync(OBJECTSTORE_PERIODS, element.id);
+  }

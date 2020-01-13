@@ -1,0 +1,34 @@
+Add array to db
+
+  templates = new MyArray<Template>();
+
+Increase version!
+
+Add migration operation
+
+  private migrateToVxxx() {
+    if (!this.version || this.version < xxx) {
+      console.log(`Upgrading db to version xxx`);
+      if (!this.templates) {
+        this.templates = new MyArray<Template>();
+      }
+      this.version = xxx
+    }
+  }
+
+Add migration operation to migrate method in db.
+
+Add array manager to store
+
+  templates: ArrayManager<Template>;
+
+Construct array manager:
+
+    this.templates = new ArrayManager(db.templates, (template: Template) => template.id, this);
+
+Add operations:
+
+  getTemplatesAsync = (): Promise<Template[]> => this.templates.getAsync()
+  createTemplateAsync = (template: Template): Promise<void> => this.templates.addAsync(template);
+  updateTemplateAsync = (template: Template): Promise<void> => this.templates.updateAsync(template);
+  deleteTemplateAsync = (template: Template): Promise<void> => this.templates.deleteAsync(template);

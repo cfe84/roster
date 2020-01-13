@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 
 const templateFolder = "./template/templates";
+const manualStepsFolder = "./template/manual-steps";
 const srcFolder = "./src";
 const entityName = process.argv[2];
 
@@ -30,16 +31,29 @@ function openTemplates(templateFolder) {
   }));
 }
 
+function openManualSteps(stepsFolder) {
+  const files = fs.readdirSync(stepsFolder);
+  return files.map((file) => ({
+    name: file.replace(".txt", ""),
+    content: fs.readFileSync(path.join(stepsFolder, file)).toString()
+  }));
+}
+
 const updateTemplate = (templates, entityName) => {
   const classNameRegex = new RegExp("Template", "g");
   const variableNameRegex = new RegExp("template", "g");
+  const uppercaseRegex = new RegExp("TEMPLATE", "g");
   const variableName = camelize(entityName);
   const className = snakeize(entityName);
+  const upperCaseName = entityName.toUpperCase();
   return templates.map((template) => ({
     name: template.name.replace(classNameRegex, className),
-    content: template.content.replace(classNameRegex, className).replace(variableNameRegex, variableName)
+    content: template.content.replace(classNameRegex, className).replace(variableNameRegex, variableName).replace(uppercaseRegex, upperCaseName)
   }));
 }
+
+const formatManualSteps = (files) =>
+  files.map(file => `----------------------------\n${file.name}\n----------------------------\n\n${file.content}`)
 
 const writeFiles = (targetPath, files) =>
   files.forEach(file => {
@@ -49,6 +63,7 @@ const writeFiles = (targetPath, files) =>
 
 const templates = openTemplates(templateFolder);
 const targetFiles = updateTemplate(templates, entityName);
+const manualSteps = updateTemplate(openManualSteps(manualStepsFolder), entityName);
 
 const targetFolder = path.join(srcFolder, camelize(entityName));
 if (fs.existsSync(targetFolder)) {
@@ -57,3 +72,6 @@ if (fs.existsSync(targetFolder)) {
 }
 fs.mkdirSync(targetFolder);
 writeFiles(targetFolder, targetFiles);
+
+console.log(`Done. Update those files now:`);
+console.log(formatManualSteps(manualSteps).join("\n\n"));

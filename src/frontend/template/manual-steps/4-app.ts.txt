@@ -1,0 +1,12 @@
+Add a property to class App.ts
+
+  templateController?: TemplateController;
+
+Add constructor:
+
+    this.templateController = new TemplateController({ db: dbStore, eventBus: this.eventBus, uiContainer });
+
+Register reactors:
+
+    const templateReactor = new TemplateStorageReactors(dbStore);
+    templateReactor.registerReactors(this.eventBus);

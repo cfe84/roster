@@ -47,7 +47,6 @@ export class TemplateComponentFactory implements IComponentFactory<Template> {
       onBack,
       onDelete: () => onDelete(element),
       onEdit: () => onEdit(element),
-      onCompleteChanged: () => this.props.eventBus.publishAsync(new TemplateUpdatedEvent(element)).then(() => { })
     });
   }
   createCreateComponent(element: Template, onCancel: () => void, onValidate: (entity: Template) => void): Component {
