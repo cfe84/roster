@@ -6,15 +6,17 @@ import { IWholeStore } from "../storage/IWholeStore";
 import { Action } from "../actions";
 import { objectUtils } from "../utils/objectUtils";
 import { Period } from "../period";
+import { RatingCriteria } from "../ratingCriteria";
 
 const DB_NAME: string = "rosterdb";
-const DB_VERSION: number = 7;
+const DB_VERSION: number = 8;
 const OBJECTSTORE_PEOPLE: string = "people";
 const OBJECTSTORE_NOTES: string = "notes";
 const OBJECTSTORE_DISCUSSIONS: string = "discussions";
 const OBJECTSTORE_DEADLINES: string = "deadlines";
 const OBJECTSTORE_ACTIONS: string = "actions";
 const OBJECTSTORE_PERIODS: string = "periods";
+const OBJECTSTORE_RATINGCRITERIA: string = "ratingCriterias";
 
 
 const stores = [
@@ -24,6 +26,7 @@ const stores = [
   { name: OBJECTSTORE_DEADLINES, key: "id", index: "personid" },
   { name: OBJECTSTORE_ACTIONS, key: "id", index: "personid" },
   { name: OBJECTSTORE_PERIODS, key: "id", index: "personid" },
+  { name: OBJECTSTORE_RATINGCRITERIA, key: "id" },
 ];
 
 const getTarget = <T>(evt: any): T => (evt.target as T)
@@ -128,7 +131,7 @@ export class IndexedDBStore implements IWholeStore {
     console.log(`Creating db in version ${DB_VERSION}`);
     stores.forEach((storeInfo) => {
       const store = IndexedDBStore.createObjectStore(db, storeInfo.name, { keyPath: storeInfo.key });
-      if (store)
+      if (store && storeInfo.index)
         store.createIndex(storeInfo.index, storeInfo.index, { unique: false });
     });
   }
@@ -225,6 +228,20 @@ export class IndexedDBStore implements IWholeStore {
     await this.db.putEntityAsync(OBJECTSTORE_PERIODS, element);
   }
   public deletePeriodAsync = async (element: Period): Promise<void> => {
+    await this.db.deleteEntityAsync(OBJECTSTORE_PERIODS, element.id);
+  }
+
+
+  public getRatingCriteriasAsync = async (): Promise<RatingCriteria[]> =>
+    (await this.db.getAllAsync<RatingCriteria>(OBJECTSTORE_PERIODS));
+
+  public createRatingCriteriaAsync = async (element: RatingCriteria): Promise<void> => {
+    await this.db.createEntityAsync(OBJECTSTORE_PERIODS, element);
+  }
+  public updateRatingCriteriaAsync = async (element: RatingCriteria): Promise<void> => {
+    await this.db.putEntityAsync(OBJECTSTORE_PERIODS, element);
+  }
+  public deleteRatingCriteriaAsync = async (element: RatingCriteria): Promise<void> => {
     await this.db.deleteEntityAsync(OBJECTSTORE_PERIODS, element.id);
   }
 }

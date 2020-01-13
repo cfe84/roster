@@ -1,7 +1,9 @@
 import { UIElement, Component, UIContainer } from "../html/index";
 import { PageTitle } from "../baseComponents";
+import { RatingCriteriaController } from "../ratingCriteria";
 
 interface ConfigurationProps {
+  ratingCriteriaController: RatingCriteriaController,
   onGenerateFakeData?: () => void,
   onBack: () => void,
   debug?: boolean
@@ -11,11 +13,12 @@ export class ConfigurationComponent extends Component {
   constructor(public props: ConfigurationProps) { super() }
 
   public render = async (): Promise<UIElement> => {
-    // const peopleList = await this.props.personController.loadPeopleListAsync();
+    const ratingCriteriaList = await this.props.ratingCriteriaController.getRatingCriteriaListComponentAsync();
     const component: UIElement = <div>
       <PageTitle title="Configuration" icon="cog" onBack={this.props.onBack} />
       <div class="row">
         <div class="col-sm">
+          {ratingCriteriaList}
         </div>
         <div class="col-sm">
         </div>
