@@ -1,8 +1,10 @@
 import { UIElement, Component } from "../html/index";
-import { MarkdownInput, TextInput, DateInput, Button, PageTitle, MarkdownInputComponent } from "../baseComponents";
+import { MarkdownInput, TextInput, DateInput, Button, PageTitle, MarkdownInputComponent, ListItem } from "../baseComponents";
 import { objectUtils } from "../utils/objectUtils";
 import { ActionType } from "../baseComponents/ActionType";
 import { EvaluationCriteria } from ".";
+import { List } from "../baseComponents/ListComponent";
+import { Rate } from "./EvaluationCriteria";
 
 interface EvaluationCriteriaEditorProps {
   evaluationCriteriaName: ActionType,
@@ -17,12 +19,37 @@ export class EvaluationCriteriaEditorComponent extends Component {
     super()
   }
 
+  private formatRates = (rates: Rate[]) =>
+    rates
+      .sort((a, b) => a.rate - b.rate)
+      .map(rate => `${rate.name}: ${rate.description}`)
+      .join("\n");
+
+  private parseRates = (ratesAsString: string) =>
+    ratesAsString
+      .split("\n")
+      .map((rateAsString, index) => {
+        const idx = rateAsString.indexOf(":");
+        if (idx >= 0) {
+          const name = rateAsString.substr(0, idx).trim();
+          const description = rateAsString.substr(idx + 1);
+          return new Rate(index, name, description);
+        }
+        else {
+          return new Rate(index, rateAsString, "");
+        }
+      })
+
   public render = (): UIElement => {
     const evaluationCriteria: EvaluationCriteria = objectUtils.clone(this.props.evaluationCriteria);
     const saveButtonCaption = `${this.props.evaluationCriteriaName || "Create"} evaluation criteria`
     const draftId = this.props.evaluationCriteriaName === "Create" ? "new-evaluationCriteria-" + this.props.evaluationCriteria : this.props.evaluationCriteria.id;
     const title = `${this.props.evaluationCriteriaName || "New evaluationCriteria"} ${evaluationCriteria.title}`;
     const editor: MarkdownInputComponent = <MarkdownInput caption="Description" object={evaluationCriteria} field="details" noteId={draftId} />
+    const rates: MarkdownInputComponent = <MarkdownInput
+      caption="Rates"
+      onchange={(value) => evaluationCriteria.rates = this.parseRates(value)}
+      value={this.formatRates(evaluationCriteria.rates)} />
     const onSave = () => {
       this.props.onValidate(evaluationCriteria);
       editor.clearDraft();
@@ -33,6 +60,7 @@ export class EvaluationCriteriaEditorComponent extends Component {
         <TextInput class="col" caption="Title" object={evaluationCriteria} field="title" />
       </div>
       {editor}
+      {rates}
       <Button class="mr-2" onclick={onSave} icon="save" text={saveButtonCaption} />
       <Button type="secondary" onclick={this.props.onCancel} icon="times" text="Cancel" />
     </div>;

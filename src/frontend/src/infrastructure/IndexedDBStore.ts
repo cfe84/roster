@@ -233,15 +233,15 @@ export class IndexedDBStore implements IWholeStore {
 
 
   public getEvaluationCriteriasAsync = async (): Promise<EvaluationCriteria[]> =>
-    (await this.db.getAllAsync<EvaluationCriteria>(OBJECTSTORE_PERIODS));
+    (await this.db.getAllAsync<EvaluationCriteria>(OBJECTSTORE_EVALUATIONCRITERIA));
 
   public createEvaluationCriteriaAsync = async (element: EvaluationCriteria): Promise<void> => {
-    await this.db.createEntityAsync(OBJECTSTORE_PERIODS, element);
+    await this.db.createEntityAsync(OBJECTSTORE_EVALUATIONCRITERIA, element);
   }
   public updateEvaluationCriteriaAsync = async (element: EvaluationCriteria): Promise<void> => {
-    await this.db.putEntityAsync(OBJECTSTORE_PERIODS, element);
+    await this.db.putEntityAsync(OBJECTSTORE_EVALUATIONCRITERIA, element);
   }
   public deleteEvaluationCriteriaAsync = async (element: EvaluationCriteria): Promise<void> => {
-    await this.db.deleteEntityAsync(OBJECTSTORE_PERIODS, element.id);
+    await this.db.deleteEntityAsync(OBJECTSTORE_EVALUATIONCRITERIA, element.id);
   }
 }
