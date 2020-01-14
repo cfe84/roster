@@ -54,7 +54,7 @@ fi
 
 unzip $CACHE/$FILENAME -d $CACHE/$FOLDERNAME > /dev/null
 
-if [ "$ARCH" = "darwin" ]; then
+if [ "$PLATFORM" = "darwin" ]; then
   RESOURCES_FOLDER=$CACHE/$FOLDERNAME/Electron.app/Contents/Resources
   TARGET_APP_DIRECTORY=$RESOURCES_FOLDER/app
   mkdir $TARGET_APP_DIRECTORY
@@ -67,7 +67,7 @@ if [ -d $OUTPUT ]; then
 fi
 mkdir -p $OUTPUT
 
-if [ "$ARCH" = "darwin" ]; then
+if [ "$PLATFORM" = "darwin" ]; then
   cp -r $CACHE/$FOLDERNAME/Electron.app/ $OUTPUT
 fi
 
