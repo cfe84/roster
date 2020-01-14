@@ -7,13 +7,14 @@ import { promises as fsAsync, default as fs } from "fs";
 import { Action } from "../actions";
 import { Period } from "../period";
 import { EvaluationCriteria } from "../evaluationCriteria";
+import { JsonSerializer } from "../../lib/common/utils/JsonSerializer";
 
 class MyArray<T> {
   [index: string]: T
 }
 
 class Db {
-  static version = 2;
+  static version = 3;
   version = Db.version;
   persons = new MyArray<Person>();
   notes = new MyArray<Note>();
@@ -23,32 +24,30 @@ class Db {
   periods = new MyArray<Period>();
   evaluationCriterias = new MyArray<EvaluationCriteria>();
 
-  toString(): string {
-    return JSON.stringify(this);
-  }
-
-  private migrateToV2() {
-    if (!this.version || this.version < 2) {
-      console.log(`Upgrading db to version 2`);
-      if (!this.evaluationCriterias) {
-        this.evaluationCriterias = new MyArray<EvaluationCriteria>();
+  private static migrateToV3 = (store: Db) => {
+    if (!store.version || store.version < 3) {
+      console.log(`Upgrading db to version 3`);
+      if (!store.evaluationCriterias) {
+        store.evaluationCriterias = new MyArray<EvaluationCriteria>();
       }
-      if (!this.periods) {
-        this.periods = new MyArray<Period>();
+      if (!store.periods) {
+        store.periods = new MyArray<Period>();
       }
-      this.version = 2
+      store.version = 3
     }
   }
 
-  private migrate(): void {
-    this.migrateToV2();
+  public static migrate = (store: Db) => {
+    Db.migrateToV3(store);
   }
 
   public static deserialize(serializedStore: string): Db {
-    const deserializedDb = JSON.parse(serializedStore) as Db;
-    Object.setPrototypeOf(deserializedDb, new Db());
-    deserializedDb.migrate();
-    return deserializedDb;
+    const deserializedStore = JsonSerializer.deserialize(serializedStore) as Db;
+    Db.migrate(deserializedStore);
+    return deserializedStore;
+  }
+  public static serialize = (store: Db): string => {
+    return JSON.stringify(store);
   }
 }
 
@@ -120,7 +119,7 @@ export class FsStore implements IWholeStore {
   }
 
   commitChangesAsync = async () => {
-    const serialized = this.db.toString();
+    const serialized = Db.serialize(this.db);
     await fsAsync.writeFile(this.file, serialized);
   }
 

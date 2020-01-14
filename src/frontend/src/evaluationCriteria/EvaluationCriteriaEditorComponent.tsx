@@ -19,7 +19,7 @@ export class EvaluationCriteriaEditorComponent extends Component {
 
   public render = (): UIElement => {
     const evaluationCriteria: EvaluationCriteria = objectUtils.clone(this.props.evaluationCriteria);
-    const saveButtonCaption = `${this.props.evaluationCriteriaName || "Create"} evaluationCriteria`
+    const saveButtonCaption = `${this.props.evaluationCriteriaName || "Create"} evaluation criteria`
     const draftId = this.props.evaluationCriteriaName === "Create" ? "new-evaluationCriteria-" + this.props.evaluationCriteria : this.props.evaluationCriteria.id;
     const title = `${this.props.evaluationCriteriaName || "New evaluationCriteria"} ${evaluationCriteria.title}`;
     const editor: MarkdownInputComponent = <MarkdownInput caption="Description" object={evaluationCriteria} field="details" noteId={draftId} />
