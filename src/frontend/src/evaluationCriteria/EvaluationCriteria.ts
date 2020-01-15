@@ -12,6 +12,7 @@ export class EvaluationCriteria implements IEntity {
   title: string = "";
   details: string = "";
   rates: Rate[] = [];
+  active: boolean = true;
 
   constructor() {
   }

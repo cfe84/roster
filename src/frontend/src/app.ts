@@ -181,8 +181,11 @@ export class App {
     this.discussionController = new DiscussionController({ db: dbStore, eventBus: this.eventBus, uiContainer });
     this.actionController = new ActionController({ db: dbStore, eventBus: this.eventBus, uiContainer });
     this.deadlineController = new DeadlineController({ db: dbStore, eventBus: this.eventBus, uiContainer });
-    this.periodController = new PeriodController({ db: dbStore, eventBus: this.eventBus, uiContainer });
     this.evaluationCriteriaController = new EvaluationCriteriaController({ db: dbStore, eventBus: this.eventBus, uiContainer });
+    this.periodController = new PeriodController({
+      db: dbStore, eventBus: this.eventBus, uiContainer,
+      evaluationCriteriaController: this.evaluationCriteriaController
+    });
     this.personController = new PersonController({
       eventBus: this.eventBus, uiContainer, db: dbStore,
       notesController: this.notesController, discussionController: this.discussionController, deadlineController: this.deadlineController,

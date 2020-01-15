@@ -1,30 +1,35 @@
 import { IPeriodStore, Period } from ".";
 import { EventBus } from "../../lib/common/events";
-import { UIContainer } from "../html";
+import { UIContainer, UIElement, Component } from "../html";
 import { GenericController, GenericControllerDependencies } from "../baseComponents/GenericController";
 import { PeriodComponentFactory, PeriodListFilterComponentOptions } from "./PeriodComponentFactory";
 import { PeriodEventFactory } from "./PeriodEventFactory";
 import { PeriodStoreAdapter } from "./IPeriodStore";
+import { EvaluationCriteriaController } from "../evaluationCriteria";
 
 export interface PeriodControllerDependencies {
   db: IPeriodStore,
   eventBus: EventBus,
-  uiContainer: UIContainer
+  uiContainer: UIContainer,
+  evaluationCriteriaController: EvaluationCriteriaController
 }
 
 type PeriodFilter = (action: Period) => boolean;
 
 export class PeriodController {
-  private controller: GenericController<Period>;
+  private genericController: GenericController<Period>;
   constructor(private deps: PeriodControllerDependencies) {
     const genericControllerDependencies: GenericControllerDependencies<Period> = {
-      componentFactory: new PeriodComponentFactory({ eventBus: this.deps.eventBus }),
+      componentFactory: new PeriodComponentFactory({
+        eventBus: this.deps.eventBus,
+        evaluationCriteriaController: this.deps.evaluationCriteriaController
+      }),
       eventFactory: new PeriodEventFactory(),
       db: new PeriodStoreAdapter(deps.db),
       eventBus: deps.eventBus,
       uiContainer: deps.uiContainer,
     }
-    this.controller = new GenericController(genericControllerDependencies);
+    this.genericController = new GenericController(genericControllerDependencies);
   }
 
   public getMyListComponentAsync = async () => {
@@ -43,14 +48,25 @@ export class PeriodController {
     const filterComponentOptions: PeriodListFilterComponentOptions = {
       initialToggle: "All",
     }
-    return await this.controller.getListAsync({
+    return await this.genericController.getListAsync({
       entityGenerator: generator,
       filter,
       sort,
       icon: "calendar-alt",
       iconClass: "r",
       title: "Periods",
-      filterComponentOptions
+      filterComponentOptions,
+      onItemClicked: (period: Period) => this.mountViewPeriodComponentAsync(period)
     });
+  }
+
+  private getViewPeriodComponentAsync = async (periodId: Period): Promise<Component> => {
+    console.log(`OK`);
+    return await this.genericController.getViewComponent(periodId);
+  }
+
+  private mountViewPeriodComponentAsync = async (periodId: Period) => {
+    const component = await this.getViewPeriodComponentAsync(periodId);
+    this.deps.uiContainer.mount(component);
   }
 }

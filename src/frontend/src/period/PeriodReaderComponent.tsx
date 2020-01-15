@@ -2,13 +2,15 @@ import { UIElement, Component } from "../html/index";
 import { MarkdownDisplay } from "../baseComponents/MarkdownDisplayComponent";
 import { Button, PageTitle, DateDisplay, TextDisplay, Checkbox } from "../baseComponents";
 import { Period } from ".";
+import { EvaluationCriteriaController } from "../evaluationCriteria";
 
 interface PeriodReaderProps {
   period: Period,
   onCompleteChanged: (value: boolean) => void,
   onEdit: ((period: Period) => void),
   onDelete: (() => void),
-  onBack: (() => void)
+  onBack: (() => void),
+  evaluationCriteriaController: EvaluationCriteriaController
 }
 
 export class PeriodReaderComponent extends Component {
@@ -17,6 +19,7 @@ export class PeriodReaderComponent extends Component {
 
   public render = (): UIElement => {
     const period = this.props.period;
+    // Need 
     const notes = <MarkdownDisplay
       caption="Details"
       value={period.details}

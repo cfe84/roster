@@ -14,7 +14,7 @@ class MyArray<T> {
 }
 
 class Db {
-  static version = 3;
+  static version = 4;
   version = Db.version;
   persons = new MyArray<Person>();
   notes = new MyArray<Note>();
@@ -25,7 +25,7 @@ class Db {
   evaluationCriterias = new MyArray<EvaluationCriteria>();
 
   private static migrateToV3 = (store: Db) => {
-    if (!store.version || store.version < 3) {
+    if (store.version < 3) {
       console.log(`Upgrading db to version 3`);
       if (!store.evaluationCriterias) {
         store.evaluationCriterias = new MyArray<EvaluationCriteria>();
@@ -37,8 +37,24 @@ class Db {
     }
   }
 
+  private static migrateToV4 = (store: Db) => {
+    if (store.version < 4) {
+      console.log(`Upgrading db to version 4`);
+      const keys = Object.keys(store.evaluationCriterias);
+      keys.forEach((key: string) => {
+        if (store.evaluationCriterias[key].active === undefined) {
+          store.evaluationCriterias[key].active = true;
+        }
+      })
+    }
+  }
+
   public static migrate = (store: Db) => {
+    if (!store.version) {
+      store.version = 1;
+    }
     Db.migrateToV3(store);
+    Db.migrateToV4(store);
   }
 
   public static deserialize(serializedStore: string): Db {

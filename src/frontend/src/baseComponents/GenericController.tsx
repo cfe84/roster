@@ -26,6 +26,7 @@ interface GetListOptions<T> {
   iconClass?: string;
   entityGenerator?: EntityGenerator<T>;
   filterComponentOptions?: any;
+  onItemClicked?: (item: T) => void;
 }
 
 export class GenericController<EntityType extends IEntity>{
@@ -46,7 +47,7 @@ export class GenericController<EntityType extends IEntity>{
         elements={elements}
         onAddClicked={onAdd}
         onEditClicked={this.mountEdit}
-        onClicked={(entity: EntityType) => { this.mountView(entity) }}
+        onClicked={(entity: EntityType) => { if (options.onItemClicked) { options.onItemClicked(entity) } else { this.mountView(entity) } }}
         elementDisplay={this.deps.componentFactory.createListItemComponent}
       > </List>;
     } else {

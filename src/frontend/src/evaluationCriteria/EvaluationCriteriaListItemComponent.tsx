@@ -13,6 +13,9 @@ export class EvaluationCriteriaListItemComponent extends Component {
 
   render() {
     let content = this.props.evaluationCriteria.title;
+    if (!this.props.evaluationCriteria.active) {
+      content = <s>{content}</s>
+    }
     return <span>
       {content}
     </span>;

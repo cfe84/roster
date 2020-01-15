@@ -1,5 +1,5 @@
 import { UIElement, Component } from "../html/index";
-import { MarkdownInput, TextInput, DateInput, Button, PageTitle, MarkdownInputComponent, ListItem } from "../baseComponents";
+import { MarkdownInput, TextInput, DateInput, Button, PageTitle, MarkdownInputComponent, ListItem, Checkbox } from "../baseComponents";
 import { objectUtils } from "../utils/objectUtils";
 import { ActionType } from "../baseComponents/ActionType";
 import { EvaluationCriteria } from ".";
@@ -47,7 +47,7 @@ export class EvaluationCriteriaEditorComponent extends Component {
     const title = `${this.props.evaluationCriteriaName || "New evaluationCriteria"} ${evaluationCriteria.title}`;
     const editor: MarkdownInputComponent = <MarkdownInput caption="Description" object={evaluationCriteria} field="details" noteId={draftId} />
     const rates: MarkdownInputComponent = <MarkdownInput
-      caption="Rates"
+      caption="Rates (Line format = 'rate name: description')"
       onchange={(value) => evaluationCriteria.rates = this.parseRates(value)}
       value={this.formatRates(evaluationCriteria.rates)} />
     const onSave = () => {
@@ -59,6 +59,7 @@ export class EvaluationCriteriaEditorComponent extends Component {
       <div class="row">
         <TextInput class="col" caption="Title" object={evaluationCriteria} field="title" />
       </div>
+      <Checkbox caption="Active" object={evaluationCriteria} field="active" />
       {editor}
       {rates}
       <Button class="mr-2" onclick={onSave} icon="save" text={saveButtonCaption} />
