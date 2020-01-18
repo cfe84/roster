@@ -35,7 +35,7 @@ export class TemplateComponentFactory implements IComponentFactory<Template> {
   }
   createEditComponent(element: Template, onCancel: () => void, onValidate: (entity: Template) => void, onDelete: (entity: Template) => void): Component {
     return TemplateEditor({
-      templateName: "Update",
+      actionName: "Update",
       template: element,
       onCancel,
       onValidate,
@@ -51,7 +51,7 @@ export class TemplateComponentFactory implements IComponentFactory<Template> {
   }
   createCreateComponent(element: Template, onCancel: () => void, onValidate: (entity: Template) => void): Component {
     return TemplateEditor({
-      templateName: "Create",
+      actionName: "Create",
       template: element,
       onCancel,
       onValidate,

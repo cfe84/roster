@@ -1,9 +1,9 @@
-import { Template } from "./Template";
+import { Template, TemplateId } from "./Template";
 import { ITemplateStore } from "./ITemplateStore";
 import { TemplateController } from "./TemplateController";
 
 export {
-  Template,
+  Template, TemplateId,
   ITemplateStore,
   TemplateController
 }

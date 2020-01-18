@@ -29,7 +29,7 @@ export class TemplateListFilterComponent extends Component {
     setTimeout(() => onFilterChanged(), 100); // Dirty hack
     return <div class="row">
       <div class="col">
-        <Select values={["All", "Less than a week old"]} object={filter} field="filter" onchange={onFilterChanged} />
+        <Select values={["All", "Less than a week old"]} object={filter} field="toggle" onchange={onFilterChanged} />
       </div>
     </div>
   }

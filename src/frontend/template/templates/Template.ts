@@ -3,9 +3,11 @@ import { GUID } from "../../lib/common/utils/guid";
 
 export const EntityType = "template"
 
+export type TemplateId = string;
+
 export class Template implements IEntity {
   id: string = GUID.newGuid();
-  title: string = "";
+  title: TemplateId = "";
   details: string = "";
   date: Date = new Date();
 

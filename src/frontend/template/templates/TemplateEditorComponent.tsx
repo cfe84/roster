@@ -5,7 +5,7 @@ import { ActionType } from "../baseComponents/ActionType";
 import { Template } from ".";
 
 interface TemplateEditorProps {
-  templateName: ActionType,
+  actionName: ActionType,
   template: Template,
   onValidate: ((template: Template) => void),
   onCancel: (() => void)
@@ -19,9 +19,9 @@ export class TemplateEditorComponent extends Component {
 
   public render = (): UIElement => {
     const template: Template = objectUtils.clone(this.props.template);
-    const saveButtonCaption = `${this.props.templateName || "Create"} template`
-    const draftId = this.props.templateName === "Create" ? "new-template-" + this.props.template.personId : this.props.template.id;
-    const title = `${this.props.templateName || "New template"} ${template.title}`;
+    const saveButtonCaption = `${this.props.actionName || "Create"} template`
+    const draftId = this.props.actionName === "Create" ? "new-template-" + this.props.template.personId : this.props.template.id;
+    const title = `${this.props.actionName} ${template.title || "new template"}`;
     const editor: MarkdownInputComponent = <MarkdownInput caption="Description" object={template} field="details" noteId={draftId} />
     const onSave = () => {
       this.props.onValidate(template);

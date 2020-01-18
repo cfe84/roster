@@ -6,13 +6,13 @@ Increase version!
 
 Add migration operation
 
-  private migrateToVxxx() {
-    if (!this.version || this.version < xxx) {
-      console.log(`Upgrading db to version xxx`);
-      if (!this.templates) {
-        this.templates = new MyArray<Template>();
+    private static migrateToVxxx = (store: Db) => {
+    if (store.version < 5) {
+      console.log(`Upgrading db to version 5`);
+      if (!store.templates) {
+        store.templates = new MyArray<Templates>();
       }
-      this.version = xxx
+      store.version = xxx;
     }
   }
 

@@ -28,11 +28,11 @@ export class TemplateController {
   }
 
   public getMyListComponentAsync = async () => {
-    return await this.getTemplateListComponentAsync((action: Template) => true, undefined);
+    return await this.getTemplateListComponentAsync((template: Template) => true, undefined);
   }
 
   public getPersonListComponentAsync = async (personId: string) => {
-    return await this.getTemplateListComponentAsync((action: Template) => action.personId === personId, personId);
+    return await this.getTemplateListComponentAsync((template: Template) => template.personId === personId, personId);
   }
 
   private getTemplateListComponentAsync = async (filter: TemplateFilter, personId?: string) => {
