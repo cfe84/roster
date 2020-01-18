@@ -59,7 +59,7 @@ class Main {
             accelerator: "ctrl+N",
             click: () => { this.createFileDialog() }
           },
-          { role: 'quit' }
+          { role: 'quit', label: "Quit Roster" }
         ]
       },
       { role: "editMenu" },
