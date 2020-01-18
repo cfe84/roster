@@ -3,6 +3,7 @@ import { MarkdownDisplay } from "../baseComponents/MarkdownDisplayComponent";
 import { Button, PageTitle, DateDisplay, TextDisplay, Checkbox } from "../baseComponents";
 import { Period } from ".";
 import { EvaluationCriteriaController } from "../evaluationCriteria";
+import { ObservationController } from "../observation";
 
 interface PeriodReaderProps {
   period: Period,
@@ -10,15 +11,17 @@ interface PeriodReaderProps {
   onEdit: ((period: Period) => void),
   onDelete: (() => void),
   onBack: (() => void),
-  evaluationCriteriaController: EvaluationCriteriaController
+  evaluationCriteriaController: EvaluationCriteriaController,
+  observationController: ObservationController
 }
 
 export class PeriodReaderComponent extends Component {
 
   constructor(public props: PeriodReaderProps) { super() }
 
-  public render = (): UIElement => {
+  public render = async (): Promise<UIElement> => {
     const period = this.props.period;
+    const observationsComponent = await this.props.observationController.getPeriodListComponentAsync(period.id);
     // Need 
     const notes = <MarkdownDisplay
       caption="Details"
@@ -31,6 +34,7 @@ export class PeriodReaderComponent extends Component {
         <DateDisplay class="col" caption="Finish date" object={this.props.period} field="finishDate" includeTimespan={true} />
       </div>
       {notes.render()}
+      {observationsComponent}
       <span class="d-flex">
         <Button type="primary" onclick={() => this.props.onEdit(period)} icon="pen" text="Edit" />
         <Button type="delete" class="ml-auto" onclick={this.props.onDelete} icon="trash" text="Delete" />

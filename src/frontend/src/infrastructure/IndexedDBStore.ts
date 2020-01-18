@@ -7,9 +7,10 @@ import { Action } from "../actions";
 import { objectUtils } from "../utils/objectUtils";
 import { Period } from "../period";
 import { EvaluationCriteria } from "../evaluationCriteria";
+import { Observation } from "../observation";
 
 const DB_NAME: string = "rosterdb";
-const DB_VERSION: number = 9;
+const DB_VERSION: number = 10;
 const OBJECTSTORE_PEOPLE: string = "people";
 const OBJECTSTORE_NOTES: string = "notes";
 const OBJECTSTORE_DISCUSSIONS: string = "discussions";
@@ -17,7 +18,7 @@ const OBJECTSTORE_DEADLINES: string = "deadlines";
 const OBJECTSTORE_ACTIONS: string = "actions";
 const OBJECTSTORE_PERIODS: string = "periods";
 const OBJECTSTORE_EVALUATIONCRITERIA: string = "evaluationCriterias";
-
+const OBJECTSTORE_OBSERVATION: string = "observations";
 
 const stores = [
   { name: OBJECTSTORE_PEOPLE, key: "id", index: "name" },
@@ -27,6 +28,7 @@ const stores = [
   { name: OBJECTSTORE_ACTIONS, key: "id", index: "personid" },
   { name: OBJECTSTORE_PERIODS, key: "id", index: "personid" },
   { name: OBJECTSTORE_EVALUATIONCRITERIA, key: "id" },
+  { name: OBJECTSTORE_OBSERVATION, key: "id", index: "periodId" },
 ];
 
 const getTarget = <T>(evt: any): T => (evt.target as T)
@@ -231,7 +233,6 @@ export class IndexedDBStore implements IWholeStore {
     await this.db.deleteEntityAsync(OBJECTSTORE_PERIODS, element.id);
   }
 
-
   public getEvaluationCriteriasAsync = async (): Promise<EvaluationCriteria[]> =>
     (await this.db.getAllAsync<EvaluationCriteria>(OBJECTSTORE_EVALUATIONCRITERIA));
 
@@ -243,5 +244,18 @@ export class IndexedDBStore implements IWholeStore {
   }
   public deleteEvaluationCriteriaAsync = async (element: EvaluationCriteria): Promise<void> => {
     await this.db.deleteEntityAsync(OBJECTSTORE_EVALUATIONCRITERIA, element.id);
+  }
+
+  public getObservationsAsync = async (): Promise<Observation[]> =>
+    (await this.db.getAllAsync<Observation>(OBJECTSTORE_OBSERVATION));
+
+  public createObservationAsync = async (element: Observation): Promise<void> => {
+    await this.db.createEntityAsync(OBJECTSTORE_OBSERVATION, element);
+  }
+  public updateObservationAsync = async (element: Observation): Promise<void> => {
+    await this.db.putEntityAsync(OBJECTSTORE_OBSERVATION, element);
+  }
+  public deleteObservationAsync = async (element: Observation): Promise<void> => {
+    await this.db.deleteEntityAsync(OBJECTSTORE_OBSERVATION, element.id);
   }
 }

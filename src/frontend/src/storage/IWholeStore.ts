@@ -5,7 +5,10 @@ import { IPersonStore } from "../persons";
 import { IActionStore } from "../actions";
 import { IPeriodStore } from "../period";
 import { IEvaluationCriteriaStore } from "../evaluationCriteria";
+import { IObservationStore } from "../observation";
 
-export interface IWholeStore extends IPersonStore, INotesStore, IDiscussionStore, IDeadlineStore, IActionStore, IPeriodStore, IEvaluationCriteriaStore {
+export interface IWholeStore extends IPersonStore,
+  INotesStore, IDiscussionStore, IDeadlineStore, IActionStore,
+  IPeriodStore, IEvaluationCriteriaStore, IObservationStore {
 
 }

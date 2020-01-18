@@ -6,12 +6,14 @@ import { PeriodComponentFactory, PeriodListFilterComponentOptions } from "./Peri
 import { PeriodEventFactory } from "./PeriodEventFactory";
 import { PeriodStoreAdapter } from "./IPeriodStore";
 import { EvaluationCriteriaController } from "../evaluationCriteria";
+import { ObservationController } from "../observation";
 
 export interface PeriodControllerDependencies {
   db: IPeriodStore,
   eventBus: EventBus,
   uiContainer: UIContainer,
-  evaluationCriteriaController: EvaluationCriteriaController
+  evaluationCriteriaController: EvaluationCriteriaController,
+  observationController: ObservationController
 }
 
 type PeriodFilter = (action: Period) => boolean;
@@ -22,7 +24,8 @@ export class PeriodController {
     const genericControllerDependencies: GenericControllerDependencies<Period> = {
       componentFactory: new PeriodComponentFactory({
         eventBus: this.deps.eventBus,
-        evaluationCriteriaController: this.deps.evaluationCriteriaController
+        evaluationCriteriaController: this.deps.evaluationCriteriaController,
+        observationController: this.deps.observationController
       }),
       eventFactory: new PeriodEventFactory(),
       db: new PeriodStoreAdapter(deps.db),

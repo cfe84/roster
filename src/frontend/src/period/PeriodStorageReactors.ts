@@ -11,7 +11,7 @@ export class PeriodStorageReactors implements IReactor {
     eventBus.subscribe(PeriodDeletedEvent.type, (evt: PeriodCreatedEvent) => this.periodStore.deletePeriodAsync(evt.entity));
     eventBus.subscribe(PersonDeletedEvent.type, async (evt: PersonDeletedEvent) => {
       const periods = (await this.periodStore.getPeriodsAsync()).filter((period) => period.personId === evt.person.id);
-      await Promise.all(periods.map((period) => this.periodStore.deletePeriodAsync(period)));
+      await Promise.all(periods.map((period) => eventBus.publishAsync(new PeriodDeletedEvent(period))));
     });
   }
   constructor(private periodStore: IPeriodStore) { }

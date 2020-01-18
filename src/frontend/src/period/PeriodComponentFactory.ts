@@ -9,10 +9,12 @@ import { PeriodUpdatedEvent } from "./PeriodEvents";
 import { PeriodListFilter, PeriodToggleFilterValues } from "./PeriodListFilterComponent";
 import { FilterFunction } from "../baseComponents/GenericController";
 import { EvaluationCriteriaController } from "../evaluationCriteria";
+import { ObservationController } from "../observation";
 
 interface PeriodComponentFactoryProps {
   eventBus: EventBus,
-  evaluationCriteriaController: EvaluationCriteriaController
+  evaluationCriteriaController: EvaluationCriteriaController,
+  observationController: ObservationController
 }
 
 export interface PeriodListFilterComponentOptions {
@@ -50,7 +52,8 @@ export class PeriodComponentFactory implements IComponentFactory<Period> {
       onDelete: () => onDelete(element),
       onEdit: () => onEdit(element),
       onCompleteChanged: () => this.props.eventBus.publishAsync(new PeriodUpdatedEvent(element)).then(() => { }),
-      evaluationCriteriaController: this.props.evaluationCriteriaController
+      evaluationCriteriaController: this.props.evaluationCriteriaController,
+      observationController: this.props.observationController
     });
   }
   createCreateComponent(element: Period, onCancel: () => void, onValidate: (entity: Period) => void): Component {

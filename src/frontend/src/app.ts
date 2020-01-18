@@ -14,7 +14,6 @@ import { SocketReplicationAdapter } from "./infrastructure/SocketReplicationAdap
 import { ReplicationManager } from "./synchronization/ReplicationManager";
 import { LocalStorageQueue } from "./infrastructure/LocalStorageQueue";
 import { clientIdUtil } from "./utils/clientId";
-import { GUID } from "../lib/common/utils/guid";
 import { IWholeStore } from "./storage/IWholeStore";
 import { FsStore } from "./infrastructure/FsStore";
 import path from "path";
@@ -30,6 +29,8 @@ import { PeriodController } from "./period";
 import { PeriodStorageReactors } from "./period/PeriodStorageReactors";
 import { EvaluationCriteriaController } from "./evaluationCriteria";
 import { EvaluationCriteriaStorageReactors } from "./evaluationCriteria/EvaluationCriteriaStorageReactors";
+import { ObservationController } from "./observation";
+import { ObservationStorageReactors } from "./observation/ObservationStorageReactors";
 
 const LAST_OPENED_FILE_KEY = "roster.config.lastOpenedFile";
 const DEFAULT_FILE_NAME = "roster.json";
@@ -74,6 +75,7 @@ export class App {
   dashboardController?: DashboardController;
   periodController?: PeriodController;
   evaluationCriteriaController?: EvaluationCriteriaController;
+  observationController?: ObservationController;
 
   private loadLogger(debug: boolean): ILogger {
     if (debug) {
@@ -182,9 +184,16 @@ export class App {
     this.actionController = new ActionController({ db: dbStore, eventBus: this.eventBus, uiContainer });
     this.deadlineController = new DeadlineController({ db: dbStore, eventBus: this.eventBus, uiContainer });
     this.evaluationCriteriaController = new EvaluationCriteriaController({ db: dbStore, eventBus: this.eventBus, uiContainer });
+    this.observationController = new ObservationController({
+      db: dbStore,
+      eventBus: this.eventBus,
+      uiContainer,
+      evaluationCriteriaController: this.evaluationCriteriaController
+    });
     this.periodController = new PeriodController({
       db: dbStore, eventBus: this.eventBus, uiContainer,
-      evaluationCriteriaController: this.evaluationCriteriaController
+      evaluationCriteriaController: this.evaluationCriteriaController,
+      observationController: this.observationController
     });
     this.personController = new PersonController({
       eventBus: this.eventBus, uiContainer, db: dbStore,
@@ -219,6 +228,8 @@ export class App {
     periodReactor.registerReactors(this.eventBus);
     const evaluationCriteriaReactor = new EvaluationCriteriaStorageReactors(dbStore);
     evaluationCriteriaReactor.registerReactors(this.eventBus);
+    const observationReactor = new ObservationStorageReactors(dbStore);
+    observationReactor.registerReactors(this.eventBus);
   }
 
   public handleError = () => {

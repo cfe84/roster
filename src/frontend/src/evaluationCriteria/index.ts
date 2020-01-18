@@ -1,9 +1,9 @@
-import { EvaluationCriteria } from "./EvaluationCriteria";
+import { EvaluationCriteria, EvaluationCriteriaId } from "./EvaluationCriteria";
 import { IEvaluationCriteriaStore } from "./IEvaluationCriteriaStore";
 import { EvaluationCriteriaController } from "./EvaluationCriteriaController";
 
 export {
-  EvaluationCriteria,
+  EvaluationCriteria, EvaluationCriteriaId,
   IEvaluationCriteriaStore,
   EvaluationCriteriaController
 }

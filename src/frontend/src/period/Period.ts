@@ -3,8 +3,10 @@ import { GUID } from "../../lib/common/utils/guid";
 
 export const EntityType = "period"
 
+export type PeriodId = string;
+
 export class Period implements IEntity {
-  id: string = GUID.newGuid();
+  id: PeriodId = GUID.newGuid();
   name: string = "";
   details: string = "";
   startDate: Date = new Date();
