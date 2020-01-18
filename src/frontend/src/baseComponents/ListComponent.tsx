@@ -35,20 +35,18 @@ export class ListComponent<T extends IEntity> extends Component {
   }
 
   public removeItemAsync = async (item: T): Promise<void> => {
-    const index = this.props.elements.findIndex((itemInList) => itemInList === item);
+    const index = this.props.elements.findIndex((itemInList) => itemInList.id === item.id);
     if (index < 0) {
       throw Error("Item not found: " + JSON.stringify(item));
     } else {
       this.props.elements.splice(index, 1);
       if (this.listComponent && this.listItems) {
         const listItemComponent = this.listItems.find((reference) => reference.value.id === item.id);
-        const indexOfComponent = this.listComponent.props["children"].findIndex(listItemComponent);
-        if (indexOfComponent < 0) {
-          throw Error("Component not found in list");
-        } else {
+        const indexOfComponent = this.listComponent.props["children"].findIndex((component: Component) => component === listItemComponent?.component);
+        if (indexOfComponent >= 0) {
           this.listComponent.props["children"].splice(indexOfComponent, 1);
+          await this.listComponent.updateNodeAsync();
         }
-        await this.listComponent.updateNodeAsync();
       }
     }
   }
