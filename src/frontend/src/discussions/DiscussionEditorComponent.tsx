@@ -34,7 +34,7 @@ export class DiscussionEditorComponent extends Component {
       <div class="form-create-element">
         <div class="row">
           <TextInput class="col" caption="Title" object={discussion} field="description" />
-          <DateInput class="col-sm" caption="Date" object={discussion} field="date" />
+          <DateInput includetime={true} class="col-sm" caption="Date" object={discussion} field="date" />
         </div>
         {prepNotes}
         {meetingNotes}

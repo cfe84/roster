@@ -8,7 +8,8 @@ export interface DateDisplayProps {
   field?: string,
   class?: string,
   value?: Date,
-  includeTimespan?: boolean
+  includeTimespan?: boolean,
+  includetime?: boolean,
 }
 
 export class DateDisplayComponent extends Component {
@@ -20,7 +21,7 @@ export class DateDisplayComponent extends Component {
     const value = this.props.value || ((this.props.object && this.props.field) ? (this.props.object as any)[this.props.field] : "");
     const timespan = value ? dateUtils.timeSpan(value) + " " : "";
     const timespanComponent = (this.props.includeTimespan && timespan) ? timespan : "";
-    let formattedDate = dateUtils.format(value);
+    let formattedDate = this.props.includetime ? dateUtils.formatWithTime(value) : dateUtils.format(value);
     if (timespanComponent !== "") {
       formattedDate = <i>({formattedDate})</i>;
     }

@@ -30,7 +30,7 @@ export class DiscussionReaderComponent extends Component {
     ></MarkdownDisplay>;
     return <div class="flex-column">
       <PageTitle title={discussion.description} icon="comments" onBack={this.props.onBack} />
-      <p class="text-center"><small class="mb-1 ml-auto color-medium">{dateUtils.format(discussion.date)}</small></p>
+      <p class="text-center"><small class="mb-1 ml-auto color-medium">{dateUtils.formatWithTime(discussion.date)}</small></p>
       {preparationMarkdownDisplay.render()}
       {meetingNotesMarkdownDisplay.render()}
       <span class="d-flex">

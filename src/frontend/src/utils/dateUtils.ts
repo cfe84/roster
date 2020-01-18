@@ -8,6 +8,11 @@ export class dateUtils {
       : ""
   }
 
+  public static formatWithTime = (date: any): string => {
+    return (!!date) ? moment(date).format("YYYY-MM-DD HH:mm")
+      : ""
+  }
+
   public static parseDate = (str: string | null): Date | null =>
     (str === null || str === undefined || str === "")
       ? null

@@ -9,6 +9,7 @@ type onTxtChangeDelegate = (val: string) => void;
 export interface DateInputProps {
   caption?: string,
   id?: string,
+  includetime?: boolean,
   onchange?: onChangeDelegate,
   placeholder?: string,
   class?: string,
@@ -48,7 +49,7 @@ export class DateInputComponent extends Component {
       id: this.props.id,
       onchange: onchange,
       placeholder: this.props.placeholder,
-      value: dateUtils.format(value)
+      value: (!this.props.includetime) ? dateUtils.format(value) : dateUtils.formatWithTime(value)
     }
     const textInput = TextInput(textInputProps);
     return textInput.render();
