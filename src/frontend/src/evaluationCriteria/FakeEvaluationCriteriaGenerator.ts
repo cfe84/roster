@@ -6,7 +6,7 @@ import { EvaluationCriteriaCreatedEvent } from "./EvaluationCriteriaEvents";
 import { generateContent, generateTitle } from "../utils/fakeContent";
 
 export class FakeEvaluationCriteriaGenerator implements IFakeGenerator {
-  constructor(private person: Person) { }
+  constructor() { }
 
   async generateAsync(eventBus: EventBus): Promise<void> {
     const evaluationCriteria: EvaluationCriteria = new EvaluationCriteria();

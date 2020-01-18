@@ -7,6 +7,7 @@ import { FakeNoteGenerator } from "../notes/FakeNoteGenerator";
 import { FakeDiscussionGenerator } from "../discussions/FakeDiscussionGenerator";
 import { FakeDeadlineGenerator } from "../deadlines/FakeDeadlineGenerator";
 import { FakeActionGenerator } from "../actions/FakeActionGenerator";
+import { FakePeriodGenerator } from "../period/FakePeriodGenerator";
 
 
 export class FakePersonGenerator implements IFakeGenerator {
@@ -66,6 +67,12 @@ export class FakePersonGenerator implements IFakeGenerator {
     const fakeActionGenerator = new FakeActionGenerator(person);
     for (let i = 0; i < actions; i++) {
       await fakeActionGenerator.generateAsync(eventBus);
+    }
+
+    const periods = Math.random() * 4;
+    const fakePeriodGenerator = new FakePeriodGenerator(person);
+    for (let i = 0; i < periods; i++) {
+      await fakePeriodGenerator.generateAsync(eventBus);
     }
   }
 

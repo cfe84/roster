@@ -5,12 +5,13 @@ import { ObservationEditor } from "./ObservationEditorComponent";
 import { ObservationListItem } from "./ObservationListItemComponent";
 import { ObservationReader } from "./ObservationReaderComponent";
 import { EventBus } from "../../lib/common/events";
-import { ObservationUpdatedEvent } from "./ObservationEvents";
 import { ObservationListFilter, ObservationToggleFilterValues } from "./ObservationListFilterComponent";
 import { FilterFunction } from "../baseComponents/GenericController";
+import { EvaluationCriteriaController } from "../evaluationCriteria";
 
 interface ObservationComponentFactoryProps {
-  eventBus: EventBus
+  eventBus: EventBus,
+  evaluationCriteriaController: EvaluationCriteriaController
 }
 
 export interface ObservationListFilterComponentOptions {
@@ -39,6 +40,7 @@ export class ObservationComponentFactory implements IComponentFactory<Observatio
       observation: element,
       onCancel,
       onValidate,
+      evaluationCriteriaController: this.props.evaluationCriteriaController
     });
   }
   createReadComponent(element: Observation, onBack: () => void, onEdit: (entity: Observation) => void, onDelete: (entity: Observation) => void): Component {
@@ -47,6 +49,7 @@ export class ObservationComponentFactory implements IComponentFactory<Observatio
       onBack,
       onDelete: () => onDelete(element),
       onEdit: () => onEdit(element),
+      evaluationCriteriaController: this.props.evaluationCriteriaController
     });
   }
   createCreateComponent(element: Observation, onCancel: () => void, onValidate: (entity: Observation) => void): Component {
@@ -55,6 +58,7 @@ export class ObservationComponentFactory implements IComponentFactory<Observatio
       observation: element,
       onCancel,
       onValidate,
+      evaluationCriteriaController: this.props.evaluationCriteriaController
     });
   }
 }

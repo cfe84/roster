@@ -22,7 +22,7 @@ export class EvaluationCriteriaComponentFactory implements IComponentFactory<Eva
   }
   createEditComponent(element: EvaluationCriteria, onCancel: () => void, onValidate: (entity: EvaluationCriteria) => void, onDelete: (entity: EvaluationCriteria) => void): Component {
     return EvaluationCriteriaEditor({
-      evaluationCriteriaName: "Update",
+      actionName: "Update",
       evaluationCriteria: element,
       onCancel,
       onValidate,
@@ -38,7 +38,7 @@ export class EvaluationCriteriaComponentFactory implements IComponentFactory<Eva
   }
   createCreateComponent(element: EvaluationCriteria, onCancel: () => void, onValidate: (entity: EvaluationCriteria) => void): Component {
     return EvaluationCriteriaEditor({
-      evaluationCriteriaName: "Create",
+      actionName: "Create",
       evaluationCriteria: element,
       onCancel,
       onValidate,

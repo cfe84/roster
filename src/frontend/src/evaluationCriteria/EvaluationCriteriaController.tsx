@@ -1,10 +1,14 @@
-import { IEvaluationCriteriaStore, EvaluationCriteria } from ".";
+import { IEvaluationCriteriaStore, EvaluationCriteria, EvaluationCriteriaId } from ".";
 import { EventBus } from "../../lib/common/events";
-import { UIContainer } from "../html";
-import { GenericController, GenericControllerDependencies } from "../baseComponents/GenericController";
+import { UIContainer, Component } from "../html";
+import { GenericController, GenericControllerDependencies, FilterFunction } from "../baseComponents/GenericController";
 import { EvaluationCriteriaComponentFactory } from "./EvaluationCriteriaComponentFactory";
 import { EvaluationCriteriaEventFactory } from "./EvaluationCriteriaEventFactory";
 import { EvaluationCriteriaStoreAdapter } from "./IEvaluationCriteriaStore";
+import { IListComponent } from "../baseComponents/IComponentFactory";
+import { List } from "../baseComponents/ListComponent";
+import { Checkbox } from "../baseComponents";
+import { objectUtils } from "../utils/objectUtils";
 
 export interface EvaluationCriteriaControllerDependencies {
   db: IEvaluationCriteriaStore,
@@ -27,14 +31,43 @@ export class EvaluationCriteriaController {
     this.controller = new GenericController(genericControllerDependencies);
   }
 
-  public getEvaluationCriteriaListComponentAsync = async () => {
+  public getEvaluationCriteriaListComponentAsync = async (filter?: FilterFunction<EvaluationCriteria>, readonly: boolean = false) => {
     const sort = (a: EvaluationCriteria, b: EvaluationCriteria) => a.title > b.title ? 1 : -1;
     const generator = () => new EvaluationCriteria();
     return await this.controller.getListAsync({
-      entityGenerator: generator,
+      entityGenerator: readonly ? undefined : generator,
       sort,
-      icon: "tasks",
-      title: "EvaluationCriterias"
+      filter,
+      icon: "balance-scale-left",
+      title: "Evaluation Criterias"
     });
+  }
+
+  public getEvaluationCriteriaSelectorComponentAsync = async (selectedCriteria: EvaluationCriteriaId[],
+    onSelectionChanged: (ids: EvaluationCriteriaId[]) => void): Promise<IListComponent<EvaluationCriteria>> => {
+    selectedCriteria = objectUtils.clone(selectedCriteria);
+    let elements = (await this.deps.db.getEvaluationCriteriasAsync())
+      .filter(criteria => criteria.active)
+      .sort((a, b) => a.title < b.title ? -1 : 1);
+    const onChange = (id: EvaluationCriteriaId, checked: boolean) => {
+      const index = selectedCriteria.indexOf(id);
+      if (index < 0 && checked) {
+        selectedCriteria.push(id);
+      } else if (index >= 0 && !checked) {
+        selectedCriteria.splice(index, 1);
+      }
+      onSelectionChanged(selectedCriteria)
+    }
+    const elementDisplay = (criteria: EvaluationCriteria) =>
+      <Checkbox
+        value={selectedCriteria.indexOf(criteria.id) >= 0}
+        text={criteria.title}
+        onchange={(selected) => onChange(criteria.id, selected)} />;
+    let listComponent: IListComponent<EvaluationCriteria> = <List
+      elements={elements}
+      elementDisplay={elementDisplay}
+    />;
+
+    return listComponent;
   }
 }

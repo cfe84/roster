@@ -17,7 +17,8 @@ export interface DashboardControllerDependencies {
   deadlineController: DeadlineController;
   actionController: ActionController;
   evaluationCriteriaController: EvaluationCriteriaController;
-  fakeGenerator: IFakeGenerator;
+  fakePersonGenerator: IFakeGenerator;
+  fakeConfigGenerator: IFakeGenerator;
   eventBus: EventBus;
   debug: boolean;
 }
@@ -32,7 +33,7 @@ export class DashboardController {
       deadlineController={this.deps.deadlineController}
       actionController={this.deps.actionController}
       debug={this.deps.debug}
-      onGenerateFakeData={this.generateFakeData}
+      onGenerateFakeData={this.generateFakePersonData}
       onConfigurationClicked={() => this.displayConfiguration()}
     ></Dashboard>
     this.deps.container.mount(component);
@@ -41,13 +42,17 @@ export class DashboardController {
   public displayConfiguration() {
     const component: ConfigurationComponent = <Configuration
       evaluationCriteriaController={this.deps.evaluationCriteriaController}
+      onGenerateFakeData={this.generateFakeConfigurationData}
       onBack={() => this.deps.container.unmountCurrent()}
       debug={this.deps.debug}
     />
     this.deps.container.mount(component);
   }
 
-  private generateFakeData = () => {
-    this.deps.fakeGenerator.generateAsync(this.deps.eventBus).then(() => { });
+  private generateFakePersonData = () => {
+    this.deps.fakePersonGenerator.generateAsync(this.deps.eventBus).then(() => { });
+  }
+  private generateFakeConfigurationData = () => {
+    this.deps.fakeConfigGenerator.generateAsync(this.deps.eventBus).then(() => { });
   }
 }

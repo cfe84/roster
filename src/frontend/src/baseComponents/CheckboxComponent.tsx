@@ -38,7 +38,7 @@ export class CheckboxComponent extends Component {
     const text = this.props.text || this.props.caption || "";
     return <div class={this.props.class || ""}>
       {caption}
-      <p class="mb-3">{component} {text}</p>
+      <span>{component} {text}</span>
     </div>;
   }
 }

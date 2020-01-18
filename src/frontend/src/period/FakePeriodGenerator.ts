@@ -4,6 +4,7 @@ import { Person } from "../persons";
 import { Period } from ".";
 import { PeriodCreatedEvent } from "./PeriodEvents";
 import { generateContent, generateTitle } from "../utils/fakeContent";
+import { FakeObservationGenerator } from "../observation/FakeObservationGenerator";
 
 export class FakePeriodGenerator implements IFakeGenerator {
   constructor(private person: Person) { }
@@ -17,5 +18,11 @@ export class FakePeriodGenerator implements IFakeGenerator {
     period.details = generateContent(2 + Math.floor(Math.random() * 8));
     period.name = generateTitle(4 + Math.floor(Math.random() * 5));
     await eventBus.publishAsync(new PeriodCreatedEvent(period));
+
+    const observations = Math.random() * 8 + 2;
+    const fakeObservationGenerator = new FakeObservationGenerator(period);
+    for (let i = 0; i < observations; i++) {
+      await fakeObservationGenerator.generateAsync(eventBus);
+    }
   }
 }

@@ -28,7 +28,7 @@ export class EvaluationCriteriaReaderComponent extends Component {
       </tr>
     );
     return <div class="flex-column">
-      <PageTitle title={evaluationCriteria.title} icon="tasks" onBack={this.props.onBack} />
+      <PageTitle title={evaluationCriteria.title} icon="balance-scale-left" onBack={this.props.onBack} />
       {notes.render()}
       <Caption caption="Rates"></Caption>
       <table class="table">

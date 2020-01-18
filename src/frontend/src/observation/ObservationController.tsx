@@ -21,7 +21,10 @@ export class ObservationController {
   private controller: GenericController<Observation>;
   constructor(private deps: ObservationControllerDependencies) {
     const genericControllerDependencies: GenericControllerDependencies<Observation> = {
-      componentFactory: new ObservationComponentFactory({ eventBus: this.deps.eventBus }),
+      componentFactory: new ObservationComponentFactory({
+        eventBus: this.deps.eventBus,
+        evaluationCriteriaController: deps.evaluationCriteriaController
+      }),
       eventFactory: new ObservationEventFactory(),
       db: new ObservationStoreAdapter(deps.db),
       eventBus: deps.eventBus,

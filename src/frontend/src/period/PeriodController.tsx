@@ -59,17 +59,6 @@ export class PeriodController {
       iconClass: "r",
       title: "Periods",
       filterComponentOptions,
-      onItemClicked: (period: Period) => this.mountViewPeriodComponentAsync(period)
     });
-  }
-
-  private getViewPeriodComponentAsync = async (periodId: Period): Promise<Component> => {
-    console.log(`OK`);
-    return await this.genericController.getViewComponent(periodId);
-  }
-
-  private mountViewPeriodComponentAsync = async (periodId: Period) => {
-    const component = await this.getViewPeriodComponentAsync(periodId);
-    this.deps.uiContainer.mount(component);
   }
 }

@@ -7,7 +7,7 @@ import { List } from "../baseComponents/ListComponent";
 import { Rate } from "./EvaluationCriteria";
 
 interface EvaluationCriteriaEditorProps {
-  evaluationCriteriaName: ActionType,
+  actionName: ActionType,
   evaluationCriteria: EvaluationCriteria,
   onValidate: ((evaluationCriteria: EvaluationCriteria) => void),
   onCancel: (() => void)
@@ -42,9 +42,9 @@ export class EvaluationCriteriaEditorComponent extends Component {
 
   public render = (): UIElement => {
     const evaluationCriteria: EvaluationCriteria = objectUtils.clone(this.props.evaluationCriteria);
-    const saveButtonCaption = `${this.props.evaluationCriteriaName || "Create"} evaluation criteria`
-    const draftId = this.props.evaluationCriteriaName === "Create" ? "new-evaluationCriteria-" + this.props.evaluationCriteria : this.props.evaluationCriteria.id;
-    const title = `${this.props.evaluationCriteriaName || "New evaluationCriteria"} ${evaluationCriteria.title}`;
+    const saveButtonCaption = `${this.props.actionName || "Create"} evaluation criteria`
+    const draftId = this.props.actionName === "Create" ? "new-evaluationCriteria-" + this.props.evaluationCriteria : this.props.evaluationCriteria.id;
+    const title = `${this.props.actionName} ${evaluationCriteria.title || " evaluation criteria"}`;
     const editor: MarkdownInputComponent = <MarkdownInput caption="Description" object={evaluationCriteria} field="details" noteId={draftId} />
     const rates: MarkdownInputComponent = <MarkdownInput
       caption="Rates (Line format = 'rate name: description')"
@@ -55,7 +55,7 @@ export class EvaluationCriteriaEditorComponent extends Component {
       editor.clearDraft();
     };
     return <div>
-      <PageTitle title={title} icon="tasks" onBack={this.props.onCancel} />
+      <PageTitle title={title} icon="balance-scale-left" onBack={this.props.onCancel} />
       <div class="row">
         <TextInput class="col" caption="Title" object={evaluationCriteria} field="title" />
       </div>

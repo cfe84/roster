@@ -53,13 +53,13 @@ export class ListComponent<T extends IEntity> extends Component {
     }
   }
 
-  public setItemVisibilityAsync = async (item: T, visibile: boolean) => {
+  public setItemVisibilityAsync = async (item: T, visible: boolean) => {
     if (this.listItems) {
       const reference = this.listItems.find((itemInList) => itemInList.value === item);
       if (!reference) {
         throw Error("Item not found: " + JSON.stringify(item));
       } else {
-        await reference.component.setVisibilityAsync(visibile);
+        await reference.component.setVisibilityAsync(visible);
       }
     }
   }
@@ -91,12 +91,12 @@ export class ListComponent<T extends IEntity> extends Component {
   }
 
   private mapListItem = (item: T): ListItemComponent<T> => {
-    const onClicked = this.props.onClicked || ((elt: T) => { })
-    const onEditClicked = this.props.onEditClicked || ((elt: T) => { })
+    const onClicked = this.props.onClicked !== undefined ? (() => (this.props.onClicked as any)(item)) : undefined;
+    const onEditClicked = this.props.onEditClicked !== undefined ? (() => (this.props.onEditClicked as any)(item)) : undefined;
     return new ListItemComponent<T>({
       elementDisplay: this.props.elementDisplay(item),
-      onClicked: () => onClicked(item),
-      onEditClicked: () => onEditClicked(item)
+      onClicked: onClicked,
+      onEditClicked: onEditClicked
     });
   }
 }

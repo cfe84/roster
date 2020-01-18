@@ -31,6 +31,7 @@ import { EvaluationCriteriaController } from "./evaluationCriteria";
 import { EvaluationCriteriaStorageReactors } from "./evaluationCriteria/EvaluationCriteriaStorageReactors";
 import { ObservationController } from "./observation";
 import { ObservationStorageReactors } from "./observation/ObservationStorageReactors";
+import { FakeEvaluationCriteriaGenerator } from "./evaluationCriteria/FakeEvaluationCriteriaGenerator";
 
 const LAST_OPENED_FILE_KEY = "roster.config.lastOpenedFile";
 const DEFAULT_FILE_NAME = "roster.json";
@@ -168,8 +169,12 @@ export class App {
     }
   }
 
-  private createFakeGenerator(): IFakeGenerator {
+  private createFakePersonGenerator(): IFakeGenerator {
     return new FakePersonGenerator();
+  }
+
+  private createFakeConfigGenerator(): IFakeGenerator {
+    return new FakeEvaluationCriteriaGenerator();
   }
 
   private loadUI(dbStore: IWholeStore) {
@@ -208,7 +213,8 @@ export class App {
       evaluationCriteriaController: this.evaluationCriteriaController,
       debug: this.debug,
       eventBus: this.eventBus,
-      fakeGenerator: this.createFakeGenerator()
+      fakePersonGenerator: this.createFakePersonGenerator(),
+      fakeConfigGenerator: this.createFakeConfigGenerator()
     });
     this.dashboardController.displayDashboard();
   }
