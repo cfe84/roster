@@ -9,10 +9,12 @@ import { EvaluationUpdatedEvent } from "./EvaluationEvents";
 import { EvaluationListFilter, EvaluationToggleFilterValues } from "./EvaluationListFilterComponent";
 import { FilterFunction } from "../baseComponents/GenericController";
 import { IEvaluationCriteriaStore } from "../evaluationCriteria";
+import { ObservationController } from "../observation";
 
 interface EvaluationComponentFactoryProps {
   eventBus: EventBus,
-  evaluationCriteriaStore: IEvaluationCriteriaStore
+  evaluationCriteriaStore: IEvaluationCriteriaStore,
+  observationController: ObservationController
 }
 
 export interface EvaluationListFilterComponentOptions {
@@ -34,6 +36,7 @@ export class EvaluationComponentFactory implements IComponentFactory<Evaluation>
       actionName: "Update",
       evaluation: element,
       evaluationCriteriaStore: this.props.evaluationCriteriaStore,
+      observationController: this.props.observationController,
       onCancel,
       onValidate,
     });
@@ -51,6 +54,7 @@ export class EvaluationComponentFactory implements IComponentFactory<Evaluation>
       actionName: "Create",
       evaluation: element,
       evaluationCriteriaStore: this.props.evaluationCriteriaStore,
+      observationController: this.props.observationController,
       onCancel,
       onValidate,
     });

@@ -4,11 +4,13 @@ import { objectUtils } from "../utils/objectUtils";
 import { ActionType } from "../baseComponents/ActionType";
 import { Evaluation } from ".";
 import { IEvaluationCriteriaStore } from "../evaluationCriteria";
+import { ObservationController } from "../observation";
 
 interface EvaluationEditorProps {
   actionName: ActionType,
   evaluation: Evaluation,
   evaluationCriteriaStore: IEvaluationCriteriaStore,
+  observationController: ObservationController,
   onValidate: ((evaluation: Evaluation) => void),
   onCancel: (() => void)
 }
@@ -37,6 +39,7 @@ export class EvaluationEditorComponent extends Component {
       this.props.onValidate(evaluation);
       editor.clearDraft();
     };
+    const observationsComponent = await this.props.observationController.getCriteriaObservationListComponentAsync(evaluation.periodId, evaluation.criteriaId);
     const rates = evaluationCriteria?.rates.map((rate) => {
       const onclick = () => {
         evaluation.rate = rate.rate;
@@ -55,6 +58,7 @@ export class EvaluationEditorComponent extends Component {
         <TextInput class="col" caption="Title" object={evaluation} field="title" />
         <DateInput class="col" caption="Date" object={evaluation} field="date" />
       </div>
+      {observationsComponent}
       <Caption caption="Rate" />
       <form>{rates}</form>
       {editor}

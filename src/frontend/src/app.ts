@@ -203,6 +203,7 @@ export class App {
       evaluationStore: dbStore,
       evaluationCriteriaStore: dbStore,
       evaluationCriteriaComponentFactory: new EvaluationCriteriaComponentFactory({ eventBus: this.eventBus }),
+      observationController: this.observationController,
       eventBus: this.eventBus,
       uiContainer
     });

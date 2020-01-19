@@ -9,11 +9,13 @@ import { IEvaluationCriteriaStore, EvaluationCriteria } from "../evaluationCrite
 import { IComponentFactory } from "../baseComponents/IComponentFactory";
 import { List } from "../baseComponents/ListComponent";
 import { EvaluationListItem } from "./EvaluationListItemComponent";
+import { ObservationController } from "../observation";
 
 export interface EvaluationControllerDependencies {
   evaluationStore: IEvaluationStore,
   evaluationCriteriaStore: IEvaluationCriteriaStore,
   evaluationCriteriaComponentFactory: IComponentFactory<EvaluationCriteria>,
+  observationController: ObservationController,
   eventBus: EventBus,
   uiContainer: UIContainer
 }
@@ -26,7 +28,8 @@ export class EvaluationController {
     const genericControllerDependencies: GenericControllerDependencies<Evaluation> = {
       componentFactory: new EvaluationComponentFactory({
         eventBus: this.deps.eventBus,
-        evaluationCriteriaStore: this.deps.evaluationCriteriaStore
+        evaluationCriteriaStore: this.deps.evaluationCriteriaStore,
+        observationController: this.deps.observationController
       }),
       eventFactory: new EvaluationEventFactory(),
       db: new EvaluationStoreAdapter(deps.evaluationStore),

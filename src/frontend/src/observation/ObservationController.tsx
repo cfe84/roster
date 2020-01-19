@@ -5,7 +5,7 @@ import { GenericController, GenericControllerDependencies } from "../baseCompone
 import { ObservationComponentFactory, ObservationListFilterComponentOptions } from "./ObservationComponentFactory";
 import { ObservationEventFactory } from "./ObservationEventFactory";
 import { ObservationStoreAdapter } from "./IObservationStore";
-import { EvaluationCriteriaController } from "../evaluationCriteria";
+import { EvaluationCriteriaController, EvaluationCriteriaId } from "../evaluationCriteria";
 import { PeriodController, PeriodId } from "../period";
 
 export interface ObservationControllerDependencies {
@@ -31,6 +31,12 @@ export class ObservationController {
       uiContainer: deps.uiContainer,
     }
     this.controller = new GenericController(genericControllerDependencies);
+  }
+
+  public getCriteriaObservationListComponentAsync = async (periodId: PeriodId, criteriaId: EvaluationCriteriaId) => {
+    return await this.getObservationListComponentAsync((observation: Observation) =>
+      observation.periodId === periodId
+      && observation.observedCriteriaIds.find((id) => criteriaId === id) !== undefined)
   }
 
   public getPeriodListComponentAsync = async (periodId: PeriodId) => {
