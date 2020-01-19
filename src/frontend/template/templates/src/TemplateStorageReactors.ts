@@ -11,7 +11,7 @@ export class TemplateStorageReactors implements IReactor {
     eventBus.subscribe(TemplateDeletedEvent.type, (evt: TemplateCreatedEvent) => this.templateStore.deleteTemplateAsync(evt.entity));
     eventBus.subscribe(PersonDeletedEvent.type, async (evt: PersonDeletedEvent) => {
       const templates = (await this.templateStore.getTemplatesAsync()).filter((template) => template.personId === evt.person.id);
-      await Promise.all(templates.map((template) => this.templateStore.deleteTemplateAsync(template)));
+      await Promise.all(templates.map((template) => eventBus.publishAsync(new TemplateDeletedEvent(template))));
     });
   }
   constructor(private templateStore: ITemplateStore) { }
