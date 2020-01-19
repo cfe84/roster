@@ -77,14 +77,18 @@ class Db {
   private static migrateToV7 = (store: Db) => {
     if (store.version < 7) {
       console.log(`Upgrading db to version 7`);
-      const keys = Object.getOwnPropertyNames(store.evaluationCriterias)
+      Object.getOwnPropertyNames(store.evaluationCriterias)
         .forEach((key: string) => {
           const criteria = store.evaluationCriterias[key];
           criteria.rates.forEach((rate) => {
             const order = (rate as any).rate;
-            delete (rate as any).rate;
-            rate.order = order;
-            rate.id = GUID.newGuid();
+            if (order) {
+              delete (rate as any).rate;
+              rate.order = order;
+            }
+            if (!rate.id) {
+              rate.id = GUID.newGuid();
+            }
           })
         })
       store.version = 7;
