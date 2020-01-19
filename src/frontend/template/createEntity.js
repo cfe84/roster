@@ -1,9 +1,11 @@
 const fs = require("fs");
 const path = require("path");
 
-const templateFolder = "./template/templates";
+const srcTemplateFolder = "./template/templates/src";
+const testTemplateFolder = "./template/templates/test";
 const manualStepsFolder = "./template/manual-steps";
 const srcFolder = "./src";
+const testFolder = "./test";
 const entityName = process.argv[2];
 
 if (!entityName) {
@@ -61,8 +63,10 @@ const writeFiles = (targetPath, files) =>
     fs.writeFileSync(filePath, file.content);
   });
 
-const templates = openTemplates(templateFolder);
-const targetFiles = updateTemplate(templates, entityName);
+const srcTemplates = openTemplates(srcTemplateFolder);
+const srcTargetFiles = updateTemplate(srcTemplates, entityName);
+const testTemplates = openTemplates(testTemplateFolder);
+const testTargetFiles = updateTemplate(testTemplates, entityName);
 const manualSteps = updateTemplate(openManualSteps(manualStepsFolder), entityName);
 
 const targetFolder = path.join(srcFolder, camelize(entityName));
@@ -71,7 +75,8 @@ if (fs.existsSync(targetFolder)) {
   process.exit(1);
 }
 fs.mkdirSync(targetFolder);
-writeFiles(targetFolder, targetFiles);
+writeFiles(targetFolder, srcTargetFiles);
+writeFiles(testFolder, testTargetFiles);
 
 console.log(`Done. Update those files now:`);
 console.log(formatManualSteps(manualSteps).join("\n\n"));
