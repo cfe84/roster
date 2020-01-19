@@ -25,6 +25,7 @@ export class EvaluationReaderComponent extends Component {
       <div class="row">
         <DateDisplay class="col" caption="Date" object={this.props.evaluation} field="date" includeTimespan={true} />
       </div>
+      <TextDisplay caption="rate" object={this.props.evaluation} field="rateName" />
       {notes.render()}
       <span class="d-flex">
         <Button type="primary" onclick={() => this.props.onEdit(evaluation)} icon="pen" text="Edit" />

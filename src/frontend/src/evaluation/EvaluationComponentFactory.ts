@@ -8,9 +8,11 @@ import { EventBus } from "../../lib/common/events";
 import { EvaluationUpdatedEvent } from "./EvaluationEvents";
 import { EvaluationListFilter, EvaluationToggleFilterValues } from "./EvaluationListFilterComponent";
 import { FilterFunction } from "../baseComponents/GenericController";
+import { IEvaluationCriteriaStore } from "../evaluationCriteria";
 
 interface EvaluationComponentFactoryProps {
-  eventBus: EventBus
+  eventBus: EventBus,
+  evaluationCriteriaStore: IEvaluationCriteriaStore
 }
 
 export interface EvaluationListFilterComponentOptions {
@@ -31,6 +33,7 @@ export class EvaluationComponentFactory implements IComponentFactory<Evaluation>
     return EvaluationEditor({
       actionName: "Update",
       evaluation: element,
+      evaluationCriteriaStore: this.props.evaluationCriteriaStore,
       onCancel,
       onValidate,
     });
@@ -47,6 +50,7 @@ export class EvaluationComponentFactory implements IComponentFactory<Evaluation>
     return EvaluationEditor({
       actionName: "Create",
       evaluation: element,
+      evaluationCriteriaStore: this.props.evaluationCriteriaStore,
       onCancel,
       onValidate,
     });

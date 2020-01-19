@@ -24,7 +24,10 @@ export class EvaluationController {
   private controller: GenericController<Evaluation>;
   constructor(private deps: EvaluationControllerDependencies) {
     const genericControllerDependencies: GenericControllerDependencies<Evaluation> = {
-      componentFactory: new EvaluationComponentFactory({ eventBus: this.deps.eventBus }),
+      componentFactory: new EvaluationComponentFactory({
+        eventBus: this.deps.eventBus,
+        evaluationCriteriaStore: this.deps.evaluationCriteriaStore
+      }),
       eventFactory: new EvaluationEventFactory(),
       db: new EvaluationStoreAdapter(deps.evaluationStore),
       eventBus: deps.eventBus,
@@ -33,21 +36,24 @@ export class EvaluationController {
     this.controller = new GenericController(genericControllerDependencies);
   }
 
-  public getPeriodListComponentAsync = async (periodId: string) => {
-    return await this.getEvaluationListComponentAsync((evaluation: Evaluation) => evaluation.periodId === periodId, periodId);
-  }
 
-  private getEvaluationListComponentAsync = async (filter: EvaluationFilter, periodId?: string) => {
+  public getPeriodListComponentAsync = async (periodId: string) => {
+    const evaluationList = (await this.deps.evaluationStore.getEvaluationsAsync())
+      .filter((evaluation) => evaluation.periodId === periodId);
     const criteriaList = (await this.deps.evaluationCriteriaStore.getEvaluationCriteriasAsync())
       .filter((criteria) => criteria.active)
       .sort((c1, c2) => c1.title.localeCompare(c2.title));
-    const elementDisplay = (criteria: EvaluationCriteria) => <EvaluationListItem
-      evaluationCriteria={criteria}
-      evaluationCriteriaComponent={(this.deps.evaluationCriteriaComponentFactory.createListItemComponent as any)(criteria)}
-      onclick={() => { }}
-      oncreate={() => { }}
-      onedit={() => { }}
-    />
+    const elementDisplay = (criteria: EvaluationCriteria) => {
+      const evaluation = evaluationList.find((evaluation) => evaluation.criteriaId === criteria.id);
+      return <EvaluationListItem
+        evaluationCriteria={criteria}
+        evaluation={evaluation}
+        evaluationCriteriaComponent={(this.deps.evaluationCriteriaComponentFactory.createListItemComponent as any)(criteria)}
+        onclick={() => { if (evaluation) { this.controller.mountView(evaluation) } }}
+        oncreate={() => { this.controller.mountCreate(() => new Evaluation(periodId, criteria.id)) }}
+        onedit={() => { if (evaluation) { this.controller.mountEdit(evaluation) } }}
+      />
+    }
     const listComponent = <List
       elements={criteriaList}
       elementDisplay={elementDisplay}
