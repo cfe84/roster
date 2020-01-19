@@ -32,6 +32,9 @@ import { EvaluationCriteriaStorageReactors } from "./evaluationCriteria/Evaluati
 import { ObservationController } from "./observation";
 import { ObservationStorageReactors } from "./observation/ObservationStorageReactors";
 import { FakeEvaluationCriteriaGenerator } from "./evaluationCriteria/FakeEvaluationCriteriaGenerator";
+import { EvaluationController } from "./evaluation";
+import { EvaluationStorageReactors } from "./evaluation/EvaluationStorageReactors";
+import { EvaluationCriteriaComponentFactory } from "./evaluationCriteria/EvaluationCriteriaComponentFactory";
 
 const LAST_OPENED_FILE_KEY = "roster.config.lastOpenedFile";
 const DEFAULT_FILE_NAME = "roster.json";
@@ -77,6 +80,7 @@ export class App {
   periodController?: PeriodController;
   evaluationCriteriaController?: EvaluationCriteriaController;
   observationController?: ObservationController;
+  evaluationController?: EvaluationController;
 
   private loadLogger(debug: boolean): ILogger {
     if (debug) {
@@ -195,8 +199,16 @@ export class App {
       uiContainer,
       evaluationCriteriaController: this.evaluationCriteriaController
     });
+    this.evaluationController = new EvaluationController({
+      evaluationStore: dbStore,
+      evaluationCriteriaStore: dbStore,
+      evaluationCriteriaComponentFactory: new EvaluationCriteriaComponentFactory({ eventBus: this.eventBus }),
+      eventBus: this.eventBus,
+      uiContainer
+    });
     this.periodController = new PeriodController({
       db: dbStore, eventBus: this.eventBus, uiContainer,
+      evaluationController: this.evaluationController,
       evaluationCriteriaController: this.evaluationCriteriaController,
       observationController: this.observationController
     });
@@ -236,6 +248,8 @@ export class App {
     evaluationCriteriaReactor.registerReactors(this.eventBus);
     const observationReactor = new ObservationStorageReactors(dbStore);
     observationReactor.registerReactors(this.eventBus);
+    const evaluationReactor = new EvaluationStorageReactors(dbStore);
+    evaluationReactor.registerReactors(this.eventBus);
   }
 
   public handleError = () => {

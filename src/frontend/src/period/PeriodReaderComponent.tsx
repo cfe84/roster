@@ -4,6 +4,7 @@ import { Button, PageTitle, DateDisplay, TextDisplay, Checkbox } from "../baseCo
 import { Period } from ".";
 import { EvaluationCriteriaController } from "../evaluationCriteria";
 import { ObservationController } from "../observation";
+import { EvaluationController } from "../evaluation";
 
 interface PeriodReaderProps {
   period: Period,
@@ -12,6 +13,7 @@ interface PeriodReaderProps {
   onDelete: (() => void),
   onBack: (() => void),
   evaluationCriteriaController: EvaluationCriteriaController,
+  evaluationController: EvaluationController,
   observationController: ObservationController
 }
 
@@ -22,6 +24,7 @@ export class PeriodReaderComponent extends Component {
   public render = async (): Promise<UIElement> => {
     const period = this.props.period;
     const observationsComponent = await this.props.observationController.getPeriodListComponentAsync(period.id);
+    const evaluationsComponent = await this.props.evaluationController.getPeriodListComponentAsync(period.id);
     // Need 
     const notes = <MarkdownDisplay
       caption="Details"
@@ -34,6 +37,7 @@ export class PeriodReaderComponent extends Component {
         <DateDisplay class="col" caption="Finish date" object={this.props.period} field="finishDate" includeTimespan={true} />
       </div>
       {notes.render()}
+      {evaluationsComponent}
       {observationsComponent}
       <span class="d-flex">
         <Button type="primary" onclick={() => this.props.onEdit(period)} icon="pen" text="Edit" />

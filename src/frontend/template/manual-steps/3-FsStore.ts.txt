@@ -7,10 +7,10 @@ Increase version!
 Add migration operation
 
     private static migrateToVxxx = (store: Db) => {
-    if (store.version < 5) {
-      console.log(`Upgrading db to version 5`);
+    if (store.version < xxx) {
+      console.log(`Upgrading db to version xxx`);
       if (!store.templates) {
-        store.templates = new MyArray<Templates>();
+        store.templates = new MyArray<Template>();
       }
       store.version = xxx;
     }

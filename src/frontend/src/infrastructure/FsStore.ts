@@ -9,13 +9,14 @@ import { Period } from "../period";
 import { EvaluationCriteria } from "../evaluationCriteria";
 import { JsonSerializer } from "../../lib/common/utils/JsonSerializer";
 import { Observation } from "../observation";
+import { Evaluation } from "../evaluation";
 
 class MyArray<T> {
   [index: string]: T
 }
 
 class Db {
-  static version = 5;
+  static version = 6;
   version = Db.version;
   persons = new MyArray<Person>();
   notes = new MyArray<Note>();
@@ -25,6 +26,7 @@ class Db {
   periods = new MyArray<Period>();
   evaluationCriterias = new MyArray<EvaluationCriteria>();
   observations = new MyArray<Observation>();
+  evaluations = new MyArray<Evaluation>();
 
   private static migrateToV3 = (store: Db) => {
     if (store.version < 3) {
@@ -61,6 +63,16 @@ class Db {
     }
   }
 
+  private static migrateToV6 = (store: Db) => {
+    if (store.version < 6) {
+      console.log(`Upgrading db to version 6`);
+      if (!store.evaluations) {
+        store.evaluations = new MyArray<Evaluation>();
+      }
+      store.version = 6;
+    }
+  }
+
   public static migrate = (store: Db) => {
     if (!store.version) {
       store.version = 1;
@@ -68,6 +80,7 @@ class Db {
     Db.migrateToV3(store);
     Db.migrateToV4(store);
     Db.migrateToV5(store);
+    Db.migrateToV6(store);
   }
 
   public static deserialize(serializedStore: string): Db {
@@ -137,6 +150,7 @@ export class FsStore implements IWholeStore {
   periods: ArrayManager<Period>;
   evaluationCriterias: ArrayManager<EvaluationCriteria>;
   observations: ArrayManager<Observation>;
+  evaluations: ArrayManager<Evaluation>;
 
   private constructor(private file: string, private db: Db) {
     this.persons = new ArrayManager(db.persons, (person: Person) => person.id, this);
@@ -147,6 +161,7 @@ export class FsStore implements IWholeStore {
     this.periods = new ArrayManager(db.periods, (period: Period) => period.id, this);
     this.evaluationCriterias = new ArrayManager(db.evaluationCriterias, (evaluationCriteria: EvaluationCriteria) => evaluationCriteria.id, this);
     this.observations = new ArrayManager(db.observations, (observation: Observation) => observation.id, this);
+    this.evaluations = new ArrayManager(db.evaluations, (evaluation: Evaluation) => evaluation.id, this);
   }
 
   commitChangesAsync = async () => {
@@ -194,4 +209,10 @@ export class FsStore implements IWholeStore {
   createObservationAsync = (observation: Observation): Promise<void> => this.observations.addAsync(observation);
   updateObservationAsync = (observation: Observation): Promise<void> => this.observations.updateAsync(observation);
   deleteObservationAsync = (observation: Observation): Promise<void> => this.observations.deleteAsync(observation);
+
+  getEvaluationsAsync = (): Promise<Evaluation[]> => this.evaluations.getAsync()
+  createEvaluationAsync = (evaluation: Evaluation): Promise<void> => this.evaluations.addAsync(evaluation);
+  updateEvaluationAsync = (evaluation: Evaluation): Promise<void> => this.evaluations.updateAsync(evaluation);
+  deleteEvaluationAsync = (evaluation: Evaluation): Promise<void> => this.evaluations.deleteAsync(evaluation);
+
 }

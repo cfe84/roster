@@ -1,17 +1,19 @@
 import { IPeriodStore, Period } from ".";
 import { EventBus } from "../../lib/common/events";
-import { UIContainer, UIElement, Component } from "../html";
+import { UIContainer } from "../html";
 import { GenericController, GenericControllerDependencies } from "../baseComponents/GenericController";
 import { PeriodComponentFactory, PeriodListFilterComponentOptions } from "./PeriodComponentFactory";
 import { PeriodEventFactory } from "./PeriodEventFactory";
 import { PeriodStoreAdapter } from "./IPeriodStore";
 import { EvaluationCriteriaController } from "../evaluationCriteria";
 import { ObservationController } from "../observation";
+import { EvaluationController } from "../evaluation";
 
 export interface PeriodControllerDependencies {
   db: IPeriodStore,
   eventBus: EventBus,
   uiContainer: UIContainer,
+  evaluationController: EvaluationController,
   evaluationCriteriaController: EvaluationCriteriaController,
   observationController: ObservationController
 }
@@ -25,6 +27,7 @@ export class PeriodController {
       componentFactory: new PeriodComponentFactory({
         eventBus: this.deps.eventBus,
         evaluationCriteriaController: this.deps.evaluationCriteriaController,
+        evalutionController: this.deps.evaluationController,
         observationController: this.deps.observationController
       }),
       eventFactory: new PeriodEventFactory(),

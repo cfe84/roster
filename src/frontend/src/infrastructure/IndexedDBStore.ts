@@ -8,9 +8,10 @@ import { objectUtils } from "../utils/objectUtils";
 import { Period } from "../period";
 import { EvaluationCriteria } from "../evaluationCriteria";
 import { Observation } from "../observation";
+import { Evaluation } from "../evaluation";
 
 const DB_NAME: string = "rosterdb";
-const DB_VERSION: number = 10;
+const DB_VERSION: number = 11;
 const OBJECTSTORE_PEOPLE: string = "people";
 const OBJECTSTORE_NOTES: string = "notes";
 const OBJECTSTORE_DISCUSSIONS: string = "discussions";
@@ -19,6 +20,7 @@ const OBJECTSTORE_ACTIONS: string = "actions";
 const OBJECTSTORE_PERIODS: string = "periods";
 const OBJECTSTORE_EVALUATIONCRITERIA: string = "evaluationCriterias";
 const OBJECTSTORE_OBSERVATION: string = "observations";
+const OBJECTSTORE_EVALUATION: string = "evaluations";
 
 const stores = [
   { name: OBJECTSTORE_PEOPLE, key: "id", index: "name" },
@@ -29,6 +31,7 @@ const stores = [
   { name: OBJECTSTORE_PERIODS, key: "id", index: "personid" },
   { name: OBJECTSTORE_EVALUATIONCRITERIA, key: "id" },
   { name: OBJECTSTORE_OBSERVATION, key: "id", index: "periodId" },
+  { name: OBJECTSTORE_EVALUATION, key: "id", index: "personid" },
 ];
 
 const getTarget = <T>(evt: any): T => (evt.target as T)
@@ -257,5 +260,19 @@ export class IndexedDBStore implements IWholeStore {
   }
   public deleteObservationAsync = async (element: Observation): Promise<void> => {
     await this.db.deleteEntityAsync(OBJECTSTORE_OBSERVATION, element.id);
+  }
+
+
+  public getEvaluationsAsync = async (): Promise<Evaluation[]> =>
+    (await this.db.getAllAsync<Evaluation>(OBJECTSTORE_EVALUATION));
+
+  public createEvaluationAsync = async (element: Evaluation): Promise<void> => {
+    await this.db.createEntityAsync(OBJECTSTORE_EVALUATION, element);
+  }
+  public updateEvaluationAsync = async (element: Evaluation): Promise<void> => {
+    await this.db.putEntityAsync(OBJECTSTORE_EVALUATION, element);
+  }
+  public deleteEvaluationAsync = async (element: Evaluation): Promise<void> => {
+    await this.db.deleteEntityAsync(OBJECTSTORE_EVALUATION, element.id);
   }
 }
