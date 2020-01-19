@@ -23,9 +23,9 @@ export class EvaluationReaderComponent extends Component {
     return <div class="flex-column">
       <PageTitle title={evaluation.title} icon="ruler" onBack={this.props.onBack} />
       <div class="row">
+        <TextDisplay class="col" caption="Rate" object={this.props.evaluation} field="rateName" />
         <DateDisplay class="col" caption="Date" object={this.props.evaluation} field="date" includeTimespan={true} />
       </div>
-      <TextDisplay caption="rate" object={this.props.evaluation} field="rateName" />
       {notes.render()}
       <span class="d-flex">
         <Button type="primary" onclick={() => this.props.onEdit(evaluation)} icon="pen" text="Edit" />

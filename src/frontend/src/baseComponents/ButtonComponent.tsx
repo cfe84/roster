@@ -5,20 +5,21 @@ export type ButtonType = "primary" | "secondary" | "delete";
 export interface ButtonProps {
   icon?: string,
   type?: ButtonType,
+  outline?: boolean,
   class?: string,
   text: string,
   onclick: () => void
 }
 
-const getClass = (type?: string) => {
+const getClass = (type?: string, subclass?: string) => {
   switch (type) {
     case "secondary":
-      return "btn-secondary";
+      return `btn-${subclass}secondary`;
     case "delete":
-      return "btn-danger";
+      return `btn-${subclass}danger`;
     case "primary":
     default:
-      return "btn-primary";
+      return `btn-${subclass}primary`;
   }
 }
 
@@ -31,7 +32,8 @@ export class ButtonComponent extends Component {
       }
       event.stopPropagation();
     }
-    const clss = `btn ${this.props.class || ""} ${getClass(this.props.type)}`;
+    const subclass = this.props.outline ? "outline-" : "";
+    const clss = `btn ${this.props.class || ""} ${getClass(this.props.type, subclass)}`;
     const iconClass = `fa fa-${this.props.icon}`;
     const icon = this.props.icon ? <i class={iconClass}></i> : "";
     const component = <button class={clss} onclick={onclick}>{icon} {this.props.text}</button>
