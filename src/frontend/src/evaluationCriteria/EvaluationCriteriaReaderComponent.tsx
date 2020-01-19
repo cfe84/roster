@@ -22,7 +22,7 @@ export class EvaluationCriteriaReaderComponent extends Component {
     ></MarkdownDisplay>;
     const rates = evaluationCriteria.rates.map(
       rate => <tr>
-        <th scope="row">{rate.rate}</th>
+        <th scope="row">{rate.order}</th>
         <td>{rate.name}</td>
         <td>{rate.description}</td>
       </tr>

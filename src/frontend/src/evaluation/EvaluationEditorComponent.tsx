@@ -1,10 +1,11 @@
 import { UIElement, Component } from "../html/index";
-import { MarkdownInput, TextInput, DateInput, Button, PageTitle, MarkdownInputComponent, Select, Checkbox, Caption } from "../baseComponents";
+import { MarkdownInput, TextInput, DateInput, Button, PageTitle, MarkdownInputComponent, Select, Checkbox, Caption, TextDisplay } from "../baseComponents";
 import { objectUtils } from "../utils/objectUtils";
 import { ActionType } from "../baseComponents/ActionType";
 import { Evaluation } from ".";
 import { IEvaluationCriteriaStore } from "../evaluationCriteria";
 import { ObservationController } from "../observation";
+import { MarkdownDisplay, MarkdownDisplayComponent } from "../baseComponents/MarkdownDisplayComponent";
 
 interface EvaluationEditorProps {
   actionName: ActionType,
@@ -25,43 +26,39 @@ export class EvaluationEditorComponent extends Component {
     const evaluation: Evaluation = objectUtils.clone(this.props.evaluation);
     const evaluationCriteria = (await this.props.evaluationCriteriaStore.getEvaluationCriteriasAsync())
       .find((criteria) => criteria.id === evaluation.criteriaId);
-    if (!evaluation.rateName) {
-      if (evaluation.rate === undefined) {
-        evaluation.rate = 0;
-      }
-      evaluation.rateName = evaluationCriteria?.rates[evaluation.rate].name || "";
-    }
     const saveButtonCaption = `${this.props.actionName || "Create"} evaluation`
     const draftId = this.props.actionName === "Create" ? "new-evaluation-" + this.props.evaluation.periodId : this.props.evaluation.id;
-    const title = `${this.props.actionName} ${evaluation.title || " evaluation"} for ${evaluationCriteria?.title}`;
-    const editor: MarkdownInputComponent = <MarkdownInput caption="Explanation" object={evaluation} field="details" noteId={draftId} />
+    const title = `${this.props.actionName} ${evaluation.criteriaName || " evaluation"}`;
+    const detailsEditor: MarkdownInputComponent = <MarkdownInput caption="Explanation" object={evaluation} field="details" noteId={draftId} />
     const onSave = () => {
       this.props.onValidate(evaluation);
-      editor.clearDraft();
+      detailsEditor.clearDraft();
     };
     const observationsComponent = await this.props.observationController.getCriteriaObservationListComponentAsync(evaluation.periodId, evaluation.criteriaId);
-    const rates = evaluationCriteria?.rates.map((rate) => {
+    const ratesComponent = evaluationCriteria?.rates.map((rate) => {
       const onclick = () => {
-        evaluation.rate = rate.rate;
+        evaluation.rateId = rate.id;
         evaluation.rateName = rate.name;
       };
-      const input = evaluation.rate === rate.rate
+      const input = evaluation.rateId === rate.id
         ? <input type="radio" name="rate" onclick={onclick} checked="true" />
         : <input type="radio" name="rate" onclick={onclick} />
       return <div>
-        {input} {rate.rate} - <b>{rate.name}</b> - <em>{rate.description}</em>
+        {input} <b>{rate.name}</b> - <em>{rate.description}</em>
       </div>
     })
+    console.log(evaluationCriteria)
     return <div>
       <PageTitle title={title} icon="ruler" onBack={this.props.onCancel} />
       <div class="row">
-        <TextInput class="col" caption="Title" object={evaluation} field="title" />
+        <TextDisplay class="col" caption="Evaluated criteria" object={evaluation} field="criteriaName" />
         <DateInput class="col" caption="Date" object={evaluation} field="date" />
       </div>
+      <MarkdownDisplay caption="Description of the criteria" object={evaluationCriteria} field="details" />
       {observationsComponent}
       <Caption caption="Rate" />
-      <form>{rates}</form>
-      {editor}
+      <form>{ratesComponent}</form>
+      {detailsEditor}
       <Button class="mr-2" onclick={onSave} icon="save" text={saveButtonCaption} />
       <Button type="secondary" onclick={this.props.onCancel} icon="times" text="Cancel" />
     </div>;

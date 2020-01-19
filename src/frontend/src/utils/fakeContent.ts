@@ -15,12 +15,16 @@ const generateParagraph = (words: number): string => {
   }
 }
 
-export const generateContent = (paragraphs: number): string => {
+export const generateContent = (paragraphs: number, wordsPerParagraph: number = 100, formatting: boolean = true): string => {
   if (paragraphs === 0) {
     return ""
   } else {
-    const format = pick(formats);
-    return `${format}${generateParagraph(Math.round(Math.random() * 100 + 20))}${format}\n\n${generateContent(paragraphs - 1)}`
+
+    let format = "";
+    if (formatting)
+      format = pick(formats);
+    return `${format}${generateParagraph(Math.round(Math.random() * wordsPerParagraph + 10))}${format}` + (paragraphs > 1 ?
+      `\n\n${generateContent(paragraphs - 1, wordsPerParagraph, formatting)}` : "")
   }
 }
 

@@ -1,1 +1,1 @@
-export const pick = (array: string[] | string) => array[Math.floor(Math.random() * array.length)]; 
+export const pick = <T>(array: T[] | string) => array[Math.floor(Math.random() * array.length)]; 

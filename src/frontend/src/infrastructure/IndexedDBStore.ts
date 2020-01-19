@@ -11,7 +11,7 @@ import { Observation } from "../observation";
 import { Evaluation } from "../evaluation";
 
 const DB_NAME: string = "rosterdb";
-const DB_VERSION: number = 11;
+const DB_VERSION: number = 12;
 const OBJECTSTORE_PEOPLE: string = "people";
 const OBJECTSTORE_NOTES: string = "notes";
 const OBJECTSTORE_DISCUSSIONS: string = "discussions";

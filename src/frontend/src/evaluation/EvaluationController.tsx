@@ -53,7 +53,7 @@ export class EvaluationController {
         evaluation={evaluation}
         evaluationCriteriaComponent={(this.deps.evaluationCriteriaComponentFactory.createListItemComponent as any)(criteria)}
         onclick={() => { if (evaluation) { this.controller.mountView(evaluation) } }}
-        oncreate={() => { this.controller.mountCreate(() => new Evaluation(periodId, criteria.id)) }}
+        oncreate={() => { this.controller.mountCreate(() => new Evaluation(periodId, criteria.id, criteria.title)) }}
         onedit={() => { if (evaluation) { this.controller.mountEdit(evaluation) } }}
       />
     }

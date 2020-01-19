@@ -2,22 +2,22 @@ import { IEntity } from "../../lib/common/entities"
 import { GUID } from "../../lib/common/utils/guid";
 import { PeriodId } from "../period";
 import { EvaluationCriteriaId } from "../evaluationCriteria";
+import { RateId } from "../evaluationCriteria/EvaluationCriteria";
 
 export const EntityType = "evaluation"
 
 export type EvaluationId = string;
 
 export class Evaluation implements IEntity {
-  id: string = GUID.newGuid();
-  title: EvaluationId = "";
+  id: EvaluationId = GUID.newGuid();
   details: string = "";
   date: Date = new Date();
-  rate: number = 0;
+  rateId: RateId = "";
   rateName: string = "";
 
-  constructor(public periodId: PeriodId, public criteriaId: EvaluationCriteriaId) {
+  constructor(public periodId: PeriodId, public criteriaId: EvaluationCriteriaId, public criteriaName: string) {
     this.date = new Date();
   }
 
-  toString = () => this.title;
+  toString = () => this.criteriaName;
 }

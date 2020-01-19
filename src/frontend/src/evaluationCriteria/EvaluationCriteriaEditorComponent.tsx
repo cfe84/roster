@@ -1,5 +1,5 @@
 import { UIElement, Component } from "../html/index";
-import { MarkdownInput, TextInput, DateInput, Button, PageTitle, MarkdownInputComponent, ListItem, Checkbox } from "../baseComponents";
+import { MarkdownInput, TextInput, DateInput, Button, PageTitle, MarkdownInputComponent, ListItem, Checkbox, Caption } from "../baseComponents";
 import { objectUtils } from "../utils/objectUtils";
 import { ActionType } from "../baseComponents/ActionType";
 import { EvaluationCriteria } from ".";
@@ -15,29 +15,32 @@ interface EvaluationCriteriaEditorProps {
 
 export class EvaluationCriteriaEditorComponent extends Component {
 
+  private rateNameIndex: number;
+  private rateIdIndex: number;
+  private rateDescriptionIndex: number;
   constructor(private props: EvaluationCriteriaEditorProps) {
     super()
+    this.rateIdIndex = props.actionName === "Create" ? -1 : 0;
+    this.rateNameIndex = this.rateIdIndex + 1;
+    this.rateDescriptionIndex = this.rateNameIndex + 1;
   }
 
   private formatRates = (rates: Rate[]) =>
     rates
-      .sort((a, b) => a.rate - b.rate)
-      .map(rate => `${rate.name}: ${rate.description}`)
+      .sort((a, b) => a.order - b.order)
+      .map(rate => `${rate.id}: ${rate.name}: ${rate.description}`)
       .join("\n");
 
   private parseRates = (ratesAsString: string) =>
     ratesAsString
       .split("\n")
-      .map((rateAsString, index) => {
-        const idx = rateAsString.indexOf(":");
-        if (idx >= 0) {
-          const name = rateAsString.substr(0, idx).trim();
-          const description = rateAsString.substr(idx + 1);
-          return new Rate(index, name, description);
+      .map((rateAsString, order) => {
+        const rateAsStringArray = rateAsString.split(":").map((rate) => rate.trim());
+        const rate = new Rate(order, rateAsStringArray[this.rateNameIndex], rateAsStringArray[this.rateDescriptionIndex]);
+        if (this.rateIdIndex >= 0) {
+          rate.id = rateAsStringArray[this.rateIdIndex];
         }
-        else {
-          return new Rate(index, rateAsString, "");
-        }
+        return rate;
       })
 
   public render = (): UIElement => {
@@ -47,13 +50,15 @@ export class EvaluationCriteriaEditorComponent extends Component {
     const title = `${this.props.actionName} ${evaluationCriteria.title || " evaluation criteria"}`;
     const editor: MarkdownInputComponent = <MarkdownInput caption="Description" object={evaluationCriteria} field="details" noteId={draftId} />
     const rates: MarkdownInputComponent = <MarkdownInput
-      caption="Rates (Line format = 'rate name: description')"
       onchange={(value) => evaluationCriteria.rates = this.parseRates(value)}
       value={this.formatRates(evaluationCriteria.rates)} />
     const onSave = () => {
       this.props.onValidate(evaluationCriteria);
       editor.clearDraft();
     };
+    const dontChangeIdWarningComponent = this.props.actionName === "Update"
+      ? <span>You can change order, but <b>don't change or remove ids</b>, or this will cause evaluation data loss.</span>
+      : ""
     return <div>
       <PageTitle title={title} icon="balance-scale-left" onBack={this.props.onCancel} />
       <div class="row">
@@ -61,6 +66,9 @@ export class EvaluationCriteriaEditorComponent extends Component {
       </div>
       <Checkbox caption="Active" object={evaluationCriteria} field="active" />
       {editor}
+      <Caption caption="Rates" />
+      <em>Each line is formatted as follow. {dontChangeIdWarningComponent}
+        <pre>{this.props.actionName === "Update" ? "rateId: " : ""}rate name: rate description</pre></em>
       {rates}
       <Button class="mr-2" onclick={onSave} icon="save" text={saveButtonCaption} />
       <Button type="secondary" onclick={this.props.onCancel} icon="times" text="Cancel" />

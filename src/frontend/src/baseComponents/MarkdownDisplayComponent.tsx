@@ -17,7 +17,7 @@ export class MarkdownDisplayComponent extends Component {
   }
 
   render = (): UIElement => {
-    const content = this.props.value || "";
+    const content = this.props.value || (this.props.object && this.props.field ? (this.props.object as any)[this.props.field] : "") || "";
     const parsedNote = marked(content);
     const noteId = `content-${GUID.newGuid()}`;
     const script = `document.getElementById("${noteId}").innerHTML = "${parsedNote.replace(/"/gm, '\\"').replace(/\n/gm, "\\\n")}";`

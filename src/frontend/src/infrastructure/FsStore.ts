@@ -10,13 +10,14 @@ import { EvaluationCriteria } from "../evaluationCriteria";
 import { JsonSerializer } from "../../lib/common/utils/JsonSerializer";
 import { Observation } from "../observation";
 import { Evaluation } from "../evaluation";
+import { GUID } from "../../lib/common/utils/guid";
 
 class MyArray<T> {
   [index: string]: T
 }
 
 class Db {
-  static version = 6;
+  static version = 7;
   version = Db.version;
   persons = new MyArray<Person>();
   notes = new MyArray<Note>();
@@ -73,6 +74,23 @@ class Db {
     }
   }
 
+  private static migrateToV7 = (store: Db) => {
+    if (store.version < 7) {
+      console.log(`Upgrading db to version 7`);
+      const keys = Object.getOwnPropertyNames(store.evaluationCriterias)
+        .forEach((key: string) => {
+          const criteria = store.evaluationCriterias[key];
+          criteria.rates.forEach((rate) => {
+            const order = (rate as any).rate;
+            delete (rate as any).rate;
+            rate.order = order;
+            rate.id = GUID.newGuid();
+          })
+        })
+      store.version = 7;
+    }
+  }
+
   public static migrate = (store: Db) => {
     if (!store.version) {
       store.version = 1;
@@ -81,6 +99,7 @@ class Db {
     Db.migrateToV4(store);
     Db.migrateToV5(store);
     Db.migrateToV6(store);
+    Db.migrateToV7(store);
   }
 
   public static deserialize(serializedStore: string): Db {

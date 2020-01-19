@@ -25,11 +25,11 @@ export class EvaluationListItemComponent extends Component {
         <Button class="ml-3" outline={true} text="Edit" onclick={this.props.onedit}></Button>
       </span>
     } else {
-      evaluation = <Button text="Add evaluation" onclick={this.props.oncreate}></Button>;
+      evaluation = <Button text="Add evaluation" outline={true} onclick={this.props.oncreate}></Button>;
     }
     const clss = `w-100 d-flex ${this.props.onclick ? "btn" : ""}`
     return <span class={clss} onclick={this.props.onclick}>
-      <span>{this.props.evaluationCriteriaComponent}</span>
+      <span class="align-middle">{this.props.evaluationCriteriaComponent}</span>
       <span class="ml-auto">{evaluation}</span>
     </span>;
   }

@@ -1,6 +1,7 @@
-import { Component } from "../html";
+import { Component, UIElement } from "../html";
 import { EvaluationCriteria } from ".";
 import { CheckboxDisplay } from "../baseComponents";
+import { TEXT_NODE_TYPE } from "../html/UIElement";
 
 export interface EvaluationCriteriaListItemComponentProps {
   evaluationCriteria: EvaluationCriteria
@@ -12,13 +13,13 @@ export class EvaluationCriteriaListItemComponent extends Component {
   }
 
   render() {
-    let content = this.props.evaluationCriteria.title;
+    let content = new UIElement(TEXT_NODE_TYPE, {
+      text: this.props.evaluationCriteria.title
+    });
     if (!this.props.evaluationCriteria.active) {
       content = <s>{content}</s>
     }
-    return <span>
-      {content}
-    </span>;
+    return content;
   }
 }
 

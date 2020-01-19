@@ -15,7 +15,7 @@ export class FakePeriodGenerator implements IFakeGenerator {
     period.finishDate = new Date();
     period.startDate.setDate(Math.random() * 10000 + period.startDate.getDate());
     period.finishDate.setDate(period.startDate.getDate() + 90);
-    period.details = generateContent(2 + Math.floor(Math.random() * 8));
+    period.details = generateContent(2 + Math.floor(Math.random() * 3));
     period.name = generateTitle(4 + Math.floor(Math.random() * 5));
     await eventBus.publishAsync(new PeriodCreatedEvent(period));
 
