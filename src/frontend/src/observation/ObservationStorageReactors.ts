@@ -5,6 +5,7 @@ import { PersonDeletedEvent } from "../persons/PersonEvent";
 import { ObservationCreatedEvent, ObservationUpdatedEvent, ObservationDeletedEvent } from "./ObservationEvents";
 import { PeriodDeletedEvent } from "../period/PeriodEvents";
 import { EvaluationCriteriaDeletedEvent } from "../evaluationCriteria/EvaluationCriteriaEvents";
+import { EvaluationDeletedEvent } from "../evaluation/EvaluationEvents";
 
 export class ObservationStorageReactors implements IReactor {
   registerReactors(eventBus: EventBus): void {
@@ -15,6 +16,16 @@ export class ObservationStorageReactors implements IReactor {
       const observations = (await this.observationStore.getObservationsAsync()).filter((observation) => observation.periodId === evt.entity.id);
       await Promise.all(observations.map((observation) => eventBus.publishAsync(new ObservationDeletedEvent(observation))));
     });
+    // eventBus.subscribe(EvaluationDeletedEvent.type, async (evt: EvaluationDeletedEvent) => {
+    //   const observations = (await this.observationStore.getObservationsAsync()).filter((observation) =>
+    //     !!observation.observedCriteriaIds.find(id => id === evt.entity.id));
+    //   await Promise.all(observations.map((observation) => {
+    //     const index = observation.observedCriteriaIds.findIndex((id) => id === evt.entity.id);
+    //     observation.observedCriteriaIds.splice(index, 1);
+    //     eventBus.publishAsync(new ObservationUpdatedEvent(observation))
+    //   }
+    //   ));
+    // });
   }
   constructor(private observationStore: IObservationStore) { }
 
