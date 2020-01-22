@@ -128,5 +128,6 @@ export class UIElement {
   }
 
   ondispose() { }
+  on(eventType: string, eventData: any) { }
   onmounted() { }
 }

@@ -32,5 +32,7 @@ export abstract class Component {
 
   public onmounted() { }
 
+  public on(eventType: string, eventData: any) { }
+
   abstract render(): UIElement | Promise<UIElement>;
 }

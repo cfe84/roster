@@ -29,6 +29,10 @@ interface GetListOptions<T> {
   onItemClicked?: (item: T) => void;
 }
 
+export const GENERIC_CONTROLLER_EVENT_TYPES = {
+  ENTITY_UPDATED: "ENTITY_UPDATED"
+}
+
 export class GenericController<EntityType extends IEntity>{
 
   constructor(private deps: GenericControllerDependencies<EntityType>) { }
@@ -125,6 +129,7 @@ export class GenericController<EntityType extends IEntity>{
       (action) => this.mountDelete(action));
     const updateSubscription = this.deps.eventBus.subscribe(this.deps.eventFactory.updatedEventType, (evt: ITypedEvent<EntityType>) => {
       if (evt.entity.id === entity.id) {
+        component.on(GENERIC_CONTROLLER_EVENT_TYPES.ENTITY_UPDATED, evt.entity)
         this.deps.uiContainer.rerenderIfCurrent(component);
       }
     });

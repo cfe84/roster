@@ -2,6 +2,7 @@ import { UIElement, Component } from "../html/index";
 import { MarkdownDisplay } from "../baseComponents/MarkdownDisplayComponent";
 import { Button, PageTitle, DateDisplay, TextDisplay, Checkbox } from "../baseComponents";
 import { Template } from ".";
+import { GENERIC_CONTROLLER_EVENT_TYPES } from "../baseComponents/GenericController";
 
 interface TemplateReaderProps {
   template: Template,
@@ -31,6 +32,12 @@ export class TemplateReaderComponent extends Component {
         <Button type="delete" class="ml-auto" onclick={this.props.onDelete} icon="trash" text="Delete" />
       </span>
     </div>;
+  }
+
+  public on = (eventType: string, data: any) => {
+    if (eventType === GENERIC_CONTROLLER_EVENT_TYPES.ENTITY_UPDATED) {
+      this.props.template = data;
+    }
   }
 }
 

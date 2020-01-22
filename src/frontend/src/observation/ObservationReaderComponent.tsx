@@ -3,6 +3,7 @@ import { MarkdownDisplay } from "../baseComponents/MarkdownDisplayComponent";
 import { Button, PageTitle, DateDisplay, TextDisplay, Checkbox, Caption } from "../baseComponents";
 import { Observation } from ".";
 import { EvaluationCriteriaController } from "../evaluationCriteria";
+import { GENERIC_CONTROLLER_EVENT_TYPES } from "../baseComponents/GenericController";
 
 interface ObservationReaderProps {
   observation: Observation,
@@ -14,7 +15,9 @@ interface ObservationReaderProps {
 
 export class ObservationReaderComponent extends Component {
 
-  constructor(public props: ObservationReaderProps) { super() }
+  constructor(public props: ObservationReaderProps) {
+    super();
+  }
 
   public render = async (): Promise<UIElement> => {
     const observation = this.props.observation;

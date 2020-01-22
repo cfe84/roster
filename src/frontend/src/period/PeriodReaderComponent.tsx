@@ -5,6 +5,7 @@ import { Period } from ".";
 import { EvaluationCriteriaController } from "../evaluationCriteria";
 import { ObservationController } from "../observation";
 import { EvaluationController } from "../evaluation";
+import { GENERIC_CONTROLLER_EVENT_TYPES } from "../baseComponents/GenericController";
 
 interface PeriodReaderProps {
   period: Period,
@@ -46,6 +47,12 @@ export class PeriodReaderComponent extends Component {
         <Button type="delete" class="ml-auto" onclick={this.props.onDelete} icon="trash" text="Delete" />
       </span>
     </div>;
+  }
+
+  public on = (eventType: string, data: any) => {
+    if (eventType === GENERIC_CONTROLLER_EVENT_TYPES.ENTITY_UPDATED) {
+      this.props.period = data;
+    }
   }
 }
 
