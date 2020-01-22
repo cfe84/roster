@@ -7,10 +7,11 @@ import { EvaluationEventFactory } from "./EvaluationEventFactory";
 import { EvaluationStoreAdapter } from "./IEvaluationStore";
 import { IEvaluationCriteriaStore, EvaluationCriteria } from "../evaluationCriteria";
 import { IComponentFactory } from "../baseComponents/IComponentFactory";
-import { List } from "../baseComponents/ListComponent";
+import { List, ListComponent } from "../baseComponents/ListComponent";
 import { EvaluationListItem } from "./EvaluationListItemComponent";
 import { ObservationController } from "../observation";
 import { Button } from "../baseComponents";
+import { EvaluationCreatedEvent } from "./EvaluationEvents";
 
 export interface EvaluationControllerDependencies {
   evaluationStore: IEvaluationStore,
@@ -41,7 +42,7 @@ export class EvaluationController {
   }
 
 
-  public getPeriodListComponentAsync = async (periodId: string) => {
+  public getPeriodListComponentAsync = async (periodId: string): Promise<ListComponent<EvaluationCriteria>> => {
     const evaluationList = (await this.deps.evaluationStore.getEvaluationsAsync())
       .filter((evaluation) => evaluation.periodId === periodId);
     const criteriaList = (await this.deps.evaluationCriteriaStore.getEvaluationCriteriasAsync())
@@ -73,6 +74,7 @@ export class EvaluationController {
       <Button type="secondary" onclick={() => this.deps.uiContainer.unmountCurrent()} icon="arrow-left" text="Back" />
       {component}
     </div>
+    this.deps.eventBus.subscribe(EvaluationCreatedEvent.type, () => this.deps.uiContainer.rerenderIfCurrent(enrichedComponent));
     this.deps.uiContainer.mount(enrichedComponent);
   }
 }

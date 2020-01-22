@@ -8,7 +8,7 @@ import { ObservationStoreAdapter } from "./IObservationStore";
 import { EvaluationCriteriaController, EvaluationCriteriaId } from "../evaluationCriteria";
 import { PeriodController, PeriodId } from "../period";
 import { List } from "../baseComponents/ListComponent";
-import { Caption, DateDisplay, TextDisplay } from "../baseComponents";
+import { Caption, DateDisplay, TextDisplay, Button } from "../baseComponents";
 import { MarkdownDisplay } from "../baseComponents/MarkdownDisplayComponent";
 
 export interface ObservationControllerDependencies {
@@ -39,8 +39,9 @@ export class ObservationController {
   public getCriteriaObservationListComponentAsync = async (periodId: PeriodId, criteriaId: EvaluationCriteriaId) => {
     const elementDisplay = (observation: Observation) => <div>
       <span class="row">
-        <span class="col"><TextDisplay caption="Summary" value={observation.title} /></span>
-        <span class="col"><DateDisplay caption="Date" value={observation.date} /></span>
+        <span class="col-8"><TextDisplay caption="Summary" value={observation.title} /></span>
+        <span class="col-3"><DateDisplay caption="Date" value={observation.date} /></span>
+        <span class="col-1"><Button class="ml-3" type="secondary" icon="pen" outline={true} text="" onclick={() => this.controller.mountEdit(observation)}></Button></span>
       </span>
       <MarkdownDisplay caption="Observation" value={observation.details} />
     </div>
