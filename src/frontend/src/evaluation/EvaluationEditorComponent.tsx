@@ -47,7 +47,6 @@ export class EvaluationEditorComponent extends Component {
         {input} <b>{rate.name}</b> - <em>{rate.description}</em>
       </div>
     })
-    console.log(evaluationCriteria)
     return <div>
       <PageTitle title={title} icon="ruler" onBack={this.props.onCancel} />
       <div class="row">

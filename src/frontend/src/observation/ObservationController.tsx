@@ -6,9 +6,9 @@ import { ObservationComponentFactory, ObservationListFilterComponentOptions } fr
 import { ObservationEventFactory } from "./ObservationEventFactory";
 import { ObservationStoreAdapter } from "./IObservationStore";
 import { EvaluationCriteriaController, EvaluationCriteriaId } from "../evaluationCriteria";
-import { PeriodController, PeriodId } from "../period";
+import { PeriodId } from "../period";
 import { List } from "../baseComponents/ListComponent";
-import { Caption, DateDisplay, TextDisplay, Button } from "../baseComponents";
+import { DateDisplay, TextDisplay, Button } from "../baseComponents";
 import { MarkdownDisplay } from "../baseComponents/MarkdownDisplayComponent";
 
 export interface ObservationControllerDependencies {
