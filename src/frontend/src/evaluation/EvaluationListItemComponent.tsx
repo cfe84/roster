@@ -22,14 +22,14 @@ export class EvaluationListItemComponent extends Component {
     if (this.props.evaluation) {
       evaluation = <span>
         Rated: <b>{this.props.evaluation.rateName}</b>
-        <Button class="ml-3" outline={true} text="Edit" onclick={this.props.onedit}></Button>
+        <Button class="ml-3" type="secondary" icon="pen" outline={true} text="" onclick={this.props.onedit}></Button>
       </span>
     } else {
       evaluation = <Button text="Add evaluation" outline={true} onclick={this.props.oncreate}></Button>;
     }
-    const clss = `w-100 d-flex ${this.props.onclick ? "btn" : ""}`
+    const clss = `p-0 w-100 d-flex align-items-center ${this.props.onclick ? "btn" : ""}`
     return <span class={clss} onclick={this.props.onclick}>
-      <span class="align-middle">{this.props.evaluationCriteriaComponent}</span>
+      {this.props.evaluationCriteriaComponent}
       <span class="ml-auto">{evaluation}</span>
     </span>;
   }

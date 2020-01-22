@@ -10,6 +10,7 @@ import { IComponentFactory } from "../baseComponents/IComponentFactory";
 import { List } from "../baseComponents/ListComponent";
 import { EvaluationListItem } from "./EvaluationListItemComponent";
 import { ObservationController } from "../observation";
+import { Button } from "../baseComponents";
 
 export interface EvaluationControllerDependencies {
   evaluationStore: IEvaluationStore,
@@ -64,5 +65,14 @@ export class EvaluationController {
       titleIcon="ruler"
     />
     return listComponent;
+  }
+
+  public mountPeriodListComponentAsync = async (periodId: string) => {
+    const component = await this.getPeriodListComponentAsync(periodId);
+    const enrichedComponent = <div>
+      <Button type="secondary" onclick={() => this.deps.uiContainer.unmountCurrent()} icon="arrow-left" text="Back" />
+      {component}
+    </div>
+    this.deps.uiContainer.mount(enrichedComponent);
   }
 }

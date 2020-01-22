@@ -24,7 +24,7 @@ export class PeriodReaderComponent extends Component {
   public render = async (): Promise<UIElement> => {
     const period = this.props.period;
     const observationsComponent = await this.props.observationController.getPeriodListComponentAsync(period.id);
-    const evaluationsComponent = await this.props.evaluationController.getPeriodListComponentAsync(period.id);
+    // const evaluationsComponent = await this.props.evaluationController.getPeriodListComponentAsync(period.id);
     // Need 
     const notes = <MarkdownDisplay
       caption="Details"
@@ -37,8 +37,10 @@ export class PeriodReaderComponent extends Component {
         <DateDisplay class="col" caption="Finish date" object={this.props.period} field="finishDate" includeTimespan={true} />
       </div>
       {notes.render()}
-      {evaluationsComponent}
       {observationsComponent}
+      <div class="text-center mb-3 mt-3">
+        <Button text="Proceed to evaluation" icon="ruler" onclick={() => this.props.evaluationController.mountPeriodListComponentAsync(period.id)} />
+      </div>
       <span class="d-flex">
         <Button type="primary" onclick={() => this.props.onEdit(period)} icon="pen" text="Edit" />
         <Button type="delete" class="ml-auto" onclick={this.props.onDelete} icon="trash" text="Delete" />
