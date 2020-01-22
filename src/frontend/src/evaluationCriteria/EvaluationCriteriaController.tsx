@@ -59,10 +59,12 @@ export class EvaluationCriteriaController {
       onSelectionChanged(selectedCriteria)
     }
     const elementDisplay = (criteria: EvaluationCriteria) =>
-      <Checkbox
-        value={selectedCriteria.indexOf(criteria.id) >= 0}
-        text={criteria.title}
-        onchange={(selected) => onChange(criteria.id, selected)} />;
+      <span title={criteria.details} class="d-flex align-items-center">
+        <Checkbox
+          value={selectedCriteria.indexOf(criteria.id) >= 0}
+          text={criteria.title}
+          onchange={(selected) => onChange(criteria.id, selected)} />
+      </span>;
     let listComponent: IListComponent<EvaluationCriteria> = <List
       elements={elements}
       elementDisplay={elementDisplay}
