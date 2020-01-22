@@ -11,7 +11,7 @@ interface PeriodReaderProps {
   period: Period,
   onCompleteChanged: (value: boolean) => void,
   onEdit: ((period: Period) => void),
-  onDelete: (() => void),
+  onDelete: ((period: Period) => void),
   onBack: (() => void),
   evaluationCriteriaController: EvaluationCriteriaController,
   evaluationController: EvaluationController,
@@ -44,7 +44,7 @@ export class PeriodReaderComponent extends Component {
       </div>
       <span class="d-flex">
         <Button type="primary" onclick={() => this.props.onEdit(period)} icon="pen" text="Edit" />
-        <Button type="delete" class="ml-auto" onclick={this.props.onDelete} icon="trash" text="Delete" />
+        <Button type="delete" class="ml-auto" onclick={() => this.props.onDelete(period)} icon="trash" text="Delete" />
       </span>
     </div>;
   }

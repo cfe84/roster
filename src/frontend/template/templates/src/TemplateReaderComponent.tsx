@@ -7,7 +7,7 @@ import { GENERIC_CONTROLLER_EVENT_TYPES } from "../baseComponents/GenericControl
 interface TemplateReaderProps {
   template: Template,
   onEdit: ((template: Template) => void),
-  onDelete: (() => void),
+  onDelete: ((template: Template) => void),
   onBack: (() => void)
 }
 
@@ -29,7 +29,7 @@ export class TemplateReaderComponent extends Component {
       {notes.render()}
       <span class="d-flex">
         <Button type="primary" onclick={() => this.props.onEdit(template)} icon="pen" text="Edit" />
-        <Button type="delete" class="ml-auto" onclick={this.props.onDelete} icon="trash" text="Delete" />
+        <Button type="delete" class="ml-auto" onclick={() => this.props.onDelete(template)} icon="trash" text="Delete" />
       </span>
     </div>;
   }

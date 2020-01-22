@@ -45,8 +45,8 @@ export class TemplateComponentFactory implements IComponentFactory<Template> {
     return TemplateReader({
       template: element,
       onBack,
-      onDelete: () => onDelete(element),
-      onEdit: () => onEdit(element),
+      onDelete,
+      onEdit,
     });
   }
   createCreateComponent(element: Template, onCancel: () => void, onValidate: (entity: Template) => void): Component {

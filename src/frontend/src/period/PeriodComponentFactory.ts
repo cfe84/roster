@@ -51,8 +51,8 @@ export class PeriodComponentFactory implements IComponentFactory<Period> {
     return PeriodReader({
       period: element,
       onBack,
-      onDelete: () => onDelete(element),
-      onEdit: () => onEdit(element),
+      onDelete,
+      onEdit,
       onCompleteChanged: () => this.props.eventBus.publishAsync(new PeriodUpdatedEvent(element)).then(() => { }),
       evaluationCriteriaController: this.props.evaluationCriteriaController,
       evaluationController: this.props.evalutionController,
