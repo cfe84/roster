@@ -1,7 +1,6 @@
 import { IObservationStore } from "./IObservationStore";
 import { IReactor } from "../storage/IReactor";
 import { EventBus } from "../../lib/common/events";
-import { PersonDeletedEvent } from "../persons/PersonEvent";
 import { ObservationCreatedEvent, ObservationUpdatedEvent, ObservationDeletedEvent } from "./ObservationEvents";
 import { PeriodDeletedEvent } from "../period/PeriodEvents";
 import { EvaluationCriteriaDeletedEvent } from "../evaluationCriteria/EvaluationCriteriaEvents";
