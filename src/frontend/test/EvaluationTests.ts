@@ -116,7 +116,7 @@ describe("Evaluation domain", () => {
     td.verify(fakeSubscriber.evaluations(td.matchers.argThat((arg: EvaluationDeletedEvent) => arg.entity === notCorrespondingEvaluation)), { times: 0 })
   });
 
-  it("should update criteria name for updated evaluation criteria", async () => {
+  it("should update criteria name and rate name for updated evaluation criteria", async () => {
     // given
     const eventBus = new EventBus("", false);
     const evaluationCriteria = new EvaluationCriteria();

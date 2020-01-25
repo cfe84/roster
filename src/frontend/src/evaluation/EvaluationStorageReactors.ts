@@ -17,11 +17,18 @@ export class EvaluationStorageReactors implements IReactor {
 
   private registerCriteriaUpdatedReactor(eventBus: EventBus) {
     eventBus.subscribe(EvaluationCriteriaUpdatedEvent.type, async (evt: EvaluationCriteriaDeletedEvent) => {
+      const criteria = evt.entity;
       const evaluationsForCriteria = (await this.evaluationStore.getEvaluationsAsync())
-        .filter((evaluation) => evaluation.criteriaId === evt.entity.id);
-      const evaluationWhereNameChanged = evaluationsForCriteria.filter(evaluation => evaluation.criteriaName !== evt.entity.title);
+        .filter((evaluation) => evaluation.criteriaId === criteria.id);
+      const evaluationWhereNameChanged = evaluationsForCriteria.filter(evaluation => {
+        const criteriaNameChanged = evaluation.criteriaName !== evt.entity.title;
+        const rate = criteria.rates.find(rate => rate.id === evaluation.rateId);
+        const rateNameChanged = rate && rate.name !== evaluation.rateName;
+        return criteriaNameChanged || rateNameChanged;
+      });
       await Promise.all(evaluationWhereNameChanged.map((evaluation) => {
-        evaluation.criteriaName = evt.entity.title;
+        evaluation.criteriaName = criteria.title;
+        evaluation.rateName = criteria.rates.find(rate => rate.id === evaluation.rateId)?.name || "RATE REMOVED";
         return eventBus.publishAsync(new EvaluationUpdatedEvent(evaluation));
       }));
     });
