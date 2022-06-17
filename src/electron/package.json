@@ -16,7 +16,7 @@
   "author": "Charles Feval",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^7.1.5",
+    "electron": "^15.5.5",
     "electron-packager": "^14.1.1",
     "typescript": "^3.7.3"
   }
