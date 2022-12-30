@@ -73,7 +73,7 @@
     "@types/node": "^12.12.17",
     "@types/socket.io-client": "^1.4.32",
     "bootstrap": "^4.4.0",
-    "mocha": "^6.2.2",
+    "mocha": "^10.2.0",
     "mock-local-storage": "^1.1.11",
     "moment-locales-webpack-plugin": "^1.1.2",
     "npm-watch": "^0.6.0",
